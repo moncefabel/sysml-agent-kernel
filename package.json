@@ -1,0 +1,22 @@
+{
+  "name": "sysml-agent-kernel",
+  "version": "0.1.0",
+  "description": "Deterministic SysML v2 kernel (parser, semantic validation, transactional edits) exposed to LLM agents through typed MCP tools, with an evaluation harness.",
+  "scripts": {
+    "build": "tsc",
+    "test": "tsc && node --test dist/test/*.test.js",
+    "eval": "tsc && node dist/eval/run.js",
+    "mcp": "node dist/src/mcp-server.js",
+    "bench": "tsc && node eval/bench.mjs"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.31.0",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.4",
+    "typescript": "^7.0.2"
+  },
+  "type": "module"
+}
