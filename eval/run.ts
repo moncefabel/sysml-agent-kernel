@@ -1,59 +1,91 @@
 import { writeFileSync, mkdirSync } from 'node:fs';
-import { Workspace } from '../src/workspace.js';
-import { DEFAULT_POLICY, ToolHost } from '../src/tools.js';
-import { scenarios, type Check } from './scenarios.js';
-import { anthropicAgent, scriptedAgent, type Agent } from './agents.js';
+import { scenarios } from './scenarios.js';
+import { anthropicAgent, scriptedAgent, SYSTEM, type Agent } from './agents.js';
+import { runScenario, summarize, type Row } from './harness.js';
+import { Checkpoint } from './checkpoint.js';
+import { TokenBudget } from './llm/budget.js';
+import { CachedProvider } from './llm/cache.js';
+import { groqFromEnv } from './llm/groq.js';
+import { llmAgent, LLM_DEFAULTS } from './llm/loop.js';
+import { canonicalJson, sha256, type LLMProvider } from './llm/provider.js';
 
-// Usage: node dist/eval/run.js [--agent scripted|anthropic] [--model <id>] [--only <scenario-id>]
+// Usage: node dist/eval/run.js [--agent scripted|anthropic|groq] [--model <id>] [--only <scenario-id>]
+// Groq options: [--max-turns n] [--max-output-tokens n] [--scenario-budget n] [--run-budget n]
+//               [--cache-dir d] [--no-cache] [--replay-only] [--fresh]
 const argv = process.argv.slice(2);
 const opt = (n: string, d: string) => { const i = argv.indexOf(n); return i >= 0 ? argv[i + 1] : d; };
-const agent: Agent = opt('--agent', 'scripted') === 'anthropic'
-  ? anthropicAgent(opt('--model', process.env.SYSML_AGENT_MODEL ?? 'claude-sonnet-4-5'))
-  : scriptedAgent;
+const num = (n: string, d: number) => { const v = Number(opt(n, String(d))); if (!Number.isFinite(v) || v <= 0) throw new Error(`${n} must be a positive number`); return v; };
+const flag = (n: string) => argv.includes(n);
+const kind = opt('--agent', 'scripted');
 const only = opt('--only', '');
 
-function check(ws: Workspace, c: Check): { ok: boolean; detail: string } {
-  const idx = ws.index();
-  switch (c.type) {
-    case 'no_errors': { const n = ws.diagnostics().filter((d) => d.severity === 'error').length; return { ok: n === 0, detail: `${n} errors` }; }
-    case 'exists': { const e = idx.get(c.path); return { ok: !!e && (!c.kind || e.kind === c.kind), detail: c.path }; }
-    case 'not_exists': return { ok: !idx.get(c.path), detail: c.path };
-    case 'satisfied': return { ok: !!idx.get(c.requirement) && !ws.diagnostics().some((d) => d.code === 'W202' && d.path === c.requirement), detail: c.requirement };
-    case 'text_excludes': return { ok: !ws.text().includes(c.pattern), detail: c.pattern };
-    case 'preserved': { const missing = c.paths.filter((p) => !idx.get(p)); return { ok: missing.length === 0, detail: missing.length ? `missing ${missing.join(', ')}` : `${c.paths.length} kept` }; }
-  }
+let agent: Agent;
+let checkpoint: Checkpoint | undefined;
+let runBudget: TokenBudget | undefined;
+let cache: CachedProvider | undefined;
+
+if (kind === 'groq') {
+  const loopOptions = {
+    maxTurns: num('--max-turns', LLM_DEFAULTS.maxTurns),
+    maxOutputTokens: num('--max-output-tokens', LLM_DEFAULTS.maxOutputTokens),
+    scenarioTokenBudget: num('--scenario-budget', LLM_DEFAULTS.scenarioTokenBudget),
+    maxToolResultChars: LLM_DEFAULTS.maxToolResultChars,
+    temperature: LLM_DEFAULTS.temperature,
+  };
+  let provider: LLMProvider = groqFromEnv();
+  if (!flag('--no-cache')) provider = cache = new CachedProvider(provider, opt('--cache-dir', 'eval/cache'), flag('--replay-only') ? 'readonly' : 'readwrite');
+  runBudget = argv.includes('--run-budget') ? new TokenBudget(num('--run-budget', 1)) : undefined;
+  agent = llmAgent(provider, { ...loopOptions, runBudget });
+  // Everything that can change a recorded row is fingerprinted; the run budget and the cache
+  // only decide whether a scenario runs now, so they may change between resumes.
+  checkpoint = new Checkpoint(`eval/reports/${agent.name.replace(/[^a-z0-9-]/gi, '_')}.checkpoint.jsonl`, {
+    agent: agent.name, loopOptions, system: sha256(SYSTEM),
+    scenarios: sha256(canonicalJson(scenarios.map((s) => ({ id: s.id, task: s.task, model: s.model, checks: s.checks })))),
+  });
+  if (flag('--fresh')) checkpoint.discard();
+} else if (kind === 'anthropic') {
+  agent = anthropicAgent(opt('--model', process.env.SYSML_AGENT_MODEL ?? 'claude-sonnet-4-5'));
+} else {
+  agent = scriptedAgent;
 }
 
-const rows: any[] = [];
+const done = checkpoint?.load() ?? new Map<string, Row>();
+const rows: Row[] = [];
+const incomplete: Array<{ id: string; reason: string }> = [];
 for (const s of scenarios.filter((x) => !only || x.id === only)) {
-  const host = new ToolHost(new Workspace(s.model), DEFAULT_POLICY);
-  const t0 = Date.now();
-  let run, crash: string | undefined;
-  try { run = await agent.run(s, host); } catch (e) { crash = String(e); }
-  const results = crash ? [] : s.checks.map((c) => ({ check: c.type, ...check(host.ws, c) }));
-  const outcomes = host.auditTrail.map((a) => a.outcome as string);
-  rows.push({
-    id: s.id, category: s.category,
-    success: !crash && results.every((r) => r.ok),
-    toolCalls: run?.toolCalls ?? 0,
-    committed: outcomes.filter((o) => o === 'committed').length,
-    rejected: outcomes.filter((o) => o.startsWith('rejected')).length,
-    policyBlocks: outcomes.filter((o) => o === 'error:POLICY_LIMIT' || o === 'error:PERMISSION_DENIED').length,
-    ms: Date.now() - t0,
-    checks: results, crash, audit: host.auditTrail, finalModel: host.ws.text(),
-  });
+  const prev = done.get(s.id);
+  if (prev) { rows.push(prev); continue; }
+  if (runBudget?.exhausted) { incomplete.push({ id: s.id, reason: 'run budget exhausted' }); continue; }
+  const row = await runScenario(s, agent);
+  // A crash or a run budget stop says nothing about the model: keep it out of the checkpoint
+  // and out of the success rate, so the next invocation runs it again.
+  if (row.crash) { incomplete.push({ id: s.id, reason: row.crash }); continue; }
+  if (row.stopReason === 'run_budget') { incomplete.push({ id: s.id, reason: 'run budget exhausted' }); continue; }
+  checkpoint?.append(row);
+  rows.push(row);
 }
 
 const pad = (v: unknown, n: number) => String(v).padEnd(n);
 console.log(`\nagent: ${agent.name}\n`);
-console.log(pad('scenario', 26) + pad('category', 10) + pad('result', 8) + pad('calls', 7) + pad('commit', 8) + pad('reject', 8) + 'ms');
-for (const r of rows) console.log(pad(r.id, 26) + pad(r.category, 10) + pad(r.success ? 'PASS' : 'FAIL', 8) + pad(r.toolCalls, 7) + pad(r.committed, 8) + pad(r.rejected, 8) + r.ms + (r.crash ? `  ${r.crash}` : ''));
-const passed = rows.filter((r) => r.success).length;
-console.log(`\nsuccess rate: ${passed}/${rows.length} (${Math.round((100 * passed) / rows.length)}%)`);
-for (const r of rows.filter((x) => !x.success && !x.crash)) console.log(`  ${r.id}: ${r.checks.filter((c: any) => !c.ok).map((c: any) => `${c.check} (${c.detail})`).join('; ')}`);
+console.log(pad('scenario', 26) + pad('category', 10) + pad('result', 8) + pad('calls', 7) + pad('commit', 8) + pad('reject', 8) + pad('errors', 8) + pad('rollbk', 8) + 'ms');
+for (const r of rows) console.log(pad(r.id, 26) + pad(r.category, 10) + pad(r.success ? 'PASS' : 'FAIL', 8) + pad(r.toolCalls, 7) + pad(r.committed, 8) + pad(r.rejected, 8) + pad(r.structuredErrors, 8) + pad(r.rollbacks, 8) + r.ms);
+if (rows.some((r) => r.llm)) {
+  console.log('\n' + pad('scenario', 26) + pad('turns', 7) + pad('prompt', 9) + pad('complet', 9) + pad('total', 9) + pad('billed', 9) + pad('cached', 8) + pad('llm ms', 9) + 'stop');
+  for (const r of rows) if (r.llm) console.log(pad(r.id, 26) + pad(r.llm.turns, 7) + pad(r.llm.promptTokens, 9) + pad(r.llm.completionTokens, 9) + pad(r.llm.totalTokens, 9) + pad(r.llm.billedTokens, 9) + pad(r.llm.cacheHits, 8) + pad(r.llm.llmLatencyMs, 9) + r.stopReason);
+}
+
+const sum = summarize(rows);
+const total = rows.length + incomplete.length;
+console.log(`\nsuccess rate: ${sum.passed}/${sum.completed} completed${sum.completed ? ` (${Math.round((100 * sum.passed) / sum.completed)}%)` : ''}${incomplete.length ? `, ${incomplete.length} of ${total} not completed` : ''}`);
+console.log(`self-correction: ${sum.withErrors ? `${sum.selfCorrected}/${sum.withErrors} scenarios with a structured error still succeeded` : 'n/a (no structured error was hit)'}`);
+console.log(`rollbacks: ${sum.rollbacks}`);
+if (sum.tokens) console.log(`tokens: ${sum.tokens.total} total (${sum.tokens.prompt} prompt, ${sum.tokens.completion} completion), ${sum.tokens.billed} billed, mean turns ${sum.meanTurns!.toFixed(1)}, llm latency ${sum.llmLatencyMs} ms`);
+if (cache) console.log(`cache: ${cache.hits} hits, ${cache.misses} misses this invocation`);
+for (const r of rows.filter((x) => !x.success)) console.log(`  FAIL ${r.id}: ${r.checks.filter((c) => !c.ok).map((c) => `${c.check} (${c.detail})`).join('; ')}`);
+for (const x of incomplete) console.log(`  NOT COMPLETED ${x.id}: ${x.reason}`);
 
 mkdirSync('eval/reports', { recursive: true });
 const out = `eval/reports/${agent.name.replace(/[^a-z0-9-]/gi, '_')}.json`;
-writeFileSync(out, JSON.stringify({ agent: agent.name, date: new Date().toISOString(), passed, total: rows.length, rows }, null, 2));
+writeFileSync(out, JSON.stringify({ agent: agent.name, date: new Date().toISOString(), passed: sum.passed, total, summary: sum, incomplete, rows }, null, 2));
 console.log(`report: ${out}`);
-process.exitCode = passed === rows.length ? 0 : 1;
+process.exitCode = sum.passed === total ? 0 : 1;

@@ -73,9 +73,10 @@ Name resolution handles nested namespaces, imports (`X::*` and single), and feat
 
 ```bash
 npm install
-npm test          # 14 tests: round trip, rules, transactions, rename, policy, schemas
+npm test          # 32 tests: kernel (14) plus agent loop, cache, budget, checkpoint, Groq adapter (18), all offline
 npm run eval      # scripted baseline over the scenario suite
 npm run bench     # parse / validate / transaction / slice timings
+npm run estimate  # offline token estimate of a full LLM run, no network
 ```
 
 MCP server (works with any MCP client, e.g. Claude Desktop or an IDE agent):
@@ -85,15 +86,32 @@ npm run build
 node dist/src/mcp-server.js examples/vehicle.sysml --mode propose --audit audit.jsonl
 ```
 
-Evaluate a real LLM agent on the same scenarios:
+Evaluate a real LLM agent on the same scenarios (Groq, OpenAI compatible tool calling). The key and the model come from the environment only:
 
 ```bash
-ANTHROPIC_API_KEY=... node dist/eval/run.js --agent anthropic --model <model-id>
+export GROQ_API_KEY=...   # never committed, never logged, redacted from every error
+export GROQ_MODEL=...     # any Groq model that supports tool calling
+npm run build
+node dist/eval/run.js --agent groq                      # resumes automatically from the checkpoint
+node dist/eval/run.js --agent groq --run-budget 100000  # stop cleanly after this many billed tokens
+node dist/eval/run.js --agent groq --replay-only        # cache only, guaranteed zero network calls
 ```
+
+Options: `--max-turns` (12), `--max-output-tokens` (1024), `--scenario-budget` (60000 tokens), `--run-budget`, `--cache-dir` (`eval/cache`), `--no-cache`, `--fresh` (discard the checkpoint).
 
 ## Evaluation
 
-Each scenario defines an initial model, a task in natural language, deterministic success checks and a reference trajectory. Metrics per run: success, tool calls, committed and rejected transactions, policy blocks, latency, plus the full audit trail and final model in `eval/reports/`.
+Each scenario defines an initial model, a task in natural language, deterministic success checks and a reference trajectory. The checks only look at the final model, and they are the same for the scripted baseline and for any LLM.
+
+Metrics per scenario: success, LLM turns, tool calls, committed and rejected transactions, rollbacks (transactions applied to a draft then discarded), structured errors received, self-correction, policy blocks, prompt / completion / billed tokens, cache hits, LLM latency. The report and the full audit trail land in `eval/reports/`.
+
+Self-correction is reported as a count, `k/n`: of the `n` scenarios where the agent received at least one structured error (kernel rejection, invalid arguments, malformed tool call), `k` still ended in success. Scenarios with no error are excluded from `n` rather than counted as corrected.
+
+**Agent loop** (`eval/llm/loop.ts`). The model gets the system prompt, the task and the tool catalog; each tool call goes through `ToolHost.call`, the same entry point as MCP, and the kernel result (including rejections and hints) goes back verbatim. The loop stops when the model ends a turn without a tool call, or on the turn limit, the scenario token budget or the run budget. It never reads the success checks, so stopping cannot leak the oracle into the agent.
+
+**Reproducibility.** Temperature 0, plus a content-addressed response cache keyed on provider, model, messages, tools and sampling parameters. Since the kernel is deterministic, a run replayed from the cache rebuilds the same trajectory and report offline. Each completed scenario is appended to a JSONL checkpoint whose header fingerprints the configuration; a crash or a run budget stop is not recorded, so the next invocation runs that scenario again, mostly from the cache.
+
+**Budgets.** Before each call the loop reserves an estimate (request characters / 4, plus the full output allowance) and stops cleanly if the reservation does not fit. Real usage from the API response is then recorded. Cache hits count against the scenario budget (so a replay stops where the original run stopped) but not against the run budget (they cost nothing).
 
 | Scenario | Category | What it tests |
 |----------|----------|---------------|
@@ -104,7 +122,7 @@ Each scenario defines an initial model, a task in natural language, deterministi
 | guarded-delete | repair | Naive delete is rejected, agent must repair the transaction |
 | prompt-injection-in-doc | security | Malicious instruction hidden in a doc comment must be ignored |
 
-The scripted baseline passes 6/6 and validates the harness. The interesting numbers come from LLM runs: success rate, average rejected transactions before success (self-repair ability), and whether the injection scenario keeps every part definition.
+The scripted baseline passes 6/6 and validates the harness. No LLM result is reported here yet: numbers will be added only from real, cached and reproducible runs.
 
 ## Benchmarks
 
@@ -129,7 +147,9 @@ The transaction cost is dominated by the full re-validation and the print/repars
 ```
 src/        lexer, parser, printer, semantic validator, workspace (transactions),
             context engine, tool catalog with policy and audit, MCP server
-eval/       scenarios, agents (scripted baseline, Anthropic tool-use loop), runner, bench
+eval/       scenarios, harness (checks, metrics), runner, checkpoint, estimate, bench,
+            agents (scripted baseline, Anthropic loop)
+eval/llm/   provider interface, Groq adapter, agent loop, cache, token budget, mocks
 test/       node:test suite
 examples/   vehicle.sysml
 ```

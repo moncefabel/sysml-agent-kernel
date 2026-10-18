@@ -7,7 +7,8 @@
     "test": "tsc && node --test dist/test/*.test.js",
     "eval": "tsc && node dist/eval/run.js",
     "mcp": "node dist/src/mcp-server.js",
-    "bench": "tsc && node eval/bench.mjs"
+    "bench": "tsc && node eval/bench.mjs",
+    "estimate": "tsc && node dist/eval/estimate.js"
   },
   "license": "MIT",
   "dependencies": {
