@@ -1,0 +1,25 @@
+{
+ "provider": "groq",
+ "model": "openai/gpt-oss-120b",
+ "createdAt": "2026-10-18T15:59:02.263Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": null,
+   "toolCalls": [
+    {
+     "id": "fc_d86a6eda-c9d9-4939-a20f-97f6e3d3c968",
+     "name": "sysml_apply_edits",
+     "arguments": "{\"ops\":[{\"op\":\"add\",\"parent\":\"VehicleModel::FuelTank\",\"source\":\"attribute maxTemperature : Real = 120;\"}]}"
+    }
+   ]
+  },
+  "usage": {
+   "promptTokens": 2236,
+   "completionTokens": 187,
+   "totalTokens": 2423
+  },
+  "finishReason": "tool_calls",
+  "latencyMs": 1307
+ }
+}

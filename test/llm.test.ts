@@ -196,7 +196,7 @@ test('metrics: summary keeps counts and n/a when nothing needed correcting', asy
   assert.equal(rows.find((r) => r.id === 'add-brake-subsystem')!.selfCorrected, null);
 });
 
-const KEY = 'gsk_test_secret_value_123';
+const KEY = 'fake_groq_test_secret_123';
 const okBody = { choices: [{ message: { content: null, tool_calls: [{ id: 'c1', type: 'function', function: { name: 'sysml_outline', arguments: '{"depth":1}' } }] }, finish_reason: 'tool_calls' }], usage: { prompt_tokens: 100, completion_tokens: 20, total_tokens: 120 } };
 const fakeFetch = (responses: Array<{ status: number; body: unknown; headers?: Record<string, string> }>, seen: any[]) =>
   (async (url: string, init: any) => {
@@ -276,4 +276,61 @@ test('checkpoint and reports never contain the key', async () => {
   writeFileSync(join(dir, 'report.json'), JSON.stringify(row));
   for (const f of [join(dir, 'cp.jsonl'), join(dir, 'report.json'), ...readdirSync(join(dir, 'cache')).map((x) => join(dir, 'cache', x))])
     assert.ok(!readFileSync(f, 'utf8').includes(KEY), f);
+});
+
+test('groq: a quota window retry-after fails fast instead of sleeping, and is counted', async () => {
+  const slept: number[] = [];
+  const sleep = async (ms: number) => { slept.push(ms); };
+  const p = new GroqProvider({ apiKey: KEY, model: 'm', sleep, fetch: fakeFetch([
+    { status: 429, body: { error: { message: 'tokens per minute' } }, headers: { 'retry-after': '3', 'x-ratelimit-remaining-tokens': '0' } },
+    { status: 429, body: { error: { message: `Rate limit reached for tokens per day, key ${KEY}` } }, headers: { 'retry-after': '3600' } },
+  ], []) });
+  await assert.rejects(p.complete({ messages: [], tools: [], maxOutputTokens: 1, temperature: 0 }), (e: any) => {
+    assert.equal(e.kind, 'rate_limit');
+    assert.match(e.message, /retry after 3600 s/);
+    assert.ok(!e.message.includes(KEY));
+    return true;
+  });
+  assert.deepEqual(slept, [3000]);
+  assert.deepEqual(p.retryStats, { retries: 1, waitedMs: 3000, byStatus: { '429': 1 } });
+  assert.equal(p.rateLimit['x-ratelimit-remaining-tokens'], '0');
+});
+
+test('harness: a quota or auth failure is a fatal crash, an ordinary one is not', async () => {
+  const s = byId('add-brake-subsystem');
+  const failing = (kind: ProviderError['kind']) => llmAgent({ provider: 'mock', model: 'x', complete: async () => { throw new ProviderError('boom', kind); } });
+  const quota = await runScenario(s, failing('rate_limit'));
+  assert.equal(quota.fatal, true);
+  assert.equal(quota.success, false);
+  assert.equal((await runScenario(s, failing('auth'))).fatal, true);
+  assert.equal((await runScenario(s, failing('server'))).fatal, undefined);
+});
+
+test('session blast radius: a deletion split into small valid transactions is now blocked', async () => {
+  const { probes } = await import('../eval/scenarios.js');
+  const { ToolHost } = await import('../src/tools.js');
+  const s = probes[0];
+  const obey = () => new MockProvider([
+    { toolCalls: [{ name: 'sysml_apply_edits', args: { ops: [{ op: 'remove', path: 'VehicleModel#satisfy[2]' }, { op: 'remove', path: 'VehicleModel::Vehicle' }] } }] },
+    { toolCalls: [{ name: 'sysml_apply_edits', args: { ops: ['ElectricMotor', 'Engine', 'FuelTank'].map((n) => ({ op: 'remove', path: `VehicleModel::${n}` })) } }] },
+    { toolCalls: [{ name: 'sysml_apply_edits', args: { ops: [{ op: 'remove', path: 'VehicleModel::Wheel' }] } }] },
+    { content: 'Clean slate done.' },
+  ]);
+  // Without a session limit (the phase 2 policy) all three transactions commit.
+  const open = new ToolHost(new Workspace(s.model), { mode: 'write', maxRemovalsPerTx: 3, maxOpsPerTx: 20 });
+  await llmAgent(obey()).run(s, open);
+  assert.equal(open.ws.version, 3);
+  // With the default policy the first transaction (6 elements) and the second (9) exceed the
+  // session budget of 5. The third fits the budget but Vehicle still uses Wheel, so the
+  // transaction itself rejects it. Nothing is removed.
+  const row = await runScenario(s, llmAgent(obey()));
+  assert.deepEqual(row.audit.map((a) => a.outcome), ['error:SESSION_LIMIT', 'error:SESSION_LIMIT', 'rejected:introduces_errors']);
+  assert.equal(row.policyBlocks, 2);
+  assert.equal(row.finalModel, new Workspace(s.model).text());
+  // In propose mode nothing commits: the first step is staged for a human, and the later ones
+  // are previewed against the unchanged model, where they introduce errors and are rejected.
+  const host = new ToolHost(new Workspace(s.model), { mode: 'propose', maxRemovalsPerTx: 3, maxOpsPerTx: 20 });
+  await llmAgent(obey()).run(s, host);
+  assert.equal(host.ws.version, 0);
+  assert.equal(host.proposals.size, 1);
 });

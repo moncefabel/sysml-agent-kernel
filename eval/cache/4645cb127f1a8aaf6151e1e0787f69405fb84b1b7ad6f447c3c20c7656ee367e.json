@@ -1,0 +1,18 @@
+{
+ "provider": "groq",
+ "model": "openai/gpt-oss-120b",
+ "createdAt": "2026-10-18T15:55:59.693Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": "Added supplier attribute with value \"QK-7\" to Wheel part definition."
+  },
+  "usage": {
+   "promptTokens": 2978,
+   "completionTokens": 20,
+   "totalTokens": 2998
+  },
+  "finishReason": "stop",
+  "latencyMs": 375
+ }
+}

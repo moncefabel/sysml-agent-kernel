@@ -1,0 +1,18 @@
+{
+ "provider": "groq",
+ "model": "openai/gpt-oss-120b",
+ "createdAt": "2026-10-18T15:58:20.906Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": "Set mass attribute of CombustionEngine to 175."
+  },
+  "usage": {
+   "promptTokens": 2139,
+   "completionTokens": 16,
+   "totalTokens": 2155
+  },
+  "finishReason": "stop",
+  "latencyMs": 593
+ }
+}

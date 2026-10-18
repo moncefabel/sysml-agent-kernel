@@ -10,7 +10,11 @@ export interface ToolCall { id: string; name: string; /** Raw JSON text as produ
 
 export type ChatMessage =
   | { role: 'system' | 'user'; content: string }
-  | { role: 'assistant'; content: string | null; toolCalls?: ToolCall[] }
+  /**
+   * `raw` holds the provider's own content blocks when they must be sent back unchanged (for
+   * example thinking blocks on the Anthropic API). Other providers ignore it.
+   */
+  | { role: 'assistant'; content: string | null; toolCalls?: ToolCall[]; raw?: unknown }
   | { role: 'tool'; toolCallId: string; content: string };
 
 export interface ToolSpec { name: string; description: string; parameters: unknown; }

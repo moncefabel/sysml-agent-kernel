@@ -18,7 +18,7 @@ export interface LlmAgentOptions {
 
 export const LLM_DEFAULTS = { maxTurns: 12, maxOutputTokens: 1024, scenarioTokenBudget: 60_000, maxToolResultChars: 12_000, temperature: 0 } as const;
 
-export type LlmStopReason = 'model_done' | 'max_turns' | 'token_budget' | 'run_budget' | 'output_truncated';
+export type LlmStopReason = 'model_done' | 'max_turns' | 'token_budget' | 'run_budget' | 'output_truncated' | 'refused';
 
 /**
  * Tool-use loop. The model only proposes tool calls; every call goes through ToolHost.call,
@@ -74,7 +74,7 @@ export function llmAgent(provider: LLMProvider, options: LlmAgentOptions = {}): 
         messages.push(res.message);
 
         const calls = res.message.toolCalls ?? [];
-        if (!calls.length) return done(res.finishReason === 'length' ? 'output_truncated' : 'model_done');
+        if (!calls.length) return done(res.finishReason === 'length' ? 'output_truncated' : res.finishReason === 'refusal' ? 'refused' : 'model_done');
 
         for (const c of calls) {
           let result: unknown;

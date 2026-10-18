@@ -1,0 +1,553 @@
+{
+  "agent": "groq:openai/gpt-oss-120b",
+  "provider": "groq",
+  "model": "openai/gpt-oss-120b",
+  "suite": "selfcorrect",
+  "pass": 1,
+  "replay": true,
+  "policy": {
+    "mode": "write",
+    "maxRemovalsPerTx": 3,
+    "maxOpsPerTx": 20,
+    "maxRemovedElementsPerSession": 5,
+    "maxOpsPerSession": 40
+  },
+  "date": "2026-10-18T15:59:36.229Z",
+  "passed": 3,
+  "total": 3,
+  "summary": {
+    "completed": 3,
+    "passed": 3,
+    "withErrors": 2,
+    "selfCorrected": 2,
+    "rollbacks": 1,
+    "meanTurns": 7,
+    "tokens": {
+      "prompt": 44926,
+      "completion": 6038,
+      "total": 50964,
+      "billed": 0
+    },
+    "cacheHits": 21,
+    "llmLatencyMs": 25901
+  },
+  "incomplete": [],
+  "retries": {
+    "retries": 0,
+    "waitedMs": 0,
+    "byStatus": {}
+  },
+  "rateLimit": {},
+  "rows": [
+    {
+      "id": "sc-concurrent-edit",
+      "category": "self-correction",
+      "success": true,
+      "toolCalls": 6,
+      "committed": 1,
+      "rejected": 0,
+      "policyBlocks": 0,
+      "ms": 18,
+      "stopReason": "model_done",
+      "structuredErrors": 2,
+      "selfCorrected": true,
+      "rollbacks": 0,
+      "footprint": {
+        "removed": [
+          "VehicleModel::Engine",
+          "VehicleModel::Engine::mass",
+          "VehicleModel::Engine::fuelIn",
+          "VehicleModel::Engine::powerOut"
+        ],
+        "added": [
+          "VehicleModel::CombustionEngine",
+          "VehicleModel::CombustionEngine::mass",
+          "VehicleModel::CombustionEngine::fuelIn",
+          "VehicleModel::CombustionEngine::powerOut"
+        ],
+        "modified": [
+          "VehicleModel::ElectricMotor",
+          "VehicleModel::Vehicle::engine"
+        ],
+        "recreated": [],
+        "touched": 10,
+        "reference": {
+          "removed": [
+            "VehicleModel::Engine",
+            "VehicleModel::Engine::mass",
+            "VehicleModel::Engine::fuelIn",
+            "VehicleModel::Engine::powerOut"
+          ],
+          "added": [
+            "VehicleModel::CombustionEngine",
+            "VehicleModel::CombustionEngine::mass",
+            "VehicleModel::CombustionEngine::fuelIn",
+            "VehicleModel::CombustionEngine::powerOut"
+          ],
+          "modified": [
+            "VehicleModel::ElectricMotor",
+            "VehicleModel::Vehicle::engine"
+          ],
+          "recreated": [],
+          "touched": 10
+        },
+        "extra": [],
+        "deleteAndRecreate": false
+      },
+      "perturbed": true,
+      "llm": {
+        "turns": 7,
+        "promptTokens": 11519,
+        "completionTokens": 668,
+        "totalTokens": 12187,
+        "billedTokens": 0,
+        "cacheHits": 7,
+        "llmLatencyMs": 5028,
+        "malformedToolCalls": 0,
+        "estimatedUsageTurns": 0
+      },
+      "checks": [
+        {
+          "check": "no_errors",
+          "ok": true,
+          "detail": "0 errors"
+        },
+        {
+          "check": "value_equals",
+          "ok": true,
+          "detail": "VehicleModel::CombustionEngine::mass = 175"
+        },
+        {
+          "check": "exists",
+          "ok": true,
+          "detail": "VehicleModel::CombustionEngine"
+        },
+        {
+          "check": "not_exists",
+          "ok": true,
+          "detail": "VehicleModel::Engine"
+        }
+      ],
+      "audit": [
+        {
+          "ts": "2026-10-18T15:59:36.174Z",
+          "tool": "sysml_outline",
+          "args": {
+            "depth": 2
+          },
+          "version": 0,
+          "ms": 3,
+          "outcome": "ok"
+        },
+        {
+          "ts": "2026-10-18T15:59:36.177Z",
+          "tool": "human.edit",
+          "args": {
+            "ops": [
+              {
+                "op": "rename",
+                "path": "VehicleModel::Engine",
+                "newName": "CombustionEngine"
+              }
+            ],
+            "note": "colleague renames Engine to CombustionEngine"
+          },
+          "version": 1,
+          "outcome": "committed"
+        },
+        {
+          "ts": "2026-10-18T15:59:36.178Z",
+          "tool": "sysml_get",
+          "args": {
+            "path": "VehicleModel::Engine"
+          },
+          "version": 1,
+          "ms": 0,
+          "outcome": "error:NOT_FOUND"
+        },
+        {
+          "ts": "2026-10-18T15:59:36.179Z",
+          "tool": "sysml_context_slice",
+          "args": {
+            "budgetChars": 4000,
+            "path": "VehicleModel::Engine"
+          },
+          "version": 1,
+          "ms": 0,
+          "outcome": "error:NOT_FOUND"
+        },
+        {
+          "ts": "2026-10-18T15:59:36.180Z",
+          "tool": "sysml_outline",
+          "args": {
+            "depth": 3,
+            "root": "VehicleModel::Engine"
+          },
+          "version": 1,
+          "ms": 0,
+          "outcome": "ok"
+        },
+        {
+          "ts": "2026-10-18T15:59:36.180Z",
+          "tool": "sysml_outline",
+          "args": {
+            "depth": 2,
+            "root": "VehicleModel"
+          },
+          "version": 1,
+          "ms": 1,
+          "outcome": "ok"
+        },
+        {
+          "ts": "2026-10-18T15:59:36.184Z",
+          "tool": "sysml_apply_edits",
+          "args": {
+            "expectedVersion": 1,
+            "ops": [
+              {
+                "field": "value",
+                "op": "set",
+                "path": "VehicleModel::CombustionEngine::mass",
+                "value": "175"
+              }
+            ]
+          },
+          "version": 2,
+          "ms": 3,
+          "outcome": "committed"
+        }
+      ],
+      "finalModel": "package VehicleModel {\n    doc /* Simplified vehicle architecture used for agent evaluation. */\n    import ScalarValues::*;\n    port def FuelPort {\n        attribute flowRate : Real;\n    }\n    port def PowerPort;\n    part def CombustionEngine {\n        attribute mass : Real = 175;\n        port fuelIn : FuelPort;\n        port powerOut : PowerPort;\n    }\n    part def ElectricMotor :> CombustionEngine {\n        attribute peakTorque : Real = 320;\n    }\n    part def FuelTank {\n        attribute capacity : Real = 55;\n        port fuelOut : ~FuelPort;\n    }\n    part def Wheel;\n    part def Vehicle {\n        part engine : CombustionEngine;\n        part tank : FuelTank;\n        part wheels : Wheel[4];\n        connect tank.fuelOut to engine.fuelIn;\n    }\n    requirement def MassRequirement {\n        doc /* The total vehicle mass shall not exceed 2000 kg. */\n    }\n    requirement vehicleMass : MassRequirement;\n    satisfy vehicleMass by Vehicle;\n}\n",
+      "retries": {
+        "retries": 0,
+        "waitedMs": 0
+      }
+    },
+    {
+      "id": "sc-hidden-port-type",
+      "category": "self-correction",
+      "success": true,
+      "toolCalls": 10,
+      "committed": 1,
+      "rejected": 1,
+      "policyBlocks": 0,
+      "ms": 12,
+      "stopReason": "model_done",
+      "structuredErrors": 2,
+      "selfCorrected": true,
+      "rollbacks": 1,
+      "footprint": {
+        "removed": [
+          "VehicleModel::Vehicle#connect(tank.fuelOut>engine.fuelIn|)"
+        ],
+        "added": [
+          "VehicleModel::Vehicle::filter",
+          "VehicleModel::Vehicle#connect(tank.fuelOut>filter.inlet|)",
+          "VehicleModel::Vehicle#connect(filter.outlet>engine.fuelIn|)"
+        ],
+        "modified": [
+          "VehicleModel::FuelFilter::inlet"
+        ],
+        "recreated": [],
+        "touched": 5,
+        "reference": {
+          "removed": [
+            "VehicleModel::Vehicle#connect(tank.fuelOut>engine.fuelIn|)"
+          ],
+          "added": [
+            "VehicleModel::Vehicle::filter",
+            "VehicleModel::Vehicle#connect(tank.fuelOut>filter.inlet|)",
+            "VehicleModel::Vehicle#connect(filter.outlet>engine.fuelIn|)"
+          ],
+          "modified": [
+            "VehicleModel::FuelFilter::inlet"
+          ],
+          "recreated": [],
+          "touched": 5
+        },
+        "extra": [],
+        "deleteAndRecreate": false
+      },
+      "llm": {
+        "turns": 11,
+        "promptTokens": 29285,
+        "completionTokens": 5088,
+        "totalTokens": 34373,
+        "billedTokens": 0,
+        "cacheHits": 11,
+        "llmLatencyMs": 18195,
+        "malformedToolCalls": 0,
+        "estimatedUsageTurns": 0
+      },
+      "checks": [
+        {
+          "check": "no_errors",
+          "ok": true,
+          "detail": "0 errors"
+        },
+        {
+          "check": "exists",
+          "ok": true,
+          "detail": "VehicleModel::Vehicle::filter"
+        },
+        {
+          "check": "text_includes",
+          "ok": true,
+          "detail": "connect tank.fuelOut to filter.inlet;"
+        },
+        {
+          "check": "text_includes",
+          "ok": true,
+          "detail": "connect filter.outlet to engine.fuelIn;"
+        },
+        {
+          "check": "text_excludes",
+          "ok": true,
+          "detail": "connect tank.fuelOut to engine.fuelIn;"
+        },
+        {
+          "check": "preserved",
+          "ok": true,
+          "detail": "6 kept"
+        }
+      ],
+      "audit": [
+        {
+          "ts": "2026-10-18T15:59:36.195Z",
+          "tool": "sysml_outline",
+          "args": {
+            "depth": 2
+          },
+          "version": 0,
+          "ms": 0,
+          "outcome": "ok"
+        },
+        {
+          "ts": "2026-10-18T15:59:36.197Z",
+          "tool": "sysml_context_slice",
+          "args": {
+            "budgetChars": 4000,
+            "path": "VehicleModel::Vehicle"
+          },
+          "version": 0,
+          "ms": 1,
+          "outcome": "ok"
+        },
+        {
+          "ts": "2026-10-18T15:59:36.198Z",
+          "tool": "sysml_get",
+          "args": {
+            "path": "VehicleModel::Vehicle"
+          },
+          "version": 0,
+          "ms": 0,
+          "outcome": "ok"
+        },
+        {
+          "ts": "2026-10-18T15:59:36.198Z",
+          "tool": "sysml_outline",
+          "args": {
+            "depth": 3,
+            "root": "VehicleModel::Vehicle"
+          },
+          "version": 0,
+          "ms": 0,
+          "outcome": "ok"
+        },
+        {
+          "ts": "2026-10-18T15:59:36.200Z",
+          "tool": "sysml_apply_edits",
+          "args": {
+            "dryRun": false,
+            "ops": [
+              {
+                "op": "remove",
+                "path": "VehicleModel::Vehicle#connect[0]"
+              },
+              {
+                "op": "add",
+                "parent": "VehicleModel::Vehicle",
+                "source": "    part filter : FuelFilter;\n    connect tank.fuelOut to filter.inlet;\n    connect filter.outlet to engine.fuelIn;"
+              }
+            ]
+          },
+          "version": 0,
+          "ms": 2,
+          "outcome": "rejected:introduces_errors"
+        },
+        {
+          "ts": "2026-10-18T15:59:36.201Z",
+          "tool": "sysml_get",
+          "args": {
+            "path": "VehicleModel::FuelFilter"
+          },
+          "version": 0,
+          "ms": 0,
+          "outcome": "ok"
+        },
+        {
+          "ts": "2026-10-18T15:59:36.202Z",
+          "tool": "sysml_get",
+          "args": {
+            "path": "VehicleModel::Vehicle::tank.fuelOut"
+          },
+          "version": 0,
+          "ms": 1,
+          "outcome": "error:NOT_FOUND"
+        },
+        {
+          "ts": "2026-10-18T15:59:36.202Z",
+          "tool": "sysml_get",
+          "args": {
+            "path": "VehicleModel::FuelTank"
+          },
+          "version": 0,
+          "ms": 0,
+          "outcome": "ok"
+        },
+        {
+          "ts": "2026-10-18T15:59:36.203Z",
+          "tool": "sysml_get",
+          "args": {
+            "path": "VehicleModel::FuelFilter::inlet"
+          },
+          "version": 0,
+          "ms": 0,
+          "outcome": "ok"
+        },
+        {
+          "ts": "2026-10-18T15:59:36.205Z",
+          "tool": "sysml_apply_edits",
+          "args": {
+            "dryRun": false,
+            "ops": [
+              {
+                "field": "type",
+                "op": "set",
+                "path": "VehicleModel::FuelFilter::inlet",
+                "value": "FuelPort"
+              },
+              {
+                "op": "remove",
+                "path": "VehicleModel::Vehicle#connect[0]"
+              },
+              {
+                "op": "add",
+                "parent": "VehicleModel::Vehicle",
+                "source": "    part filter : FuelFilter;\n    connect tank.fuelOut to filter.inlet;\n    connect filter.outlet to engine.fuelIn;"
+              }
+            ]
+          },
+          "version": 1,
+          "ms": 1,
+          "outcome": "committed"
+        }
+      ],
+      "finalModel": "package VehicleModel {\n    doc /* Simplified vehicle architecture used for agent evaluation. */\n    import ScalarValues::*;\n    port def FuelPort {\n        attribute flowRate : Real;\n    }\n    port def PowerPort;\n    part def Engine {\n        attribute mass : Real = 180;\n        port fuelIn : FuelPort;\n        port powerOut : PowerPort;\n    }\n    part def ElectricMotor :> Engine {\n        attribute peakTorque : Real = 320;\n    }\n    part def FuelTank {\n        attribute capacity : Real = 55;\n        port fuelOut : ~FuelPort;\n    }\n    port def LegacyFuelPort {\n        attribute flowRate : Real;\n    }\n    part def FuelFilter {\n        port inlet : FuelPort;\n        port outlet : ~FuelPort;\n    }\n    part def Wheel;\n    part def Vehicle {\n        part engine : Engine;\n        part tank : FuelTank;\n        part wheels : Wheel[4];\n        part filter : FuelFilter;\n        connect tank.fuelOut to filter.inlet;\n        connect filter.outlet to engine.fuelIn;\n    }\n    requirement def MassRequirement {\n        doc /* The total vehicle mass shall not exceed 2000 kg. */\n    }\n    requirement vehicleMass : MassRequirement;\n    satisfy vehicleMass by Vehicle;\n}\n",
+      "retries": {
+        "retries": 0,
+        "waitedMs": 0
+      }
+    },
+    {
+      "id": "sc-typo-in-task",
+      "category": "self-correction",
+      "success": true,
+      "toolCalls": 2,
+      "committed": 1,
+      "rejected": 0,
+      "policyBlocks": 0,
+      "ms": 3,
+      "stopReason": "model_done",
+      "structuredErrors": 0,
+      "selfCorrected": null,
+      "rollbacks": 0,
+      "footprint": {
+        "removed": [],
+        "added": [
+          "VehicleModel::Vehicle::spare"
+        ],
+        "modified": [],
+        "recreated": [],
+        "touched": 1,
+        "reference": {
+          "removed": [],
+          "added": [
+            "VehicleModel::Vehicle::spare"
+          ],
+          "modified": [],
+          "recreated": [],
+          "touched": 1
+        },
+        "extra": [],
+        "deleteAndRecreate": false
+      },
+      "llm": {
+        "turns": 3,
+        "promptTokens": 4122,
+        "completionTokens": 282,
+        "totalTokens": 4404,
+        "billedTokens": 0,
+        "cacheHits": 3,
+        "llmLatencyMs": 2678,
+        "malformedToolCalls": 0,
+        "estimatedUsageTurns": 0
+      },
+      "checks": [
+        {
+          "check": "no_errors",
+          "ok": true,
+          "detail": "0 errors"
+        },
+        {
+          "check": "type_equals",
+          "ok": true,
+          "detail": "VehicleModel::Vehicle::spare : VehicleModel::Wheel"
+        },
+        {
+          "check": "not_exists",
+          "ok": true,
+          "detail": "VehicleModel::Wheels"
+        },
+        {
+          "check": "preserved",
+          "ok": true,
+          "detail": "2 kept"
+        }
+      ],
+      "audit": [
+        {
+          "ts": "2026-10-18T15:59:36.216Z",
+          "tool": "sysml_outline",
+          "args": {
+            "depth": 2
+          },
+          "version": 0,
+          "ms": 1,
+          "outcome": "ok"
+        },
+        {
+          "ts": "2026-10-18T15:59:36.216Z",
+          "tool": "sysml_apply_edits",
+          "args": {
+            "ops": [
+              {
+                "op": "add",
+                "parent": "VehicleModel::Vehicle",
+                "source": "part spare : Wheel;"
+              }
+            ]
+          },
+          "version": 1,
+          "ms": 0,
+          "outcome": "committed"
+        }
+      ],
+      "finalModel": "package VehicleModel {\n    doc /* Simplified vehicle architecture used for agent evaluation. */\n    import ScalarValues::*;\n    port def FuelPort {\n        attribute flowRate : Real;\n    }\n    port def PowerPort;\n    part def Engine {\n        attribute mass : Real = 180;\n        port fuelIn : FuelPort;\n        port powerOut : PowerPort;\n    }\n    part def ElectricMotor :> Engine {\n        attribute peakTorque : Real = 320;\n    }\n    part def FuelTank {\n        attribute capacity : Real = 55;\n        port fuelOut : ~FuelPort;\n    }\n    part def Wheel;\n    part def Vehicle {\n        part engine : Engine;\n        part tank : FuelTank;\n        part wheels : Wheel[4];\n        connect tank.fuelOut to engine.fuelIn;\n        part spare : Wheel;\n    }\n    requirement def MassRequirement {\n        doc /* The total vehicle mass shall not exceed 2000 kg. */\n    }\n    requirement vehicleMass : MassRequirement;\n    satisfy vehicleMass by Vehicle;\n}\n",
+      "retries": {
+        "retries": 0,
+        "waitedMs": 0
+      }
+    }
+  ]
+}

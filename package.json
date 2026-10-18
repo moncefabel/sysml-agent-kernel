@@ -8,10 +8,12 @@
     "eval": "tsc && node dist/eval/run.js",
     "mcp": "node dist/src/mcp-server.js",
     "bench": "tsc && node eval/bench.mjs",
-    "estimate": "tsc && node dist/eval/estimate.js"
+    "estimate": "tsc && node dist/eval/estimate.js",
+    "summary": "tsc && node dist/eval/summary.js"
   },
   "license": "MIT",
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.135.0",
     "@modelcontextprotocol/sdk": "^1.31.0",
     "zod": "^4.6.5"
   },

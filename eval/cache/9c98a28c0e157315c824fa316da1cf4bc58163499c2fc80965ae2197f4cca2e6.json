@@ -1,0 +1,25 @@
+{
+ "provider": "groq",
+ "model": "openai/gpt-oss-120b",
+ "createdAt": "2026-10-18T15:49:15.701Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": null,
+   "toolCalls": [
+    {
+     "id": "fc_aef9c4aa-61e5-4e15-914f-a1a147b07957",
+     "name": "sysml_apply_edits",
+     "arguments": "{\"expectedVersion\":1,\"ops\":[{\"field\":\"value\",\"op\":\"set\",\"path\":\"VehicleModel::CombustionEngine::mass\",\"value\":\"175\"}]}"
+    }
+   ]
+  },
+  "usage": {
+   "promptTokens": 2039,
+   "completionTokens": 216,
+   "totalTokens": 2255
+  },
+  "finishReason": "tool_calls",
+  "latencyMs": 1102
+ }
+}

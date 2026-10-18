@@ -1,4 +1,5 @@
-import { scenarios } from './scenarios.js';
+import { probes, scenarios as mainSuite } from './scenarios.js';
+import { injection, selfCorrection } from './suites.js';
 import { runScenario } from './harness.js';
 import { llmAgent, LLM_DEFAULTS } from './llm/loop.js';
 import { referenceProvider } from './llm/mock.js';
@@ -12,6 +13,9 @@ import { groqRequestBody } from './llm/groq.js';
  * tokenizer is available offline: 4 chars/token (English prose) and 3 (denser, JSON heavy).
  * The provider also adds a few tokens of chat template per message, which is not counted.
  */
+const SUITES = { main: mainSuite, probes, selfcorrect: selfCorrection, injection } as const;
+const suite = (process.argv[process.argv.indexOf('--suite') + 1] ?? 'main') as keyof typeof SUITES;
+const scenarios = process.argv.includes('--suite') ? SUITES[suite] : mainSuite;
 const pad = (v: unknown, n: number) => String(v).padStart(n);
 const tok = (chars: number, ratio: number) => Math.ceil(chars / ratio);
 let promptAll = 0, outAll = 0, callsAll = 0;

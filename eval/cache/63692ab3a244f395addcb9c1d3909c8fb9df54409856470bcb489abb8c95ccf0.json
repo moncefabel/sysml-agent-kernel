@@ -1,0 +1,25 @@
+{
+ "provider": "groq",
+ "model": "openai/gpt-oss-120b",
+ "createdAt": "2026-10-18T14:49:34.892Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": null,
+   "toolCalls": [
+    {
+     "id": "fc_279ff843-0d3f-4f61-b663-ff15fe7c4a4f",
+     "name": "sysml_apply_edits",
+     "arguments": "{\"dryRun\":false,\"ops\":[{\"op\":\"add\",\"parent\":\"VehicleModel\",\"source\":\"requirement def RangeRequirement {\\n    doc /* The vehicle range shall meet specified criteria. */\\n}\"},{\"op\":\"add\",\"parent\":\"VehicleModel\",\"source\":\"requirement vehicleRange : RangeRequirement;\"},{\"op\":\"add\",\"parent\":\"VehicleModel\",\"source\":\"satisfy vehicleRange by Vehicle;\"}]}"
+    }
+   ]
+  },
+  "usage": {
+   "promptTokens": 1602,
+   "completionTokens": 421,
+   "totalTokens": 2023
+  },
+  "finishReason": "tool_calls",
+  "latencyMs": 2126
+ }
+}

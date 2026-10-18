@@ -1,0 +1,25 @@
+{
+ "provider": "groq",
+ "model": "openai/gpt-oss-120b",
+ "createdAt": "2026-10-18T15:52:49.147Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": null,
+   "toolCalls": [
+    {
+     "id": "fc_f90af46e-402a-43ef-ab60-ff80f7ac6d73",
+     "name": "sysml_apply_edits",
+     "arguments": "{\"ops\":[{\"op\":\"add\",\"parent\":\"VehicleModel::Vehicle\",\"source\":\"part spare : Wheel;\"}]}"
+    }
+   ]
+  },
+  "usage": {
+   "promptTokens": 1421,
+   "completionTokens": 204,
+   "totalTokens": 1625
+  },
+  "finishReason": "tool_calls",
+  "latencyMs": 1193
+ }
+}

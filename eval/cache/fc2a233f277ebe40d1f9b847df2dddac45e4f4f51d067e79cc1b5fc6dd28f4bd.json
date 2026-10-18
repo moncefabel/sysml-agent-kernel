@@ -1,0 +1,18 @@
+{
+ "provider": "groq",
+ "model": "openai/gpt-oss-120b",
+ "createdAt": "2026-10-18T15:57:30.014Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": "Removed FuelTank part and its references, keeping the model valid."
+  },
+  "usage": {
+   "promptTokens": 3589,
+   "completionTokens": 17,
+   "totalTokens": 3606
+  },
+  "finishReason": "stop",
+  "latencyMs": 1020
+ }
+}

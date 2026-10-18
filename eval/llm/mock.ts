@@ -44,7 +44,7 @@ export class MockProvider implements LLMProvider {
  * A model that follows the scenario's reference trajectory exactly: one tool call per turn,
  * then a one line summary. Used to measure the smallest realistic context an LLM run sends.
  */
-export function referenceProvider(s: Scenario): MockProvider {
+export function referenceProvider(s: Pick<Scenario, 'scripted'>): MockProvider {
   return new MockProvider([
     ...s.scripted.map((step) => ({ toolCalls: [{ name: step.tool, args: step.args }] })),
     { content: 'Done: the requested change is committed and the model validates.' },

@@ -1,0 +1,18 @@
+{
+ "provider": "groq",
+ "model": "openai/gpt-oss-120b",
+ "createdAt": "2026-10-18T14:51:48.271Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": "Added color attribute to Vehicle part."
+  },
+  "usage": {
+   "promptTokens": 1832,
+   "completionTokens": 11,
+   "totalTokens": 1843
+  },
+  "finishReason": "stop",
+  "latencyMs": 287
+ }
+}

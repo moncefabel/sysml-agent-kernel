@@ -1,0 +1,18 @@
+{
+ "provider": "groq",
+ "model": "openai/gpt-oss-120b",
+ "createdAt": "2026-10-18T15:59:15.582Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": "Added maxTemperature attribute to FuelTank."
+  },
+  "usage": {
+   "promptTokens": 2313,
+   "completionTokens": 12,
+   "totalTokens": 2325
+  },
+  "finishReason": "stop",
+  "latencyMs": 525
+ }
+}

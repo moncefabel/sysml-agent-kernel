@@ -4,3 +4,4 @@ eval/reports/
 *.jsonl
 .env
 .env.*
+*.patch

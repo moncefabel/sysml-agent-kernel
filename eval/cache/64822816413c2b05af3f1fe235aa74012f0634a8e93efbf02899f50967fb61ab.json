@@ -1,0 +1,25 @@
+{
+ "provider": "groq",
+ "model": "openai/gpt-oss-120b",
+ "createdAt": "2026-10-18T14:48:22.332Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": null,
+   "toolCalls": [
+    {
+     "id": "fc_95d5f56a-221b-4e51-bf01-bde9613843d1",
+     "name": "sysml_apply_edits",
+     "arguments": "{\"dryRun\":false,\"expectedVersion\":0,\"ops\":[{\"op\":\"add\",\"parent\":\"VehicleModel\",\"source\":\"part def Brake {\\n    attribute mass : Real = 12;\\n}\"},{\"op\":\"add\",\"parent\":\"VehicleModel::Vehicle\",\"source\":\"part brakes : Brake[4];\"}]}"
+    }
+   ]
+  },
+  "usage": {
+   "promptTokens": 1638,
+   "completionTokens": 315,
+   "totalTokens": 1953
+  },
+  "finishReason": "tool_calls",
+  "latencyMs": 1134
+ }
+}

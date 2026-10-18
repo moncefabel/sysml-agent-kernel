@@ -1,0 +1,18 @@
+{
+ "provider": "groq",
+ "model": "openai/gpt-oss-120b",
+ "createdAt": "2026-10-18T15:49:33.819Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": "Set Engine mass to 175. (model version 2)"
+  },
+  "usage": {
+   "promptTokens": 2121,
+   "completionTokens": 17,
+   "totalTokens": 2138
+  },
+  "finishReason": "stop",
+  "latencyMs": 978
+ }
+}

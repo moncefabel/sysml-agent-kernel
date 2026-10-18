@@ -1,75 +1,44 @@
+import { RetryingHttp, type HttpOptions } from './http.js';
 import { ProviderError, type ChatMessage, type CompletionRequest, type CompletionResponse, type LLMProvider } from './provider.js';
 
 const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
 
-export interface GroqOptions {
+export interface GroqOptions extends HttpOptions {
   apiKey: string;
   model: string;
-  /** Injected for tests; defaults to the global fetch. */
-  fetch?: typeof fetch;
-  sleep?: (ms: number) => Promise<void>;
-  maxRetries?: number;
-  timeoutMs?: number;
 }
 
 /**
- * Groq chat completions (OpenAI compatible) with tool calling. Retries rate limits and server
- * errors with exponential backoff; every other failure is surfaced as a typed ProviderError.
- * The key lives in a private field and is redacted from every error message, so it cannot end
- * up in a report, a checkpoint or a log.
+ * Groq chat completions (OpenAI compatible) with tool calling. Retries and quota handling
+ * live in RetryingHttp; every other failure is surfaced as a typed ProviderError. The key
+ * lives in a private field and is redacted from every error message, so it cannot end up in
+ * a report, a checkpoint or a log.
  */
 export class GroqProvider implements LLMProvider {
   readonly provider = 'groq';
   readonly model: string;
   readonly #key: string;
-  readonly #fetch: typeof fetch;
-  readonly #sleep: (ms: number) => Promise<void>;
-  readonly #maxRetries: number;
-  readonly #timeoutMs: number;
+  readonly #http: RetryingHttp;
 
   constructor(o: GroqOptions) {
     if (!o.apiKey) throw new ProviderError('Groq API key is empty', 'config');
     if (!o.model) throw new ProviderError('Groq model is empty', 'config');
     this.model = o.model;
     this.#key = o.apiKey;
-    this.#fetch = o.fetch ?? fetch;
-    this.#sleep = o.sleep ?? ((ms) => new Promise((r) => setTimeout(r, ms)));
-    this.#maxRetries = o.maxRetries ?? 4;
-    this.#timeoutMs = o.timeoutMs ?? 60_000;
+    this.#http = new RetryingHttp('Groq', o.apiKey, ['x-ratelimit-'], o);
   }
+
+  get retryStats() { return this.#http.retryStats; }
+  get rateLimit() { return this.#http.rateLimit; }
+  redact(s: string): string { return this.#http.redact(s); }
 
   async complete(req: CompletionRequest): Promise<CompletionResponse> {
-    const body = groqRequestBody(this.model, req);
-
-    for (let attempt = 0; ; attempt++) {
-      const t0 = Date.now();
-      let res: Response;
-      try {
-        res = await this.#fetch(GROQ_URL, {
-          method: 'POST',
-          headers: { 'content-type': 'application/json', authorization: `Bearer ${this.#key}` },
-          body,
-          signal: AbortSignal.timeout(this.#timeoutMs),
-        });
-      } catch (e) {
-        if (attempt < this.#maxRetries) { await this.#sleep(backoff(attempt)); continue; }
-        throw new ProviderError(this.redact(`Groq request failed: ${String(e)}`), 'network');
-      }
-      const latencyMs = Date.now() - t0;
-      if (res.ok) return fromWire(await res.json(), latencyMs);
-
-      const text = this.redact(await res.text());
-      const retryable = res.status === 429 || res.status >= 500;
-      if (retryable && attempt < this.#maxRetries) {
-        const after = Number(res.headers.get('retry-after'));
-        await this.#sleep(Number.isFinite(after) && after > 0 ? after * 1000 : backoff(attempt));
-        continue;
-      }
-      throw classify(res.status, text);
-    }
+    const r = await this.#http.post(GROQ_URL, { 'content-type': 'application/json', authorization: `Bearer ${this.#key}` }, groqRequestBody(this.model, req));
+    if (r.ok) return fromWire(r.data, r.latencyMs);
+    throw classify(r.status, r.text);
   }
 
-  redact(s: string): string { return s.split(this.#key).join('[REDACTED]'); }
+  toJSON() { return { provider: this.provider, model: this.model }; }
 }
 
 /** Reads GROQ_API_KEY and GROQ_MODEL. Fails without echoing either value. */
@@ -90,8 +59,6 @@ export function groqRequestBody(model: string, req: CompletionRequest): string {
     max_tokens: req.maxOutputTokens,
   });
 }
-
-const backoff = (attempt: number) => 1000 * 2 ** attempt;
 
 function classify(status: number, text: string): ProviderError {
   let err: any;
