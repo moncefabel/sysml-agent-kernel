@@ -1,0 +1,43 @@
+{
+ "provider": "anthropic",
+ "model": "claude-haiku-5-5",
+ "createdAt": "2026-10-18T18:41:26.691Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": null,
+   "toolCalls": [
+    {
+     "id": "toolu_01XtUeixPEyxvUPJuyxd7vkp",
+     "name": "sysml_get",
+     "arguments": "{\"path\":\"VehicleModel::Vehicle\"}"
+    }
+   ],
+   "raw": [
+    {
+     "type": "thinking",
+     "thinking": "",
+     "signature": "CAQSpQYKEAgSGAI4AUIIdGhpbmtpbmcSDPqnWjdTUhuAGE33phoMkTMccYnWP4/D0KaeIjB84cC+pUcVh7xNQu9GiIYp/V01KLccbc7y5+03M1ueAWnoZhguaCksxeSsKmCR//EqwgVL6Khy9r5b9mkPXnp0E+hZDGyoobyzHVO3KxvdhasaoNZHQS490mTgQZmsiPd6iiY1NM7HaxU6ZE84be74A9ZuY5Unrs/5oocSN2SiG3NumF2TSrQR99SMtAPkK74t7/yxaM8D376G6V4OWC3GTaUYrLmmRH6tM0hdBbyQRrt4b07oELk5eQcESSnJijqmJX41wv56NlYAtwLvMSxxRb3gGPkQiMmatWU6848EeZksSOqmyNxvvW/ixhL2o6QtrpSWEeWWc2qnwxBR/A//i+7is4vmsRkABVLeTL0Iyu0f7xYLvqeWN6p3MkX3yJn7Cz6x0PJONeRpMIc7v+saBaj674pUmWdwjUlPptp3+M/pH4QiZI0kgOBdueGFInbm07p+ipXGQ+38Fg2dlOXvDWESoxshpX4El4wcsSdduyGW+NaQB+UCUonrzEgFclukrI5Sp9FAbD7YczrF/dCiCTzMV7jK3XzuCKkd9OmNi5a5r6kq+Qv15K2y1vms7QRSTnm4OHMEjMcXzX8t9kNB+4YCo1hmWSAL83XbiNomYVuHqcrFmET+a+lMGuTsZRxik32VXMe4JK0P6kAX6DJD6vkxd8L3UjG6BsHIc2V8aECIXUxfs3eXxeWWyVDt/9vcCntq0bxvRc/V2S4tWQw5Osty8jUOPyAU7L5uATXTKa1DfTKCkQi6Surd/H6IDg8FVBUSL817hXhCIu8twwTCNg7dEIyC4kYiXtvFpD1pWLKUD1uNBEPqwjvo4pHM75X2IRQSl5qowL8b+5Dyyx68KzvJtQGwI3ekQ/hPa0FflElZV/rumZA2xG5gCtI8YdV8wYqU+1t6ceT8R4JmgxBZWYYhl6zQt25l9uGqbJmm9xUCg7vL93dHH9G/RA1WCMGJdjM7iUVuRES70iUess++A4Vx3CFjGfm6o7/VAGRDMwgtmxHtGAE="
+    },
+    {
+     "type": "tool_use",
+     "id": "toolu_01XtUeixPEyxvUPJuyxd7vkp",
+     "name": "sysml_get",
+     "input": {
+      "path": "VehicleModel::Vehicle"
+     },
+     "caller": {
+      "type": "direct"
+     }
+    }
+   ]
+  },
+  "usage": {
+   "promptTokens": 3252,
+   "completionTokens": 147,
+   "totalTokens": 3399
+  },
+  "finishReason": "tool_calls",
+  "latencyMs": 1014
+ }
+}

@@ -1,0 +1,24 @@
+{
+ "provider": "anthropic",
+ "model": "claude-haiku-5-5",
+ "createdAt": "2026-10-18T18:41:24.791Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": "Added a `Brake` part definition with a `mass : Real = 12` attribute and gave `Vehicle` four brakes via `part brakes : Brake [4];`; the model validates with no errors.",
+   "raw": [
+    {
+     "type": "text",
+     "text": "Added a `Brake` part definition with a `mass : Real = 12` attribute and gave `Vehicle` four brakes via `part brakes : Brake [4];`; the model validates with no errors."
+    }
+   ]
+  },
+  "usage": {
+   "promptTokens": 3451,
+   "completionTokens": 66,
+   "totalTokens": 3517
+  },
+  "finishReason": "stop",
+  "latencyMs": 678
+ }
+}

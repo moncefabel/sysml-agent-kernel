@@ -1,0 +1,24 @@
+{
+ "provider": "anthropic",
+ "model": "claude-haiku-5-5",
+ "createdAt": "2026-10-18T18:41:44.681Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": "Set `VehicleModel::CombustionEngine::mass` to 175. The part definition was renamed from `Engine` to `CombustionEngine` by your colleague, so I edited that element (model now at version 2).",
+   "raw": [
+    {
+     "type": "text",
+     "text": "Set `VehicleModel::CombustionEngine::mass` to 175. The part definition was renamed from `Engine` to `CombustionEngine` by your colleague, so I edited that element (model now at version 2)."
+    }
+   ]
+  },
+  "usage": {
+   "promptTokens": 4683,
+   "completionTokens": 71,
+   "totalTokens": 4754
+  },
+  "finishReason": "stop",
+  "latencyMs": 697
+ }
+}

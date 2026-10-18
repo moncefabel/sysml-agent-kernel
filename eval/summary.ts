@@ -87,6 +87,35 @@ for (const [k, rs] of [...groups].sort()) {
   out.push(`| **All** | **${tot.ok}/${tot.n}** | | **${tot.tokens}** | ${tot.rollbacks} | ${tot.errors} | ${tot.withErr ? `${tot.corrected}/${tot.withErr}` : 'n/a'} | ${tot.blocks} | | | ${tot.recreate}/${tot.n} |`, '');
 }
 
+// Per model comparison: same suite, same policy, every model that ran it. Token counts come
+// from each provider's own tokenizer and are not directly comparable across providers.
+out.push('## Model comparison', '');
+const bySuitePolicy = new Map<string, Map<string, Report[]>>();
+for (const r of runs) {
+  const k = `${r.suite}|${r.policyLabel}`;
+  const m = bySuitePolicy.get(k) ?? new Map<string, Report[]>();
+  m.set(`${r.provider}:${r.model}`, [...(m.get(`${r.provider}:${r.model}`) ?? []), r]);
+  bySuitePolicy.set(k, m);
+}
+const models = new Set(runs.map((r) => `${r.provider}:${r.model}`));
+if (models.size < 2) out.push(`Only one model has saved runs (${[...models].join(', ') || 'none'}); there is nothing to compare yet. The table below is that model alone.`, '');
+out.push('Token counts use each provider\'s own tokenizer, so they are not directly comparable across models. Latency is the sum of API latencies (retry waits excluded since phase 3), not wall time.', '');
+out.push('| Suite (policy) | Model | Runs | Success | Mean turns | Tokens | Rollbacks | Structured errors | Self-correction | Delete and recreate | Extra elements | Retries (completed attempts) | API latency |');
+out.push('|---|---|---:|---|---:|---:|---:|---:|---|---|---:|---|---:|');
+for (const [k, m] of [...bySuitePolicy].sort()) {
+  const [suite, policyLabel] = k.split('|');
+  for (const [model, rs] of [...m].sort()) {
+    const rows = rs.flatMap((r) => r.rows);
+    const fps = await Promise.all(rows.map((x) => fp(suite, x)));
+    const turns = rows.map((x) => x.llm?.turns).filter((x): x is number => x !== undefined);
+    const withErr = rows.filter((x) => x.selfCorrected !== null).length;
+    const allRowRetries = rows.every((x) => x.retries);
+    const retries = allRowRetries ? String(rows.reduce((a, x) => a + x.retries!.retries, 0)) : 'partial';
+    out.push(`| ${suite} (${policyLabel}) | ${model} | ${rows.length} | ${rows.filter((x) => x.success).length}/${rows.length} | ${turns.length ? (turns.reduce((a, b) => a + b, 0) / turns.length).toFixed(1) : '-'} | ${rows.reduce((a, x) => a + (x.llm?.totalTokens ?? 0), 0)} | ${rows.reduce((a, x) => a + x.rollbacks, 0)} | ${rows.reduce((a, x) => a + x.structuredErrors, 0)} | ${withErr ? `${rows.filter((x) => x.selfCorrected === true).length}/${withErr}` : 'n/a'} | ${fps.filter((f) => f?.deleteAndRecreate).length}/${rows.length} | ${fps.reduce((a, f) => a + (f?.extra.length ?? 0), 0)} | ${retries} | ${(rows.reduce((a, x) => a + (x.llm?.llmLatencyMs ?? 0), 0) / 1000).toFixed(1)} s |`);
+  }
+}
+out.push('', 'Retries count only attempts that completed; an attempt dropped by a budget stop keeps its retries in the run output only (STATUS.md). "partial": some rows predate per scenario retry accounting.', '');
+
 out.push('## Replay verification', '');
 if (!replays.length) out.push('No replay report saved.', '');
 else {

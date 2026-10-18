@@ -1,12 +1,15 @@
 import Anthropic from '@anthropic-ai/sdk';
+import { RetryingHttp, type HttpOptions } from './http.js';
 import { ProviderError, type ChatMessage, type CompletionRequest, type CompletionResponse, type LLMProvider } from './provider.js';
 
-export interface AnthropicOptions {
+export type Effort = 'low' | 'medium' | 'high' | 'xhigh' | 'max';
+const EFFORTS: readonly Effort[] = ['low', 'medium', 'high', 'xhigh', 'max'];
+
+export interface AnthropicOptions extends HttpOptions {
   apiKey: string;
   model: string;
-  /** Injected for tests; the SDK otherwise uses the global fetch. */
-  fetch?: typeof fetch;
-  maxRetries?: number;
+  /** output_config.effort; unset means the model's default. */
+  effort?: Effort;
 }
 
 /**
@@ -15,44 +18,51 @@ export interface AnthropicOptions {
  * are user content blocks, sampling parameters are not sent (current models reject them),
  * and the assistant's content blocks are kept in `raw` and sent back unchanged so thinking
  * blocks survive across turns. Server-side model fallback is deliberately not enabled: an
- * evaluation must not silently switch the model it reports on.
+ * evaluation must not silently switch the model it reports on. Retries go through the shared
+ * RetryingHttp, passed to the SDK as its fetch with the SDK's own retries turned off, so 429 and
+ * overload responses follow the same policy (and quota fail-fast) as the Groq adapter.
  */
 export class AnthropicProvider implements LLMProvider {
   readonly provider = 'anthropic';
   readonly model: string;
+  readonly effort?: Effort;
+  /** Provider settings that change the answer; part of the cache key and the checkpoint. */
+  readonly settings?: Record<string, unknown>;
   readonly #client: Anthropic;
-  readonly #key: string;
-  /** Last anthropic-ratelimit-* headers seen. */
-  rateLimit: Record<string, string> = {};
+  readonly #http: RetryingHttp;
 
   constructor(o: AnthropicOptions) {
     if (!o.apiKey) throw new ProviderError('Anthropic API key is empty', 'config');
     if (!o.model) throw new ProviderError('Anthropic model is empty', 'config');
+    if (o.effort !== undefined && !EFFORTS.includes(o.effort)) throw new ProviderError(`Unknown effort '${o.effort}'`, 'config');
     this.model = o.model;
-    this.#key = o.apiKey;
-    this.#client = new Anthropic({ apiKey: o.apiKey, maxRetries: o.maxRetries ?? 2, logLevel: 'off', ...(o.fetch ? { fetch: o.fetch } : {}) });
+    this.effort = o.effort;
+    if (o.effort) this.settings = { effort: o.effort };
+    this.#http = new RetryingHttp('Anthropic', o.apiKey, ['anthropic-ratelimit-'], o);
+    this.#client = new Anthropic({
+      apiKey: o.apiKey, maxRetries: 0, logLevel: 'off',
+      fetch: (url: string | URL | Request, init?: RequestInit) => this.#http.fetch(String(url instanceof Request ? url.url : url), init ?? {}),
+    });
   }
 
-  redact(s: string): string { return s.split(this.#key).join('[REDACTED]'); }
-  toJSON() { return { provider: this.provider, model: this.model }; }
-
-  private headers(h: Headers | undefined) {
-    h?.forEach((v, k) => { if (k.startsWith('anthropic-ratelimit-')) this.rateLimit[k] = v; });
-  }
+  get retryStats() { return this.#http.retryStats; }
+  get rateLimit() { return this.#http.rateLimit; }
+  redact(s: string): string { return this.#http.redact(s); }
+  toJSON() { return { provider: this.provider, model: this.model, ...(this.settings ?? {}) }; }
 
   async complete(req: CompletionRequest): Promise<CompletionResponse> {
-    const t0 = Date.now();
     try {
-      const { data, response } = await this.#client.messages.create(anthropicRequest(this.model, req)).withResponse();
-      this.headers(response.headers);
-      return fromMessage(data, Date.now() - t0);
+      const data = await this.#client.messages.create(anthropicRequest(this.model, req, this.effort));
+      return fromMessage(data, this.#http.lastLatencyMs);
     } catch (e) {
-      if (e instanceof Anthropic.APIError) this.headers(e.headers as Headers | undefined);
       throw this.classify(e);
     }
   }
 
   private classify(e: unknown): ProviderError {
+    // A quota window or a dead network is raised by RetryingHttp inside the SDK's fetch.
+    if (e instanceof ProviderError) return e;
+    if ((e as any)?.cause instanceof ProviderError) return (e as any).cause;
     const msg = this.redact(`Anthropic ${(e as any)?.status ?? ''}: ${(e as Error)?.message ?? String(e)}`.slice(0, 800));
     if (e instanceof Anthropic.AuthenticationError || e instanceof Anthropic.PermissionDeniedError) return new ProviderError(msg, 'auth', e.status);
     if (e instanceof Anthropic.RateLimitError) return new ProviderError(msg, 'rate_limit', 429);
@@ -63,15 +73,24 @@ export class AnthropicProvider implements LLMProvider {
   }
 }
 
-/** Reads APP_ANTHROPIC_API_KEY and APP_ANTHROPIC_MODEL (never ANTHROPIC_API_KEY). */
+/**
+ * Reads APP_ANTHROPIC_API_KEY, APP_ANTHROPIC_MODEL and APP_ANTHROPIC_EFFORT (never
+ * ANTHROPIC_API_KEY, so a key exported for other tools is never picked up by accident).
+ */
 export function anthropicFromEnv(env: NodeJS.ProcessEnv = process.env, extra: Partial<AnthropicOptions> = {}): AnthropicProvider {
   const missing = ['APP_ANTHROPIC_API_KEY'].filter((k) => !env[k]);
   if (missing.length) throw new ProviderError(`Missing environment variable(s): ${missing.join(', ')}`, 'config');
-  return new AnthropicProvider({ apiKey: env.APP_ANTHROPIC_API_KEY!, model: env.APP_ANTHROPIC_MODEL || 'claude-opus-5-5', ...extra });
+  return new AnthropicProvider({
+    apiKey: env.APP_ANTHROPIC_API_KEY!, model: env.APP_ANTHROPIC_MODEL || 'claude-opus-5-5',
+    ...(env.APP_ANTHROPIC_EFFORT ? { effort: env.APP_ANTHROPIC_EFFORT as Effort } : {}), ...extra,
+  });
 }
 
-/** Translates the provider-neutral request into Messages API parameters. */
-export function anthropicRequest(model: string, req: CompletionRequest): Anthropic.MessageCreateParamsNonStreaming {
+/**
+ * Translates the provider-neutral request into Messages API parameters. Sampling parameters
+ * (temperature, top_p, top_k) are never sent: current models reject non-default values.
+ */
+export function anthropicRequest(model: string, req: CompletionRequest, effort?: Effort): Anthropic.MessageCreateParamsNonStreaming {
   const system = req.messages.filter((m) => m.role === 'system').map((m) => m.content as string).join('\n\n');
   const messages: Anthropic.MessageParam[] = [];
   const userBlocks = (): Anthropic.ContentBlockParam[] => {
@@ -94,6 +113,7 @@ export function anthropicRequest(model: string, req: CompletionRequest): Anthrop
     messages,
     tools: req.tools.map((t) => ({ name: t.name, description: t.description, input_schema: t.parameters as Anthropic.Tool.InputSchema })),
     tool_choice: { type: 'auto' },
+    ...(effort ? { output_config: { effort } } : {}),
   };
 }
 

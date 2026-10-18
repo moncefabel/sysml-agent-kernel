@@ -1,0 +1,51 @@
+{
+ "provider": "anthropic",
+ "model": "claude-haiku-5-5",
+ "createdAt": "2026-10-18T18:41:41.933Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": null,
+   "toolCalls": [
+    {
+     "id": "toolu_011io2EswVLY6b76W6VGVSGc",
+     "name": "sysml_apply_edits",
+     "arguments": "{\"ops\":[{\"op\":\"set\",\"path\":\"VehicleModel::Engine::mass\",\"field\":\"value\",\"value\":\"175\"}],\"expectedVersion\":0}"
+    }
+   ],
+   "raw": [
+    {
+     "type": "thinking",
+     "thinking": "",
+     "signature": "CAQSzAcKEAgSGAI4AUIIdGhpbmtpbmcSDFPja7CYBEb8s0GHHRoMEE4RRaLLUI97gRUVIjDjzjfA8FRHgL5r83asXCPJC0jdTl3qVtICaBIsBrBXVdnRoh4NO0kUvoMMd2r/M0sq6QYTHZJ2YuhhVn5Hd8iIwJbTrzHbTUDtdmyTbYVmpxypR24FwuTY7MefaH5x/TuzAUoFA5GF+t3jxMD64eWLKd+p/V9/+g29f/7lbiTuCsGirGiYFR/ZRhNhfDNGKoFgUR2sHoeAol1H1YGuCQ55W0DA7AFiGgwLVsNHvfoYWu9KEE8oyIgGhl5WF3Ci8hWADWOGV6i14nO22iW2DiASDyDn9QWVEa7/6Uo+2PmYXsaQKY9+j5c446F2EeDsMxxO5pKDSB6HfEeYrxxFpsyuA3aJ+jOVfGjG8WAyIv3UFT90vyyKmS3R1U6LJWDcTUIQ+Jq5IZbbsXZDa7pczY1hGLvYgt9++XfDAFUS0qreod2Vl7TGJ6XX/UZnt75y1RCh1QpfmhaZhhFPG3d1gRBdkGSeHqvl72M32eAatdqAHs6YeE5rI5WbKUqSgXw1/VKfHhOKuBAmlgck3kvp+WV7PbvislvFI/pxih7rNw5I1Eo2zI+KhllGPsM2vabKGPi3FWrJ42zOUQQPqYXQGNbrhzY2m4Ycdxo7fEh9aM2ADy0pAbV41Fmf0m8bSRdAvDz06dHA0nnSGPXaToRVzIB62ln6d+lu3b7IWwJtigfINN8edODsP6gDZgF99KbLMhx8YgRM2scv9vCMYIwFvfmPJFGPhABW82y3shQyQanJDRBLFPVKsT1dtfPRrLax75uzP5kMzB2+58CXAYyK6tM/mskuHKIIjigOTtrU0aOqdIO1S6kpi3EUGBqhJU1DWk2QbzK2X+5NqmNArxFhvmwLX+Rjrr5OfngfjZL0X54bCEX/aZ83dcgSrQb5cW57N+8J4PKH860KbY2aDA9E/3kP4Y6nQYkbz+Wu+cgNazOha2P7afSix/89jMsdy8+5Oaeb+/bqa7P/cBcAOhqfTjemzmDImka4rYFt8/ExBgYWof9bImK6FucB48j7WORLDDR+aH4ttKALdd8lhH5hspU5/9QCdfeWNWSsl96t7iN4lmGoJR1nfSpUlJA63YRPbNolHJ1K59RFXFDR82xViS9YZIvG2A1PAIoFOR957+TIzdCQFaAPPxG27mm5QD6kg+rX1qerflYo/PM0zxPC7C/Lk7RYQrDbke1LlGgeYSuxEGHXWCqkjp9ZK0Cv/l9hQss8/UnG09/rw/gU1VcYAQ=="
+    },
+    {
+     "type": "tool_use",
+     "id": "toolu_011io2EswVLY6b76W6VGVSGc",
+     "name": "sysml_apply_edits",
+     "input": {
+      "ops": [
+       {
+        "op": "set",
+        "path": "VehicleModel::Engine::mass",
+        "field": "value",
+        "value": "175"
+       }
+      ],
+      "expectedVersion": 0
+     },
+     "caller": {
+      "type": "direct"
+     }
+    }
+   ]
+  },
+  "usage": {
+   "promptTokens": 3244,
+   "completionTokens": 214,
+   "totalTokens": 3458
+  },
+  "finishReason": "tool_calls",
+  "latencyMs": 1346
+ }
+}

@@ -1,0 +1,68 @@
+{
+ "provider": "anthropic",
+ "model": "claude-haiku-5-5",
+ "createdAt": "2026-10-18T18:42:05.333Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": null,
+   "toolCalls": [
+    {
+     "id": "toolu_014mBLWMgkZoYiD5JkJazh8o",
+     "name": "sysml_apply_edits",
+     "arguments": "{\"ops\":[{\"op\":\"add\",\"parent\":\"VehicleModel\",\"source\":\"part def Brake {\\n    attribute mass : Real = 12;\\n}\"},{\"op\":\"add\",\"parent\":\"VehicleModel::Vehicle\",\"source\":\"part brakes : Brake [4];\"}]}"
+    },
+    {
+     "id": "toolu_018982RN7qx7PXSGHzjpYmsK",
+     "name": "sysml_validate",
+     "arguments": "{}"
+    }
+   ],
+   "raw": [
+    {
+     "type": "thinking",
+     "thinking": "",
+     "signature": "CAQStgYKEAgSGAI4AUIIdGhpbmtpbmcSDFbnMiewp/UQCwMvlRoMfP9mAVQ+2MQm+hvDIjCJb8nog1E9cPigDjGAp1PwAkaff1hrWa2dg0/j+L3Asg2X5zoKdYmtabIxZ5BoEeYq0wVPbxJSDvkamdu3QGyIS/l45WRGoUfqSEw1ZiKt4AAPaPgop/pVcTgDmN4t+gLrSc/yQHAAVTH/SgFlCw2IA5k73V00YlQ0e36GhTHK8RMXE87xi43n3mgUJlBW1kQCvDqJcnDiNmLlOOHojHl8WV5MXSmvsbee9SNihObLiY37Ia5L48HhgAfkzE6y8LLyl/dLt24f+x/2wUeM74xJyGsXgG/ZgU75l7/f6kVBfJd/JQKpbx/TLRFi2qVC9IFHlQgswvQ/kjkI2BJxTChOZhgL44hlkwixToGFYgxPXlZHGIkQ2qYloDn9CsJrEa1to5QMN8QfVATTBdUNuuwfHb0wRTRXz1uB+JI1kx2pQe3fXOEqwgrvpHmkTW1JoVy5k+dmp/IN21wO/cGukiyHMM+ZKebufDDrNHOXwwZ3+O2x1N02Gr+J8vs8HuIW8zVFYFxl3Lb2siaOKRqW2iOp0SwOtEyvC0z3XsxJapTr1b3G7nbiafpeX/++jJonSJqg6bO4s9XzATqHfTN+jmSHn6SDMKKKHv7QQbRo9pyiitbd5h47iISUKQiHpnfJfONXn3ecS0Mo03TgekkC18PvbFb9WzE3ipGZAyZs36i2G5XFjJBvdO+5gLCpEwm4LifrymVmnVu3bykP97u5HCu/U37Tt36/pDFasV00JYAXskpJLnFFSUsGvbyubE44sGZaBZJOKOG7uofF/gm9BvRy/61Qfl9hwVFUj7FwfK1BOomGoof7WgWDs444f145c9BLcLgDopCPs+LuqndbR9cdczUh2rtfp+cz59w2PriDj21LABih9PKHfKbvz+VE4S42J8HQZKITrG4o5bvp2ojUoAB0Obapc9P0JvRn3SneCDF3J770SMgFk26m8K0ujnxo4xqzq6EJCY7sDVWHNQp7Sae/K6MYvPfLAXlN8bGZRVXqy+iNm1ve6ZBgXge+VrtpINJOXmQYAQ=="
+    },
+    {
+     "type": "tool_use",
+     "id": "toolu_014mBLWMgkZoYiD5JkJazh8o",
+     "name": "sysml_apply_edits",
+     "input": {
+      "ops": [
+       {
+        "op": "add",
+        "parent": "VehicleModel",
+        "source": "part def Brake {\n    attribute mass : Real = 12;\n}"
+       },
+       {
+        "op": "add",
+        "parent": "VehicleModel::Vehicle",
+        "source": "part brakes : Brake [4];"
+       }
+      ]
+     },
+     "caller": {
+      "type": "direct"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "toolu_018982RN7qx7PXSGHzjpYmsK",
+     "name": "sysml_validate",
+     "input": {},
+     "caller": {
+      "type": "direct"
+     }
+    }
+   ]
+  },
+  "usage": {
+   "promptTokens": 3080,
+   "completionTokens": 265,
+   "totalTokens": 3345
+  },
+  "finishReason": "tool_calls",
+  "latencyMs": 1456
+ }
+}

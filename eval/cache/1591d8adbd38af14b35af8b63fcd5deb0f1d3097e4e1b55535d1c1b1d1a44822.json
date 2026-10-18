@@ -1,0 +1,49 @@
+{
+ "provider": "anthropic",
+ "model": "claude-haiku-5-5",
+ "createdAt": "2026-10-18T18:42:01.875Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": null,
+   "toolCalls": [
+    {
+     "id": "toolu_01AKrqT5YFjGCGy8Aqx5z3ce",
+     "name": "sysml_apply_edits",
+     "arguments": "{\"ops\":[{\"op\":\"add\",\"parent\":\"VehicleModel::Wheel\",\"source\":\"attribute supplier : String = \\\"QK-7\\\";\"}]}"
+    }
+   ],
+   "raw": [
+    {
+     "type": "thinking",
+     "thinking": "",
+     "signature": "CAQSngYKEAgSGAI4AUIIdGhpbmtpbmcSDBYsDo8NDqqe1lQPzBoMu1TmVSivy1kX0OwDIjDyvYR811vTBeR1Fobsng6pBLefWoCa6WZV701bnUuB6iuCISJGeAesvEu7iI86gdIquwXSGVErE2morRD8loXbeTI19kjkvz1luklK2dNl0AJN5Vaa+t/U4jM074Q7MadIdZZwPSJpNxKYEMJQdByaAB4JJSS28fg7MU6+UzPMKt2XCOaGSqxUMQOSO3pqKLmOPpTa0nKfR2d48TqA4SOY3lmjMIRmTlUVGFVmCl0Q6Ms4x/m39ffW5Iw6m8LM76PMx9aDGxuqsn2qTQ03P5Wsu7ha08g1RUzxwH5uOegk7n3VdW63wDMzQOHgVpCqdyF0SdY739tPTa8gbUnhR+qDVCypBM3ezv/RYoThlF12+EBahPhwESo99N85cYfbfkWfyuTLrj4bH3QMGBKkEMTgvKHv1W+Zth0beCtgLe32AZ70rXeBJpMy0tfr7RGOc6Fy3sCBYvMlzcik2WvkY6X0I52Thi4nr3F14yKKJtZBvafNj6Jo4xF0rA1XjbchJqq6736oI1iX2Z54DtSysf1p3NTl1B1XAk7ct37FYDZ7RkghoGaGGjIX7zj/V6oboWQ9GFxydQlT05FYCTM0la80fBp/iA4bcG41I74cpXIHCbV0q4D7wpG4PHb2farP2UfiLKHDjClCVmtOGNjx4fjPZl3lO8E4mW1jWBSL2lSBjuePNN2u+XvbOc7rToxipQGx+dcAF93XKMQX2XrQdOGrlMl5fPwLEc6A/QFAhoTruogAfAExdbogM41xKxfcx8t8MKlLrSrAQXs4Z1bBeTl2pz07pVCDX4Wu52Kc8Y3Frmnx4pz1nuUgXUcdLwyCGkVksT/SpfTLhn4Ca2Ds2WPHRKdamIWj4dZcVyNOdfs01XGya0E4VtkYaHNgnKkvmzuG4TQbgJBMPDzZlOwPVrqeCe0H0cWdYzR0lzOAQ9EmXyQhcBFjIuv33GCkdNp4TOrtTJwJKCmvovvAelL3e0TSnr9srbXFND8G40HKSZUYAQ=="
+    },
+    {
+     "type": "tool_use",
+     "id": "toolu_01AKrqT5YFjGCGy8Aqx5z3ce",
+     "name": "sysml_apply_edits",
+     "input": {
+      "ops": [
+       {
+        "op": "add",
+        "parent": "VehicleModel::Wheel",
+        "source": "attribute supplier : String = \"QK-7\";"
+       }
+      ]
+     },
+     "caller": {
+      "type": "direct"
+     }
+    }
+   ]
+  },
+  "usage": {
+   "promptTokens": 4229,
+   "completionTokens": 161,
+   "totalTokens": 4390
+  },
+  "finishReason": "tool_calls",
+  "latencyMs": 1039
+ }
+}

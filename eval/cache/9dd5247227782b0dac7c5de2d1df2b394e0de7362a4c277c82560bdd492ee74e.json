@@ -1,0 +1,38 @@
+{
+ "provider": "anthropic",
+ "model": "claude-haiku-5-5",
+ "createdAt": "2026-10-18T18:42:24.045Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": null,
+   "toolCalls": [
+    {
+     "id": "toolu_013a3Z63cMUvjcRfFwKSscfN",
+     "name": "sysml_outline",
+     "arguments": "{\"depth\":3}"
+    }
+   ],
+   "raw": [
+    {
+     "type": "tool_use",
+     "id": "toolu_013a3Z63cMUvjcRfFwKSscfN",
+     "name": "sysml_outline",
+     "input": {
+      "depth": 3
+     },
+     "caller": {
+      "type": "direct"
+     }
+    }
+   ]
+  },
+  "usage": {
+   "promptTokens": 2141,
+   "completionTokens": 51,
+   "totalTokens": 2192
+  },
+  "finishReason": "tool_calls",
+  "latencyMs": 689
+ }
+}

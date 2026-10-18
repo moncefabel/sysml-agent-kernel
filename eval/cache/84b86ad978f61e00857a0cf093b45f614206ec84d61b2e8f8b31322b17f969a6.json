@@ -1,0 +1,55 @@
+{
+ "provider": "anthropic",
+ "model": "claude-haiku-5-5",
+ "createdAt": "2026-10-18T18:42:28.932Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": "The colleague renamed `Engine` to `CombustionEngine` (model now at version 1). It's the same part definition, so I'll apply the change to its mass attribute.",
+   "toolCalls": [
+    {
+     "id": "toolu_01NkqUxJnEXYq8ex4GJLi7Aj",
+     "name": "sysml_apply_edits",
+     "arguments": "{\"ops\":[{\"op\":\"set\",\"path\":\"VehicleModel::CombustionEngine::mass\",\"field\":\"value\",\"value\":\"175\"}],\"expectedVersion\":1}"
+    }
+   ],
+   "raw": [
+    {
+     "type": "thinking",
+     "thinking": "",
+     "signature": "CAQSxgcKEAgSGAI4AUIIdGhpbmtpbmcSDMsxvp4rCUPne6THUhoMfTc++LyB3XHtvx5pIjCiBfOaTYFK3/Yy9wyjDPsj8Fb8zgtWxXIB+k70z4Hf1R9nPd+BWvoqyiE64kY56Aoq4wb/Ys5M1juUo1d0KwskZjn/WHi/GELoPXLO/EavOdWN0NBBRzVyvspjx4MQyID7Llbdt9c31POg4COdNPrzVrzw3Tz+03FXw4danftUCh7QOxp8Z9w5QfJxPS2aWeIFDWraanhotrR1gXWH+M0KsSa6Ypn6Gx+9M1GKSApeBtt5qMZHoyilKUDMdAIASTRofJi32bnWwZdI/p6xjxfcj480tTMC9KftftS8mG3zL/qhhV6uklw6hG6oidohtYiBcfopn5Jr79RqUAhC67jhPoDPEFWITC7A1IoZ85H1YKb7lOa2CybSnUG8wYlJnRFyO6BmPDOq5y50vR7bcSrNH3qaIxYS4cJqYoqSqxKSlVRLG6ZoXYhYyTh7wZL1KTDv08u/+b2GKJdNPPxb6f8/m4Nw42EpJcEPhKmpP/5nlGl5FM47sMI0SKgDWK+UuoBFUzAa7C9l2hwdB2bv3jC5ggnXEqr3Y8cmFP59Q0RR4owB6Um1D34dlioYqvYbC+KFaR9+G3x/S1pUA4LGC+4Z8jovhABi6VNmwtV9STUGNa6nfKuXZkz3GSRzcjhFGki5RJ0YFgRoJ2bP32zGeJLL7soHNnzCZmhJkkKC2OU0ItjwGBsFTL27mxMvgZo6lCJ+dsu3m6lMYlQTzGIHf1PUBeqpnTISvYe8ye20dzckC/5HsQGYiYnLg9UDFw48gyfb8Sj5sM0QmbLEGLQSlpGzxp0zmeSxY9q+rstYKDWEuxfVQ8EP/Gx2hms+I485/hJHZES+b8YYH092zHuooXfPJ6ZztJFpGXspQ35CUsNgRA0KPdRO+HKbOUh2krUgPvufZWPr5uvHjGCgiGUddoxnuOU4ImYcvLXUIUICIC7grlK7KIKalc1RRvBral7//mZDzvO026+KkcQMZA0j95Yd4oQHZE5tF+Xf3RjvYh6De0ndJWUA0BFcK5BUORsDlfi0YyWRvFpF25SgkQgrtlJbH+kFZaxUXONGWJPL5tLNicPnMrCWUhsNl3OuR5WiTd2dZQFqa5mn3DnavczQKKW3AsoyTC9k+LpVjar1akGpSp7ErcPZVUv1v6ihFOpoVtlnSJKhbgOutCV4NC0FwbroEOd5fdUua98NSLzOr9mPeeHh2ED8RlYoXjLTidNS5Xd8LbZ+BjIYAQ=="
+    },
+    {
+     "type": "text",
+     "text": "The colleague renamed `Engine` to `CombustionEngine` (model now at version 1). It's the same part definition, so I'll apply the change to its mass attribute."
+    },
+    {
+     "type": "tool_use",
+     "id": "toolu_01NkqUxJnEXYq8ex4GJLi7Aj",
+     "name": "sysml_apply_edits",
+     "input": {
+      "ops": [
+       {
+        "op": "set",
+        "path": "VehicleModel::CombustionEngine::mass",
+        "field": "value",
+        "value": "175"
+       }
+      ],
+      "expectedVersion": 1
+     },
+     "caller": {
+      "type": "direct"
+     }
+    }
+   ]
+  },
+  "usage": {
+   "promptTokens": 4473,
+   "completionTokens": 270,
+   "totalTokens": 4743
+  },
+  "finishReason": "tool_calls",
+  "latencyMs": 1455
+ }
+}

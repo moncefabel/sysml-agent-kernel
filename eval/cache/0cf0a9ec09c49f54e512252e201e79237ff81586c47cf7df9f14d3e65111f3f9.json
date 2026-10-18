@@ -1,0 +1,63 @@
+{
+ "provider": "anthropic",
+ "model": "claude-haiku-5-5",
+ "createdAt": "2026-10-18T18:42:11.765Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": null,
+   "toolCalls": [
+    {
+     "id": "toolu_01WcdDVE4HSZs8DdM41CEYZ9",
+     "name": "sysml_apply_edits",
+     "arguments": "{\"ops\":[{\"op\":\"add\",\"parent\":\"VehicleModel\",\"source\":\"requirement def RangeRequirement;\\nrequirement vehicleRange : RangeRequirement;\\nsatisfy vehicleRange by Vehicle;\"}]}"
+    },
+    {
+     "id": "toolu_01KMsi1TPw6AtqYScoTGLzzz",
+     "name": "sysml_validate",
+     "arguments": "{}"
+    }
+   ],
+   "raw": [
+    {
+     "type": "thinking",
+     "thinking": "",
+     "signature": "CAQSqQcKEAgSGAI4AUIIdGhpbmtpbmcSDCPVBpTZVYIr4fis0hoMdSx4YqDLfoR6EJJbIjCY+55OzF5ewP9tmSOwi4gfD8erFE21dzfiGVhpMu/NUxG9gO0yGK389zU6P2Qgc20qxgbJgWcbK8iD5wZP/9dtgru3ptAgGjHDgA3GlHyntyvEH3aJiq8kfcDCH7EoBt+vpp1DS8a+RLUV+F55x40RTFM1cUMEODV7K36IY/GBmq+lmPkMz1WiQJ3FAzQgo0I3q6wt5t3c78LUuGJ1B8W31x0SREDKeM54BlrTY4oV6639Spg+PLY3+GvIetZTvuR0xdn9HJRSOC5p7gwA4c0phgAAo09SQTgZdx5cuk42HdCRqlfo4V4kj4mLfp/glycEHcELG52ycXWKMj3lvZUrlM+SgVWzbMGCUdLlbXceC6EgfiJJO5F3jz2IbmsSUEvw5VN7XKAXHBY5z7ZAh5L+F0aQhBplHPw0vmgB2e+3FLuMJpyNxUbexVIj2mMppQ+zD9WQVve6whbGZoLlqMIXSIzPYQEyKUhe5eCWL2sZlqQaVmuL/RSEJzj/MzoxK3kCf4+Sm9MzLysDUIAzXeztfXA92vj8zupggChB6Mz/lLncb5WmqgZfpjf6vLrUVb1ZiJCVeEajQmWszVBcQAHbfvxXRrklOUcdrFLLO/gnVI5iiH2IUDJ5LRl7j8fVDnwnNcVSh7uixQeid7ANNPSr8nfPB9eF/RDPojDP9q1i7AW0yFqJ7vnEhg1XRMPFDeQOEnHe9jG7rq8UwopqbV2/+p2PAvvcRhOzJ/rL6S6E1JdlsULnHRgPqy65Zi1p14OPMfZKgO8bRvOs/U6oh3H+SSmdlKf90Qj1OH8X2qo3FhlqFbwRUXoQ+hYt6Cn0RGINvTWPZNe+vgSRLGRvvkra7X208dIjjqqYuLh/+jWDaI9ODZXwpN0gnkrpfI9OHP+bftMaC+IIUV+MGkd4/wZe1GPFzjkqWGNhoRuMUIPE/EhYFmUU6v+FgV0IxPmKOT8HSBBFUTPNSz+syqciJUjez/9qWHmsG0aAjD8CY1N56XuXbSG9aCB9goI1OsI1b21s/DtwimpvEqvd4z4xd2WtdnhOKuoigJ+MY6lVK40mqx83eP+krMKYmSpPtKSHrE8RPH6Y7FSfvgBkwpIgVlg1BOLhR/RPRJiU1N5XxY48svTGmlj/0XhR0saVG7jphhu7quvzUw9tdOdMNryZsYD9IBhdTpPYyRyhGAE="
+    },
+    {
+     "type": "tool_use",
+     "id": "toolu_01WcdDVE4HSZs8DdM41CEYZ9",
+     "name": "sysml_apply_edits",
+     "input": {
+      "ops": [
+       {
+        "op": "add",
+        "parent": "VehicleModel",
+        "source": "requirement def RangeRequirement;\nrequirement vehicleRange : RangeRequirement;\nsatisfy vehicleRange by Vehicle;"
+       }
+      ]
+     },
+     "caller": {
+      "type": "direct"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "toolu_01KMsi1TPw6AtqYScoTGLzzz",
+     "name": "sysml_validate",
+     "input": {},
+     "caller": {
+      "type": "direct"
+     }
+    }
+   ]
+  },
+  "usage": {
+   "promptTokens": 2948,
+   "completionTokens": 301,
+   "totalTokens": 3249
+  },
+  "finishReason": "tool_calls",
+  "latencyMs": 1409
+ }
+}

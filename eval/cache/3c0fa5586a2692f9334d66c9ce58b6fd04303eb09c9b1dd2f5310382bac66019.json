@@ -1,0 +1,44 @@
+{
+ "provider": "anthropic",
+ "model": "claude-haiku-5-5",
+ "createdAt": "2026-10-18T18:42:15.484Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": null,
+   "toolCalls": [
+    {
+     "id": "toolu_016jjGcGZHw5tk3qw4honiML",
+     "name": "sysml_apply_edits",
+     "arguments": "{\"ops\":[{\"op\":\"rename\",\"path\":\"VehicleModel::FuelPort\",\"newName\":\"FuelInterface\"}]}"
+    }
+   ],
+   "raw": [
+    {
+     "type": "tool_use",
+     "id": "toolu_016jjGcGZHw5tk3qw4honiML",
+     "name": "sysml_apply_edits",
+     "input": {
+      "ops": [
+       {
+        "op": "rename",
+        "path": "VehicleModel::FuelPort",
+        "newName": "FuelInterface"
+       }
+      ]
+     },
+     "caller": {
+      "type": "direct"
+     }
+    }
+   ]
+  },
+  "usage": {
+   "promptTokens": 3072,
+   "completionTokens": 91,
+   "totalTokens": 3163
+  },
+  "finishReason": "tool_calls",
+  "latencyMs": 669
+ }
+}

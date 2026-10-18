@@ -1,0 +1,54 @@
+{
+ "provider": "anthropic",
+ "model": "claude-haiku-5-5",
+ "createdAt": "2026-10-18T18:41:47.592Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": null,
+   "toolCalls": [
+    {
+     "id": "toolu_01P8UmyJ65PtCqADz3g2eo2k",
+     "name": "sysml_apply_edits",
+     "arguments": "{\"ops\":[{\"op\":\"remove\",\"path\":\"VehicleModel::Vehicle#connect[0]\"},{\"op\":\"add\",\"parent\":\"VehicleModel::Vehicle\",\"source\":\"part filter : FuelFilter;\\nconnect tank.fuelOut to filter.inlet;\\nconnect filter.outlet to engine.fuelIn;\"}],\"dryRun\":false}"
+    }
+   ],
+   "raw": [
+    {
+     "type": "thinking",
+     "thinking": "",
+     "signature": "CAQS6QcKEAgSGAI4AUIIdGhpbmtpbmcSDDQNN8/Gm8p4akWy7RoMRk0FhHuYNEHsf6peIjAL5whWRY9vlww79h8iWuU209/aoUqf9rZQIa5jnAD6f6D8KkSSFglliWjQ27ebY2gqhgcL/+0bj3gO1Clb1qsvLu+k8RZSdFLzKxGFDMQ4JRGFtfOx09NYT+ICCovjNvGQzYb9bXNMS8QU8ko4iOsrZpSf3syEByablO40C1mmHNuj8SMH6aYcCGNdM4+rdBJv4rFgj2v+gc5QZNHMUETTuavWyj3WiKk30qyzPRpEP8O8XBXUT4uBjYVDVMzMtZoX/C8gOeiQsyv4T2Fg3YMmjqzGU0P7IAaj9iIK6EKDVpyWePCfVsLPZw7AdGbVPi84YwfGim7s9TL2UfKypjKA53a1v9bD9+GMT3b3AxlU2HjGtBMCj90zuKgJV/4iXMEBUSu23YPW7PkYfG+AGlpPNX7u9KHszmtqjR0nbKbrXeQWWpmcYsUcIWysOR4JvMdOFLNmetQ0hRfKuR4ZXSnDHl2UHY+vGZqHhVCPD16ucGEhuGZ20T5a1/eR0IfqSOhwWDLaDQIaH0cwuNli3t6bDUnHzNLvLvN1NXN7hANkDQCi8XCGIW1oNpZE4g7Wla9Bj/oCEr5+whiutcf9D2u7Tymfd/+TU8I2En4PgiJko5oCvZYWKTbbB/eNCt6469DOzRQnmEJpcIckERL+Om8swimXxqxRqGVOrOPaet20xY763Lyn/Xypv5ef9XQ5yVqkrGMhjJoKhJek0BxbQ4lqvgXynzKdYDyepJ7sIMvmBVP0lCLFdNwnPLb0nAW92kaAWRe83F7nBY4mvpMV3DMzJwH34aeGogRHJ5AvtseutZ7PgswpxsNvCtQEM4XVQN6NBZrIXOWihdFF0mH9lzjk4XYB5hOFOY+rUdJrEBC0p8kuNJDIfKUJVWWvwaDRiAL0zvFK0rkS0ySaL70QqvgP2lguFyClthW6Jk+pZs/iME9wvCDJNObm3Gp4uAzbNtQ/GpAlVy7xy4vS+mzrP+rTpwek2rcE2MtqVMMhfJLAwq59JJKafgOJkQwYn/5wsixNLMbUjGEjqKEaUBOGagxsb5/VDeyr9HCcHcuogTgmbcW+KmwsgqSzIOjtdJGsLZBkocetbvYf/jMNf78XHeGdOptWr43WeiN9J/HuBsuLIBPfhskmOVY4ci7sQ/YvYZjPLFFvUZFu9pvzbZ1NJWuZ1V0xD5dDcZk8ukIBk10hPO95n/w/a6X3BZmGWTaa63s6lEPKSSDOwOTQ8xSGPAFFTRpMuqoYtYtPsVoH7z0Obv/eSvEQdsMT7hgB"
+    },
+    {
+     "type": "tool_use",
+     "id": "toolu_01P8UmyJ65PtCqADz3g2eo2k",
+     "name": "sysml_apply_edits",
+     "input": {
+      "ops": [
+       {
+        "op": "remove",
+        "path": "VehicleModel::Vehicle#connect[0]"
+       },
+       {
+        "op": "add",
+        "parent": "VehicleModel::Vehicle",
+        "source": "part filter : FuelFilter;\nconnect tank.fuelOut to filter.inlet;\nconnect filter.outlet to engine.fuelIn;"
+       }
+      ],
+      "dryRun": false
+     },
+     "caller": {
+      "type": "direct"
+     }
+    }
+   ]
+  },
+  "usage": {
+   "promptTokens": 3357,
+   "completionTokens": 357,
+   "totalTokens": 3714
+  },
+  "finishReason": "tool_calls",
+  "latencyMs": 1894
+ }
+}

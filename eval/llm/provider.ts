@@ -42,6 +42,8 @@ export interface LLMProvider {
   /** Provider id, e.g. 'groq'. Part of the cache key. */
   readonly provider: string;
   readonly model: string;
+  /** Provider specific settings that change the answer (for example effort). Part of the cache key. */
+  readonly settings?: Record<string, unknown>;
   complete(req: CompletionRequest): Promise<CompletionResponse>;
   /** True if `complete(req)` would be served without a network call (cache hit). */
   isCached?(req: CompletionRequest): boolean;

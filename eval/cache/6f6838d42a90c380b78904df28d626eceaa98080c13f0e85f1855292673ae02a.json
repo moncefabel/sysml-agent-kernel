@@ -1,0 +1,24 @@
+{
+ "provider": "anthropic",
+ "model": "claude-haiku-5-5",
+ "createdAt": "2026-10-18T18:42:23.008Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": "Added `attribute color : String;` to the `VehicleModel::Vehicle` part definition; the edit committed with no errors or warnings.",
+   "raw": [
+    {
+     "type": "text",
+     "text": "Added `attribute color : String;` to the `VehicleModel::Vehicle` part definition; the edit committed with no errors or warnings."
+    }
+   ]
+  },
+  "usage": {
+   "promptTokens": 3235,
+   "completionTokens": 47,
+   "totalTokens": 3282
+  },
+  "finishReason": "stop",
+  "latencyMs": 591
+ }
+}

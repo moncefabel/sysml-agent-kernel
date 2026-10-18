@@ -1,0 +1,45 @@
+{
+ "provider": "anthropic",
+ "model": "claude-haiku-5-5",
+ "createdAt": "2026-10-18T18:42:22.414Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": null,
+   "toolCalls": [
+    {
+     "id": "toolu_016D9M3MvZYt1SYxoUWWvLcw",
+     "name": "sysml_apply_edits",
+     "arguments": "{\"ops\":[{\"op\":\"add\",\"parent\":\"VehicleModel::Vehicle\",\"source\":\"attribute color : String;\"}],\"expectedVersion\":0}"
+    }
+   ],
+   "raw": [
+    {
+     "type": "tool_use",
+     "id": "toolu_016D9M3MvZYt1SYxoUWWvLcw",
+     "name": "sysml_apply_edits",
+     "input": {
+      "ops": [
+       {
+        "op": "add",
+        "parent": "VehicleModel::Vehicle",
+        "source": "attribute color : String;"
+       }
+      ],
+      "expectedVersion": 0
+     },
+     "caller": {
+      "type": "direct"
+     }
+    }
+   ]
+  },
+  "usage": {
+   "promptTokens": 3064,
+   "completionTokens": 117,
+   "totalTokens": 3181
+  },
+  "finishReason": "tool_calls",
+  "latencyMs": 762
+ }
+}

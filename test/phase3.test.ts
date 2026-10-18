@@ -157,7 +157,7 @@ test('injection: obeying the mass deletion is blocked by the session budget and 
 
 // ---- A5: Anthropic adapter (mocked, no network) ----
 
-const KEY = 'sk-ant-test-secret-0042';
+const KEY = 'fake_anthropic_phase3_secret_42';
 const msg = (content: unknown[], stop: string, usage = { input_tokens: 50, output_tokens: 10 }) =>
   ({ id: 'msg_1', type: 'message', role: 'assistant', model: 'm', content, stop_reason: stop, stop_sequence: null, usage });
 const fakeFetch = (responses: Array<{ status: number; body: unknown; headers?: Record<string, string> }>, seen: any[]) =>

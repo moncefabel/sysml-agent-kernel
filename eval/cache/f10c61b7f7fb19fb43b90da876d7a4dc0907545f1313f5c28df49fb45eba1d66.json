@@ -1,0 +1,49 @@
+{
+ "provider": "anthropic",
+ "model": "claude-haiku-5-5",
+ "createdAt": "2026-10-18T18:42:42.064Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": null,
+   "toolCalls": [
+    {
+     "id": "toolu_01939mG9HyZNtqZH2q71AVbX",
+     "name": "sysml_apply_edits",
+     "arguments": "{\"ops\":[{\"op\":\"add\",\"parent\":\"VehicleModel::FuelTank\",\"source\":\"attribute maxTemperature : Real = 120;\"}]}"
+    }
+   ],
+   "raw": [
+    {
+     "type": "thinking",
+     "thinking": "",
+     "signature": "CAQStAYKEAgSGAI4AUIIdGhpbmtpbmcSDKmxo9dmBLf2vMGSLRoMFupH6NFeKFDL7MEMIjBjXu7nVW/Hpf2VgQNyXhloc0h+378wB+McrewvhrfErEVCF3Ll8zYv8rqs18YjSEYq0QUYAEfXc0DF3Wvkn4fu3tNt4zAMPXFHUAcqMXNL7CObnEgkSwZ/8FC0+v1q8Eo3MFUuq/LXlmCaKQ+4v3gSBvl0n8AlZGugJgnmlUQJ+n0ATgFiP8/MAxNE3TGdhlCzNKw0SCW0bCe3NYl1vU86r7rjYcTgM6r9TJ/z/lFa81XIPhvQjZABaL71wVF5k8hvDnlRQoIPSEKCUHGnfF3GsX4gUIiEmIhRYscFdsZqxdnD+r3Tr4lmIL6ChamZ8XpG8YLL73HOj2q/K8oFYWUSRVfhoq8LawdBVRlaS6UimSHYuuaiE5RQPSDrSmA9FJG4Y1b1bXokdnFLGCsL5nh3M22vrYZbgRucGTuCZQZPeoKv3m9v8uoAWeh6/JaTK4yab/bT5fabq3EWVSR973ruGssPfguGMxuWjvAYaabZy2MNAnEL/SXnvBb1Q5qrua4zX4y2ce2X7l/xzlHbAAePZ93lpKNaxP4/owojsvflrMXOx/C2SVXssXBcttjtK1ILYFiq0feLEFJNUfVckVlME7Wi8ADhgMziYXs99+udW1A6kTJLkeKh1Q9GfWsdmbzjFRNgn49Z2gg/ajeeGTZHvbSvxon5RQjubpNZsaSNPz0j+d4X0iPhe252FPnwCAvFBUbVCWEz5dvBt2rJxMGBoBrz7WboYMSN5P+jxo/IRBsq8ES3ETTFkjStNMftoeLDYGGqSeUyXY6u1/R9Y6gaP2lo4X7C3Vm70kqPEfDVJU2bdKhBgPSHIM2NzMRbducvLKh9kQpp+hgQnWQKfK8Q6Jc4jRWW+jBMkHssA5TD3LIUOF7+q/Wkr/53JpLe+B0Tl89Le0v5oJQHziroHuq6JRsrL5yVNl1mnRS0z2csurk7GGkbe4ATpD/JXJ1im+9gR0AcHsY8Lb0PXijU2bSoIBe7qEek/OHz2FbkpmKXPbav5fB9dEfyZGhdy8FNMi8stG4xGAE="
+    },
+    {
+     "type": "tool_use",
+     "id": "toolu_01939mG9HyZNtqZH2q71AVbX",
+     "name": "sysml_apply_edits",
+     "input": {
+      "ops": [
+       {
+        "op": "add",
+        "parent": "VehicleModel::FuelTank",
+        "source": "attribute maxTemperature : Real = 120;"
+       }
+      ]
+     },
+     "caller": {
+      "type": "direct"
+     }
+    }
+   ]
+  },
+  "usage": {
+   "promptTokens": 4289,
+   "completionTokens": 147,
+   "totalTokens": 4436
+  },
+  "finishReason": "tool_calls",
+  "latencyMs": 1049
+ }
+}

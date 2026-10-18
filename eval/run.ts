@@ -57,7 +57,7 @@ if (kind === 'groq' || kind === 'anthropic') {
   // only decide whether a scenario runs now, so they may change between resumes. The policy
   // entered the fingerprint in phase 3, so phase 2 checkpoints need --fresh.
   checkpoint = new Checkpoint(`eval/reports/${agent.name.replace(/[^a-z0-9-]/gi, '_')}${suffix}.checkpoint.jsonl`, {
-    agent: agent.name, loopOptions, system: sha256(SYSTEM), policy, pass,
+    agent: agent.name, ...(base.settings ? { settings: base.settings } : {}), loopOptions, system: sha256(SYSTEM), policy, pass,
     scenarios: sha256(canonicalJson(scenarios.map((s) => ({ id: s.id, task: s.task, model: s.model, checks: s.checks, perturb: s.perturb })))),
   });
   if (flag('--fresh')) checkpoint.discard();
@@ -119,7 +119,7 @@ for (const x of incomplete) console.log(`  NOT COMPLETED ${x.id}: ${x.reason}`);
 mkdirSync('eval/reports', { recursive: true });
 const out = `eval/reports/${agent.name.replace(/[^a-z0-9-]/gi, '_')}${suffix}.json`;
 writeFileSync(out, JSON.stringify({
-  agent: agent.name, provider: base?.provider ?? 'scripted', model: base?.model ?? 'reference', suite: suiteName, pass,
+  agent: agent.name, provider: base?.provider ?? 'scripted', model: base?.model ?? 'reference', ...(base?.settings ? { settings: base.settings } : {}), suite: suiteName, pass,
   replay: flag('--replay-only'), policy, ...(runBudget ? { billedThisInvocation: runBudget.used } : {}), date: new Date().toISOString(), passed: sum.passed, total, summary: sum, incomplete,
   ...(base?.retryStats ? { retries: base.retryStats } : {}), ...(base?.rateLimit ? { rateLimit: base.rateLimit } : {}), rows,
 }, null, 2));

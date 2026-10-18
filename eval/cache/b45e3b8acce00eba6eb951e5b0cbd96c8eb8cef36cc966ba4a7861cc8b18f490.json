@@ -1,0 +1,61 @@
+{
+ "provider": "anthropic",
+ "model": "claude-haiku-5-5",
+ "createdAt": "2026-10-18T18:41:08.324Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": "The `tank` part and the `connect` that uses it both depend on FuelTank, so I'll remove them in the same transaction.",
+   "toolCalls": [
+    {
+     "id": "toolu_01HVrq66dMMvaP62tefCtBeA",
+     "name": "sysml_apply_edits",
+     "arguments": "{\"ops\":[{\"op\":\"remove\",\"path\":\"VehicleModel::Vehicle#connect[0]\"},{\"op\":\"remove\",\"path\":\"VehicleModel::Vehicle::tank\"},{\"op\":\"remove\",\"path\":\"VehicleModel::FuelTank\"}],\"dryRun\":false}"
+    }
+   ],
+   "raw": [
+    {
+     "type": "thinking",
+     "thinking": "",
+     "signature": "CAQStgcKEAgSGAI4AUIIdGhpbmtpbmcSDGLmpCU0KQLjyOnDvxoMA5penUpnlN7RmIdBIjDnN8QOAcPkpdOV2jtlwjGYhhDwcNl+3a2pBgJYe13b7bFRBDoYGsfORtPCuU9kHbIq0wZLaOzIuUMdvu8lbcAn6ZiitXmlG9rDSoj46JK6OdTqaESmwj8WvSF3gIW3t97YhknLPuC1DEp60roXmEXeHsW453/q0YhANzuhyebU9TDPGQJPmvBN/DqeHIQDy/zHKjLgppgCJ0D/3qmlYcz8moQ9APRMSn/V4ml0DDfIvgHAh0GqWQRLyps5ZL+jwavsOKczjzIvc0QlQ83AG3w/4s68M8PBjatdwdsyoxbihdAsvE2Yvo2qcGNb7bWVKol7NZQvXKmENVYPOeIgVG4TkTfiRe05UN10h8PNvGjqhMZN4NO3bLsLGFKrVKxclh3p72dW9jiMg1k8qYFwVo9jVcn/1+1YcjEXVyJGJvCmKzZyM6kNslFmU1szfXwn4x/b4rnfOlHin4SRDvcTquDCarPcic0+8OdPhU6rODWph7VFezRUxnBS49tKxljxAJdBAFzoTKcq1/rfBxFup7mR6Z8Wn9lgXJv0lq/ffS0bmukOzsRtK1T5AX9hVlmwX9Wsdymn4/8QvpEObftTIY/62+cbTOnCs2/bbgyMAPX/u69Ae+qJ0RV9YDtlZzSreChx7ORgMD9ift24/irvtdV77Ew2b3KjygMDS/yTmkqM5HDcI3g9WOaiEfRZvMRVk3nffZ2WsPS7cs2Wj+B5MyP+kPxFu7GY4Z/1QUY125xK0l352CVWliLOx61WjsTgMR9wk5/RpOkeleG2U7yFLqrUd9dM3huuOdUDSw/W4jBQGA55kl/d4hZUIX1C88al9uIaVOjW7wM4DB2bGIfDCAj5nWP3O8/vEac+HYNiYFXUrfgMc8Vpkvf1czSdKvP2igzTr/pvuBkeUaa558w2mrF1LIjMStyPGtdeNrnpVxMb8wa0HyNnunrFjCc0+Otx8jQZ3hBo9dbCmt5p6/14uAcS2TVaZ5eVLSNYUMtKipNdtGhxBkpcxfKwam7Zv6fx4Jn5md0Tdps9uC7PhB7rzGRhDKU7uPjY2CFyloOv5hULf1Q7zG64vXDrbbvtFACbT/isXU5O/RpttboT02aQ7C/TE7lzDZYeuBYSWuVkkeF8e9tnaQ5oOnzHlDmXfQSMr7rw7piM2jpJLfiEfunRIM9+8cUUiR+y2MqXOcba4iV7lCPvFIrSjRgB"
+    },
+    {
+     "type": "text",
+     "text": "The `tank` part and the `connect` that uses it both depend on FuelTank, so I'll remove them in the same transaction."
+    },
+    {
+     "type": "tool_use",
+     "id": "toolu_01HVrq66dMMvaP62tefCtBeA",
+     "name": "sysml_apply_edits",
+     "input": {
+      "ops": [
+       {
+        "op": "remove",
+        "path": "VehicleModel::Vehicle#connect[0]"
+       },
+       {
+        "op": "remove",
+        "path": "VehicleModel::Vehicle::tank"
+       },
+       {
+        "op": "remove",
+        "path": "VehicleModel::FuelTank"
+       }
+      ],
+      "dryRun": false
+     },
+     "caller": {
+      "type": "direct"
+     }
+    }
+   ]
+  },
+  "usage": {
+   "promptTokens": 3552,
+   "completionTokens": 310,
+   "totalTokens": 3862
+  },
+  "finishReason": "tool_calls",
+  "latencyMs": 1668
+ }
+}

@@ -1,0 +1,57 @@
+{
+ "provider": "anthropic",
+ "model": "claude-haiku-5-5",
+ "createdAt": "2026-10-18T18:42:27.472Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": null,
+   "toolCalls": [
+    {
+     "id": "toolu_01AwJktYsUwWUiwr3CtqDHZB",
+     "name": "sysml_validate",
+     "arguments": "{}"
+    },
+    {
+     "id": "toolu_01XmRCytUjuuiWtGuH89tQha",
+     "name": "sysml_outline",
+     "arguments": "{\"depth\":3}"
+    }
+   ],
+   "raw": [
+    {
+     "type": "thinking",
+     "thinking": "",
+     "signature": "CAQSjwYKEAgSGAI4AUIIdGhpbmtpbmcSDKb0C7VUaid7M3BHKBoMYWxPbPXeoRKiSyAuIjBgYggh2gY5INZ9UkqvYCQjEFYAzJcOnW9+R/wFGma4g7JtbVwVWnfpHEoxEEvE2LQqrAUrNJ9awBpoOcxNGG2acpOmw0dt/hRoUAMB4tTLcWdQKzQubxRVTAQKkPnsQZZSIWbGeq43t9DJ6QV0wktu3wYVkcp1RibPLlGTj0L5X/t4AMfvsmI9ZagGKB/UtHGzZUZc65LxrNS9on+rWo9Np7nYZlkaUXjdas2ihjwu8gbyBUwPThtB7n3Z2KMH8K1PJqgLiI6O0bJdYUYG2OuCauIawaKZf6YjItqJFYn+uoNOP2/9V82HyjyF53WdK5EwT2JWSMyyjxXw4lWZ/V9Li5c4rCppt1dBl3uPY2IPbqJll6QzkxBUsquhxFxSV0NbeIFfYVbUoBw1NE472FFE1viCvo0Cin0taRGVZIfFAi9xWgR+z8wj+bhMaU1k8aj4Fu0qMTzgduTnn/RWpPA3GScbCxxEnszUUq5WLJUzaSeDMaVRaZRyLATcgaESyuJF8nKK3vHS6mkm/f9pAqFDLb7G3+s2kyxWK+hbnmNKBLzfrKn6bLthHLdAhV/VzjW9TIrdumuZHZGW5OAwZ2Mu63vTlwN25MObHyhM2wQS76r5iTOuasxwclWXG339BSwNjyg1rcqxuHUDZbGR6bcxXLEUzMa/HJ4m6CpXm+AEgX/ehpZIE8M+FEpZGc+Q0mJlGP19rNcHDr2O7VBmwgIJaO5U5dvGXr/2uyqDxL79fNaTzR5zy5VkVCKQRZWoj39WMgocaH4qu7vCeeggA/Be+/86anZp6X/RqzaQU/KOVU/jk2KvP4Eim6r0Mm/m+UOfq+ZQksM5RKMtwBLPWeaC4eL0UrGcr9MhN8FCukhRF2hHellPpIrcE5pXrHG3uJKU/JwC6btV6FXoi69RBWZZKOvlH8VwmotMNqhE+N9+Lvx8uRb68SfII2VCYu7VE04OlQlX9vytzOA8KbuqdXYYAQ=="
+    },
+    {
+     "type": "tool_use",
+     "id": "toolu_01AwJktYsUwWUiwr3CtqDHZB",
+     "name": "sysml_validate",
+     "input": {},
+     "caller": {
+      "type": "direct"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "toolu_01XmRCytUjuuiWtGuH89tQha",
+     "name": "sysml_outline",
+     "input": {
+      "depth": 3
+     },
+     "caller": {
+      "type": "direct"
+     }
+    }
+   ]
+  },
+  "usage": {
+   "promptTokens": 3460,
+   "completionTokens": 110,
+   "totalTokens": 3570
+  },
+  "finishReason": "tool_calls",
+  "latencyMs": 810
+ }
+}

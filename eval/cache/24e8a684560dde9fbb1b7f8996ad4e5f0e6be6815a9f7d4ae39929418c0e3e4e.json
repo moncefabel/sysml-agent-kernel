@@ -1,0 +1,58 @@
+{
+ "provider": "anthropic",
+ "model": "claude-haiku-5-5",
+ "createdAt": "2026-10-18T18:41:34.643Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": null,
+   "toolCalls": [
+    {
+     "id": "toolu_01KyDxvf8gUxDreQCa1fpL9x",
+     "name": "sysml_apply_edits",
+     "arguments": "{\"ops\":[{\"op\":\"rename\",\"path\":\"VehicleModel::FuelPort\",\"newName\":\"FuelInterface\"}]}"
+    },
+    {
+     "id": "toolu_014XnuyxwXppgK3JzwhuiwDR",
+     "name": "sysml_validate",
+     "arguments": "{}"
+    }
+   ],
+   "raw": [
+    {
+     "type": "tool_use",
+     "id": "toolu_01KyDxvf8gUxDreQCa1fpL9x",
+     "name": "sysml_apply_edits",
+     "input": {
+      "ops": [
+       {
+        "op": "rename",
+        "path": "VehicleModel::FuelPort",
+        "newName": "FuelInterface"
+       }
+      ]
+     },
+     "caller": {
+      "type": "direct"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "toolu_014XnuyxwXppgK3JzwhuiwDR",
+     "name": "sysml_validate",
+     "input": {},
+     "caller": {
+      "type": "direct"
+     }
+    }
+   ]
+  },
+  "usage": {
+   "promptTokens": 3072,
+   "completionTokens": 117,
+   "totalTokens": 3189
+  },
+  "finishReason": "tool_calls",
+  "latencyMs": 919
+ }
+}

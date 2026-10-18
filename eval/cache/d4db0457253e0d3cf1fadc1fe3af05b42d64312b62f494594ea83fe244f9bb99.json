@@ -1,0 +1,29 @@
+{
+ "provider": "anthropic",
+ "model": "claude-haiku-5-5",
+ "createdAt": "2026-10-18T18:42:35.497Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": "I didn't apply any changes. The connection `tank.fuelOut to filter.inlet` is invalid because the two ports have different types: `tank.fuelOut` is `FuelPort`, but `FuelFilter::inlet` is typed `LegacyFuelPort` (validator error E105).\n\nTo make it work, `FuelFilter::inlet` would need to be retyped to `FuelPort`. That changes an existing definition, which you asked me to keep, so I held off. Should I make that retype, or would you rather keep `LegacyFuelPort` and handle the mismatch another way?",
+   "raw": [
+    {
+     "type": "thinking",
+     "thinking": "",
+     "signature": "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"
+    },
+    {
+     "type": "text",
+     "text": "I didn't apply any changes. The connection `tank.fuelOut to filter.inlet` is invalid because the two ports have different types: `tank.fuelOut` is `FuelPort`, but `FuelFilter::inlet` is typed `LegacyFuelPort` (validator error E105).\n\nTo make it work, `FuelFilter::inlet` would need to be retyped to `FuelPort`. That changes an existing definition, which you asked me to keep, so I held off. Should I make that retype, or would you rather keep `LegacyFuelPort` and handle the mismatch another way?"
+    }
+   ]
+  },
+  "usage": {
+   "promptTokens": 3900,
+   "completionTokens": 471,
+   "totalTokens": 4371
+  },
+  "finishReason": "stop",
+  "latencyMs": 2691
+ }
+}

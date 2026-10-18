@@ -1,0 +1,55 @@
+{
+ "provider": "anthropic",
+ "model": "claude-haiku-5-5",
+ "createdAt": "2026-10-18T18:41:43.980Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": "The colleague renamed `Engine` to `CombustionEngine` in version 1, so I'm applying the change to that element.",
+   "toolCalls": [
+    {
+     "id": "toolu_013tWU3Ut2K4aj7qac6zwpWL",
+     "name": "sysml_apply_edits",
+     "arguments": "{\"ops\":[{\"op\":\"set\",\"path\":\"VehicleModel::CombustionEngine::mass\",\"field\":\"value\",\"value\":\"175\"}],\"expectedVersion\":1}"
+    }
+   ],
+   "raw": [
+    {
+     "type": "thinking",
+     "thinking": "",
+     "signature": "CAQSsAcKEAgSGAI4AUIIdGhpbmtpbmcSDNUtBRwLtEMko9JS/BoMErC/QMy5heYN3AhsIjAty674/KR4SK0nCLfhmDvhNxgxM3slJw0g8htLrhrN2kV8HN82q0EMvcVvtq99rdsqzQa9k07bGLr+S+WLQhTrACSjuqJLLl2SP43A8O4MCy0DgR0rqZu0iGtzZBX6e4NH1x5/nWf3rWZdJpYuMyFe6Es6YXdbDEy4HLPZR6Wbq5bYtE1vOOHX/NQlEBquYFFlRvBoH5VQRO4wRD4ee3Wtj0xffh7yT7/qHmwMBaUg9pbMmsRBA3XunQWin/MtAnEC40zARm37+NhMe5Sg5PJI+EHeCCsDupjDcVbwuyBprwrQdutc0dFmOZIfT+m1aL1yXU3mWqhGK6J6rp4tpJzsB89FQgZ/WtiO0piM4UVv7tJMXBU6RXHscSJ/W31sZBnyZaTZzVXswTbwLt7skxyLIFoE/nKqPSLMULV+iuUFYpOxhBsjOc+uLBSC+MmL091BBEe93alCh2MIl1UW8skfcS/GmL/MU8ERif3JI0eEzov4uorualzXNN7K2Vy8qA1lDoRiGnW8jhhYP6nJPvRsW/Ph1Tq/FKPXr0w63HxLWUb0wmV66Qxwn5FhGD8q8Gb7mtCYiom8iiIQDuApG7NlSeLE6wVjOfew1Eb3dHAyyib5n86Rop3yaT75nx7RlKxZFkyKL+Dk5IUiXCDv19MEDYV50DLy6MjTIAPklKqIeyeg5UlEGQX+NPklOztaTraINtGQe2fIewSJ6kUK0ko6tS88UiEDjodm1frG3I6bhidZ21FGIjai6TbwonIcBxeSNBddHz1CmyvQ0Wa8gPZ2p8FTDGhPCpjyobUOTaYWGFme1V9/2jhzE+uZXwwTw3IWWkmeD1nNcmQh2GM4kvORF8fjhGpfIJ3RtDUPE0BM1YzG72YRvDNiLRnligqhHLKbTrDxCg4Oxvnjemc5G0DW7IG8HCRw49pYuGXTmGvs3xvtoyw1LZ5wzmEYcWUhkjRQHslG5lBrC6UZMLj/d9DSZPbQSNkH+oUOXhPUEu22KBnTs/YYMYXxaRM3ZL7dLBcl4bm0ofIIuwfYub6phipSyaY0SvVL349mr4+43npl7x/bPBYsVfcyFcNp9DXwZor50EJSZz+to0pt4q3TkjdG8MnvRpYKGtxnH/HBvPyJtrCBEfaBvnmHLsKPYnEiaj2IZosn3Fz0727y1uWyNsas9bYlWkzjfEx9F1c+qhp2nRgB"
+    },
+    {
+     "type": "text",
+     "text": "The colleague renamed `Engine` to `CombustionEngine` in version 1, so I'm applying the change to that element."
+    },
+    {
+     "type": "tool_use",
+     "id": "toolu_013tWU3Ut2K4aj7qac6zwpWL",
+     "name": "sysml_apply_edits",
+     "input": {
+      "ops": [
+       {
+        "op": "set",
+        "path": "VehicleModel::CombustionEngine::mass",
+        "field": "value",
+        "value": "175"
+       }
+      ],
+      "expectedVersion": 1
+     },
+     "caller": {
+      "type": "direct"
+     }
+    }
+   ]
+  },
+  "usage": {
+   "promptTokens": 4382,
+   "completionTokens": 249,
+   "totalTokens": 4631
+  },
+  "finishReason": "tool_calls",
+  "latencyMs": 1380
+ }
+}

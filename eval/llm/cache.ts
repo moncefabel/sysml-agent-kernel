@@ -11,6 +11,7 @@ import { canonicalJson, ProviderError, sha256, type CompletionRequest, type Comp
 export class CachedProvider implements LLMProvider {
   readonly provider: string;
   readonly model: string;
+  readonly settings?: Record<string, unknown>;
   hits = 0;
   misses = 0;
 
@@ -21,26 +22,29 @@ export class CachedProvider implements LLMProvider {
   constructor(readonly inner: LLMProvider, readonly dir: string, readonly mode: 'readwrite' | 'readonly' = 'readwrite', readonly sample = 1) {
     this.provider = inner.provider;
     this.model = inner.model;
+    this.settings = inner.settings;
     mkdirSync(dir, { recursive: true });
   }
 
-  static key(provider: string, model: string, req: CompletionRequest, sample = 1): string {
+  static key(provider: string, model: string, req: CompletionRequest, sample = 1, settings?: Record<string, unknown>): string {
     return sha256(canonicalJson({
       provider, model,
       messages: req.messages, tools: req.tools,
       maxOutputTokens: req.maxOutputTokens, temperature: req.temperature,
       ...(sample > 1 ? { sample } : {}),
+      // Absent for providers without settings, so earlier keys stay valid.
+      ...(settings ? { settings } : {}),
     }));
   }
 
   private file(key: string): string { return join(this.dir, `${key}.json`); }
 
   isCached(req: CompletionRequest): boolean {
-    return existsSync(this.file(CachedProvider.key(this.provider, this.model, req, this.sample)));
+    return existsSync(this.file(CachedProvider.key(this.provider, this.model, req, this.sample, this.settings)));
   }
 
   async complete(req: CompletionRequest): Promise<CompletionResponse> {
-    const key = CachedProvider.key(this.provider, this.model, req, this.sample);
+    const key = CachedProvider.key(this.provider, this.model, req, this.sample, this.settings);
     const file = this.file(key);
     if (existsSync(file)) {
       this.hits++;

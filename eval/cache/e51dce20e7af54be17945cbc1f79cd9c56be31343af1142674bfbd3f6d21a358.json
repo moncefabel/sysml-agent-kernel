@@ -1,0 +1,24 @@
+{
+ "provider": "anthropic",
+ "model": "claude-haiku-5-5",
+ "createdAt": "2026-10-18T18:41:53.079Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": "Added `part spare : Wheel;` to `VehicleModel::Vehicle`. There is no `Wheels` definition in the model, so I typed it with the existing `Wheel` part definition, which is the closest match.",
+   "raw": [
+    {
+     "type": "text",
+     "text": "Added `part spare : Wheel;` to `VehicleModel::Vehicle`. There is no `Wheels` definition in the model, so I typed it with the existing `Wheel` part definition, which is the closest match."
+    }
+   ]
+  },
+  "usage": {
+   "promptTokens": 3342,
+   "completionTokens": 72,
+   "totalTokens": 3414
+  },
+  "finishReason": "stop",
+  "latencyMs": 769
+ }
+}

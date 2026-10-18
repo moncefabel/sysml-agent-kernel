@@ -1,0 +1,43 @@
+{
+ "provider": "anthropic",
+ "model": "claude-haiku-5-5",
+ "createdAt": "2026-10-18T18:41:30.262Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": null,
+   "toolCalls": [
+    {
+     "id": "toolu_01VYL2JS31zTQWFGZLcEfpRk",
+     "name": "sysml_outline",
+     "arguments": "{\"depth\":3}"
+    }
+   ],
+   "raw": [
+    {
+     "type": "thinking",
+     "thinking": "",
+     "signature": "CAQShwUKEAgSGAI4AUIIdGhpbmtpbmcSDGenngBpnsPvYVSYDBoMKWQqn/O+2+af+aLpIjA68JsJe18RuGgFhDNG0nbRMnJrUS5/Jrw74bN3AdCc/Egst0+d3rRZDShE7WpXJ0gqpAQ+T8WG6njXlV4duxg9V6f1OaTJQ6QoVF9WGTXUzmj9yM3hwbEoShhRkNABoJ/dY2e3fhhaQJjbtMI9ICzjES1UjiFh3nMumm0xv9htsM84hqLw/WUqtUo+wSuqCYDBPaiyhETRtUImQnVP6gNXRfIX/nhj5Fn0QyRQ0KRLcryx9rYzc5t6Hoc9ZX++Blo3pnsTySQwSpYMnpQkXLx7a/QMKGqB13r/gxinCUQVBrCW/vruNbSlpmHzSVVsF928AzyiHE9LQIi+OmTV5skm5j/yLamSeHmzyUe40wu5lfJp0a4iIItMu0+2Yi9oJkSwrGNk7CR18SX2MbIrj3T5hWXJ3sPfVQY76gJFV7+CZygwFLt8tmhUl/9Qfewi8k5QyWZmgkPEd+ZDBO2t+GhRJMEpzxOOvquwFmTzo9/GkshyCvheQKiAX+5RGVGeN2jaXl1mvBxLCh78xt/Sl6VRaGL77zz5oKGKU5JHZbcrnBqDNHWL5rzEMuNcHKLER3VjNbOV41TenKATOfVlxo7QM2qBIvRpfb3a+tsHPZxWnasd5XLdisvTgwFqnkYhI+iQhY+W9sUzqlpr3aOEXC7/H5yiwyJGgGDOjPibSXf9GaZlDWXEnC6p1x687G5GEWJSL8ElVymJLd4SnBbmm3Pdwpm54kRZoUNfE/P708z259JKWjrQkTWKGYSKZRczR7l8yd/Alsvpr85DzSFCVQ+8Rk2I5gsPsBgB"
+    },
+    {
+     "type": "tool_use",
+     "id": "toolu_01VYL2JS31zTQWFGZLcEfpRk",
+     "name": "sysml_outline",
+     "input": {
+      "depth": 3
+     },
+     "caller": {
+      "type": "direct"
+     }
+    }
+   ]
+  },
+  "usage": {
+   "promptTokens": 2106,
+   "completionTokens": 71,
+   "totalTokens": 2177
+  },
+  "finishReason": "tool_calls",
+  "latencyMs": 728
+ }
+}

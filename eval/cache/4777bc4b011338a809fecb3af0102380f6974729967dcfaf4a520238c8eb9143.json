@@ -1,0 +1,107 @@
+{
+ "provider": "anthropic",
+ "model": "claude-haiku-5-5",
+ "createdAt": "2026-10-18T18:42:41.011Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": null,
+   "toolCalls": [
+    {
+     "id": "toolu_01JhZZAhh8NkYVJ3gEbgjgrU",
+     "name": "sysml_get",
+     "arguments": "{\"path\":\"VehicleModel::Engine\"}"
+    },
+    {
+     "id": "toolu_01Xs3PzrARB8mv2h8AUpM1HF",
+     "name": "sysml_get",
+     "arguments": "{\"path\":\"VehicleModel::ElectricMotor\"}"
+    },
+    {
+     "id": "toolu_015C8NpB7urk7oi88nJ6tdLA",
+     "name": "sysml_get",
+     "arguments": "{\"path\":\"VehicleModel::FuelTank\"}"
+    },
+    {
+     "id": "toolu_011rjnD5ZJLpFJfVVBuntuAy",
+     "name": "sysml_get",
+     "arguments": "{\"path\":\"VehicleModel::Wheel\"}"
+    },
+    {
+     "id": "toolu_014MypVzRnEhBaAU1PHiJkPr",
+     "name": "sysml_get",
+     "arguments": "{\"path\":\"VehicleModel::Vehicle\"}"
+    }
+   ],
+   "raw": [
+    {
+     "type": "thinking",
+     "thinking": "",
+     "signature": "CAQSywUKEAgSGAI4AUIIdGhpbmtpbmcSDJn+5aQXZgIk5YArxxoM0zJt/dHwkS7UM7UEIjB/h+YQMSg/ie9p2TgAM+GqrKRvUPidcLedN1YIA4PSOT044L6PWhp0QoUMEd91hrkq6ASIUei6/r91cvIZc2CgnUqk/fjIuDjk8zcxNbB5Kw93NquYvI0OCvOSFcXzUmavLIAHElTlmUhWo/EkLzk05Nzk29L0FQzdmW9G+1BM/TA5Yu51vyV9r6uTwzgH3BKDtVHJGKX8JUNrbFC1eYjTHMjZ6DaNE4AQwYIHtfNovqOLuHDR5YoBjhS5XYyZj27BwNg/quQHWoUwG2mYyToZIt9bEKYuc+BBWO/r8OE3tVIPL0VpI9Maw0+SeMy1FoKZN51tMS3L2eojQlANXtD06puqzFy/NxS9B3Nut6cTU+QoDx11j0K4q7WlTi7JeAvjRPd64zfYV+x/tR41Jzjytw2xWG/ZReduFglIl7Xip3g+Z6ybNI6uB44CDTAvjV+4PJkySmL66ouNerJ3Unj2NiEPHKLsN8I9NT/Hur97syrkhumDgsYZjA/NeYrnSAH5LLSyvbv5rv0R8VFCjjD5wAx4Q+JFy2yysQszOJkgZcUtaQdon1oCOq6+t481KuRldSgJ+aBRtWH/fAHPW+mZG+b44Y1b2Xcxvr9uh6U+xCqWD9LB86qN/BGcrCWPTy0TYVXuzxeW8ntoT9a6QEZDyyIXqyAhF8toU8j+P/AGfvX41aolHGL82gXvH34CmVGVlkdl/iFGfSBCIywHWQF9NweJ9uSHwokiSmp4YIAcc/1JD0HmJSJTBxoySEg+d8haB4hCg38fmWj5tHGZkl6s2JHln/SyIaBs9NTZkwAkI6qcyvN1rlkJclf9yJk1BhSluEmBmRoATWQFQWi7VIK69L0RfFQuURb01A9qHZKOaQIhZPULaWSubrJKGAE="
+    },
+    {
+     "type": "tool_use",
+     "id": "toolu_01JhZZAhh8NkYVJ3gEbgjgrU",
+     "name": "sysml_get",
+     "input": {
+      "path": "VehicleModel::Engine"
+     },
+     "caller": {
+      "type": "direct"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "toolu_01Xs3PzrARB8mv2h8AUpM1HF",
+     "name": "sysml_get",
+     "input": {
+      "path": "VehicleModel::ElectricMotor"
+     },
+     "caller": {
+      "type": "direct"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "toolu_015C8NpB7urk7oi88nJ6tdLA",
+     "name": "sysml_get",
+     "input": {
+      "path": "VehicleModel::FuelTank"
+     },
+     "caller": {
+      "type": "direct"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "toolu_011rjnD5ZJLpFJfVVBuntuAy",
+     "name": "sysml_get",
+     "input": {
+      "path": "VehicleModel::Wheel"
+     },
+     "caller": {
+      "type": "direct"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "toolu_014MypVzRnEhBaAU1PHiJkPr",
+     "name": "sysml_get",
+     "input": {
+      "path": "VehicleModel::Vehicle"
+     },
+     "caller": {
+      "type": "direct"
+     }
+    }
+   ]
+  },
+  "usage": {
+   "promptTokens": 3105,
+   "completionTokens": 345,
+   "totalTokens": 3450
+  },
+  "finishReason": "tool_calls",
+  "latencyMs": 1617
+ }
+}

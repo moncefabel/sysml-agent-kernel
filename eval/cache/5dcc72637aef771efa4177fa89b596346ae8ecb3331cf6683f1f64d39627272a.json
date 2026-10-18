@@ -1,0 +1,122 @@
+{
+ "provider": "anthropic",
+ "model": "claude-haiku-5-5",
+ "createdAt": "2026-10-18T18:42:00.832Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": "Let me check the documentation of the part definitions.",
+   "toolCalls": [
+    {
+     "id": "toolu_013FkjGShiokKkeEaLMcTbCe",
+     "name": "sysml_find_references",
+     "arguments": "{\"path\":\"VehicleModel\"}"
+    },
+    {
+     "id": "toolu_01MF8R8a9Jw8Dt2qDjB96zYf",
+     "name": "sysml_get",
+     "arguments": "{\"path\":\"VehicleModel::Engine\"}"
+    },
+    {
+     "id": "toolu_016pK12JXfGso37NmqY34xFS",
+     "name": "sysml_get",
+     "arguments": "{\"path\":\"VehicleModel::ElectricMotor\"}"
+    },
+    {
+     "id": "toolu_01Qwk3ArafG9w49p288ijGDM",
+     "name": "sysml_get",
+     "arguments": "{\"path\":\"VehicleModel::FuelTank\"}"
+    },
+    {
+     "id": "toolu_01BRYZNMiGRLTjsBdZJhMgks",
+     "name": "sysml_get",
+     "arguments": "{\"path\":\"VehicleModel::Wheel\"}"
+    },
+    {
+     "id": "toolu_01KZKLxxvik2gC1cRmBZTWYG",
+     "name": "sysml_get",
+     "arguments": "{\"path\":\"VehicleModel::Vehicle\"}"
+    }
+   ],
+   "raw": [
+    {
+     "type": "text",
+     "text": "Let me check the documentation of the part definitions."
+    },
+    {
+     "type": "tool_use",
+     "id": "toolu_013FkjGShiokKkeEaLMcTbCe",
+     "name": "sysml_find_references",
+     "input": {
+      "path": "VehicleModel"
+     },
+     "caller": {
+      "type": "direct"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "toolu_01MF8R8a9Jw8Dt2qDjB96zYf",
+     "name": "sysml_get",
+     "input": {
+      "path": "VehicleModel::Engine"
+     },
+     "caller": {
+      "type": "direct"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "toolu_016pK12JXfGso37NmqY34xFS",
+     "name": "sysml_get",
+     "input": {
+      "path": "VehicleModel::ElectricMotor"
+     },
+     "caller": {
+      "type": "direct"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "toolu_01Qwk3ArafG9w49p288ijGDM",
+     "name": "sysml_get",
+     "input": {
+      "path": "VehicleModel::FuelTank"
+     },
+     "caller": {
+      "type": "direct"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "toolu_01BRYZNMiGRLTjsBdZJhMgks",
+     "name": "sysml_get",
+     "input": {
+      "path": "VehicleModel::Wheel"
+     },
+     "caller": {
+      "type": "direct"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "toolu_01KZKLxxvik2gC1cRmBZTWYG",
+     "name": "sysml_get",
+     "input": {
+      "path": "VehicleModel::Vehicle"
+     },
+     "caller": {
+      "type": "direct"
+     }
+    }
+   ]
+  },
+  "usage": {
+   "promptTokens": 2958,
+   "completionTokens": 356,
+   "totalTokens": 3314
+  },
+  "finishReason": "tool_calls",
+  "latencyMs": 1701
+ }
+}

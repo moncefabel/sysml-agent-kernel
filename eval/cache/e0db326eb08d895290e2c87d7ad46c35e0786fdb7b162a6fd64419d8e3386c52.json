@@ -1,0 +1,59 @@
+{
+ "provider": "anthropic",
+ "model": "claude-haiku-5-5",
+ "createdAt": "2026-10-18T18:42:18.207Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": null,
+   "toolCalls": [
+    {
+     "id": "toolu_01SerXkQoFm68z2CQVNfk7AN",
+     "name": "sysml_find_references",
+     "arguments": "{\"path\":\"VehicleModel::FuelTank\"}"
+    },
+    {
+     "id": "toolu_01HeFT8nDy8EesUZ3zRBk6Cj",
+     "name": "sysml_get",
+     "arguments": "{\"path\":\"VehicleModel::Vehicle\"}"
+    }
+   ],
+   "raw": [
+    {
+     "type": "thinking",
+     "thinking": "",
+     "signature": "CAQSsAYKEAgSGAI4AUIIdGhpbmtpbmcSDO3lfqALHt8QgGX7wxoM4uUJ40vyoYpirJxDIjASveClxOkgq5n6hdAKn7Oq1FVVKUtZAOg2O3GN3xEX6idVFmQKUh3x9pthk4zGAIsqzQVIMGedKCokhyKaaZWWJTuPM1/wDd2TsMgzbj0EbkrCEVcZlkzGI7+bNtXcz9PLDbhDsittV0WABoX7D+mZFWncHKaRji67N0ShBE7ZavtSVuZ9cnsVtUJwdLb6B/un4CSvp4GkGTrdkzoCviX05Gy6CJ5zWb+oxe7kbylVc93lvYZJXPOBCg1QqsGJAJsXg8uKKlmvCHmhPYJc1QhBw8agUPJCD2Vy2cRw7RHUpM13So7yDKPbhEgNS/UKLMnYo5gsLwHzGTh7WBGBd5CLJ8G/ztYqW5CWjt7JZz+bvwAyEKr3Kw68aC/Tokzp+DIJ+cwSjnZh3fnI2f/X/kjg9eeSvGv+X6EmrZbMEj/iD8qhzy9sXtlDhUAEms0zI6Hbdr1u4Sse5ncDSVb/JlKjBuMa3P2AIYH1Z2YTCCS0HQOyMYAyql02ecj5LwD95oNVpMXw7y8Gtg6sZbbfGbMBvDuMV3Zb7kcnVAhYAkqtLr4uWZGLIL5v2ihhwTXczO3oTJrMTOAkWVg19taI8V3J1zpmC/b+EgHAbLQ7hu7S8GF1LnLo5SFZpdWPBuFUytv5pFRry1HXmWk6dfvrx/+xVzwC09bH6EblwtrJi5LyOY7gsOfBRTxCNDP5FHEcyshSSBP/eZ0I4D2TcPGOkmFX4DxUFQA0LCl2zxChGVEfRyhLbyTV+EBJUnqBGy0qYYnyavDs/XCAzaGJjue5/8XYXXwYos26P35B8NU+yCkfKPEibTw8i5TABoq2qcadU3R+YpyULKCLmP+lwZNkFgo28F5Kep8HmYdNZ0OqNALvxx58tME8+6iBVI2wFiMkuCnsnHPjzXGrkO7VytWsSX4Xu13ZnHIaN0DHd5WLaZkNqsjEiNQtgIDO5avEMG12RQgirUf/2MEJBa3RRtzRdKxYaY1EpGYgmhEMZMwbjDzPTZiAigCvxRT5oy3PrGWS0rwYAQ=="
+    },
+    {
+     "type": "tool_use",
+     "id": "toolu_01SerXkQoFm68z2CQVNfk7AN",
+     "name": "sysml_find_references",
+     "input": {
+      "path": "VehicleModel::FuelTank"
+     },
+     "caller": {
+      "type": "direct"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "toolu_01HeFT8nDy8EesUZ3zRBk6Cj",
+     "name": "sysml_get",
+     "input": {
+      "path": "VehicleModel::Vehicle"
+     },
+     "caller": {
+      "type": "direct"
+     }
+    }
+   ]
+  },
+  "usage": {
+   "promptTokens": 3072,
+   "completionTokens": 198,
+   "totalTokens": 3270
+  },
+  "finishReason": "tool_calls",
+  "latencyMs": 1043
+ }
+}

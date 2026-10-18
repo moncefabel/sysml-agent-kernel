@@ -1,0 +1,24 @@
+{
+ "provider": "anthropic",
+ "model": "claude-haiku-5-5",
+ "createdAt": "2026-10-18T18:41:29.527Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": "Fixed both validation errors in `VehicleModel::Vehicle` and kept all part usages: the `engine` part's type was corrected from `Engin` to `Engine`, and the connection now targets `engine.fuelIn` (the port that actually exists on `Engine`) instead of `engine.fuelInput`. The model validates with zero errors.",
+   "raw": [
+    {
+     "type": "text",
+     "text": "Fixed both validation errors in `VehicleModel::Vehicle` and kept all part usages: the `engine` part's type was corrected from `Engin` to `Engine`, and the connection now targets `engine.fuelIn` (the port that actually exists on `Engine`) instead of `engine.fuelInput`. The model validates with zero errors."
+    }
+   ]
+  },
+  "usage": {
+   "promptTokens": 4113,
+   "completionTokens": 115,
+   "totalTokens": 4228
+  },
+  "finishReason": "stop",
+  "latencyMs": 1119
+ }
+}

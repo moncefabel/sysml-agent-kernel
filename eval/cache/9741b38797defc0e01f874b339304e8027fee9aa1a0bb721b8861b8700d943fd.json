@@ -1,0 +1,55 @@
+{
+ "provider": "anthropic",
+ "model": "claude-haiku-5-5",
+ "createdAt": "2026-10-18T18:41:24.106Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": null,
+   "toolCalls": [
+    {
+     "id": "toolu_01KPzeeZsdyuUVnjDpsdJXbC",
+     "name": "sysml_apply_edits",
+     "arguments": "{\"ops\":[{\"op\":\"add\",\"parent\":\"VehicleModel\",\"source\":\"part def Brake {\\n    attribute mass : Real = 12;\\n}\"},{\"op\":\"add\",\"parent\":\"VehicleModel::Vehicle\",\"source\":\"part brakes : Brake [4];\"}],\"dryRun\":false}"
+    }
+   ],
+   "raw": [
+    {
+     "type": "thinking",
+     "thinking": "",
+     "signature": "CAQSsAcKEAgSGAI4AUIIdGhpbmtpbmcSDLrVyhVDLhR4SgOPiRoM6aYCqSCTbiB86R1oIjDI7Vt2sqsh+6JIN0pd3Dj3SkfsMcSpXWMNaxSsK9+CpN/fxRIYq+RluVZN3i1+VUsqzQafL/jO1loeorkQf1V6JvthEiMLATA2aYjiso4uWb09Pf/x559DWAaLl9D82UgK481z5KVpgoDNOaaSaGOJ92MkmmTkVuELT8QmHF59kfY05jWDDalj5LWPa6z2SZNcDuyQTIQT18uzkxGu5ni1VSr7nH5x71k0k1plFE2lCWvmfGiabzDScdQuMOyMVnAvLeDtW3GkWgC3I2YrQ2l6DOhEwVfvb+hYdC8kpJYcGVIoYsmQC/iwniXicMH8t3bNJ7McI/xTyLmO1woCKlvp/nVqcigzkNdg4pZFoJTFaIwZ0vlkXIe5Oz6K+mmfVcKlZNZzq2MnXtQmpjh4+SyVGoXzzRX8e3w8N2lVIxf87LjPba8XSvw3GkrKmv9554qiSrx1vPEV24FCRyl2kY/B/dQ0lS2Sz6vKUPZmRuZKGnrOgoFaJ8bGIPbXHw046JNkYIxRKOYyMQzWix6yWb3KGMkWPTQw5MTeaWnjNuogzfxVjG0SepafhY0Dz3+hMQQoR9xiFtgZoLCSjMsXmyqO8lSfo0ck1hi4rQRHgRSWOgUZ/1F6rLhYWFYS6/TSNEordpCZHhlDMLa7ghw/p11RmAy3sY/0wRncl4/iIsXjYHbcgmED8kjys4+7Ghs3np8oAGwelwH9+V0GTwSPj6QFks/b9PtqfFk9OFxnz1jbPCBd+a3cV38/5a+gNgZPeq3p7aaaQOX5oFWZbwDNpRk7sbxSSa2a6TveDVFob1ROcxrizEkZYoGKUli8oXs7ZjA5gaUzBOeMCOpmxEqNpP22B3i3Uy2citSuz778awDyM4bbZ807DGkd0pwLQCSsHhPXnGVdu61Ab+MP7Xvpubj0q6EiCZIHtzmho2ac1+XFSwLyyTKkvlikgm6T4tPWNvqPfX3WNqyuf3J/Cyh6arf1bUZdWGAvgL2/JjC2ak89ITEd9wqn+5g4fTbEo9WtiZCTWgS/PlsgOGw/1Q/WA3lEUn3nhJW9PS9Tr6kiZdIDJs9p1ORYQ1xmUPzLsXAy24vdFsGTG8r63QpxnywnxJMvZoH+KpN32YJIQZa5Tigf3Fdo8RdaXOMiOM5vYEY+WWX0jaqUZwTlYPZPKiHDXgr2sIodKH5sT8tFh3DcPFf9sBgB"
+    },
+    {
+     "type": "tool_use",
+     "id": "toolu_01KPzeeZsdyuUVnjDpsdJXbC",
+     "name": "sysml_apply_edits",
+     "input": {
+      "ops": [
+       {
+        "op": "add",
+        "parent": "VehicleModel",
+        "source": "part def Brake {\n    attribute mass : Real = 12;\n}"
+       },
+       {
+        "op": "add",
+        "parent": "VehicleModel::Vehicle",
+        "source": "part brakes : Brake [4];"
+       }
+      ],
+      "dryRun": false
+     },
+     "caller": {
+      "type": "direct"
+     }
+    }
+   ]
+  },
+  "usage": {
+   "promptTokens": 3080,
+   "completionTokens": 314,
+   "totalTokens": 3394
+  },
+  "finishReason": "tool_calls",
+  "latencyMs": 1550
+ }
+}

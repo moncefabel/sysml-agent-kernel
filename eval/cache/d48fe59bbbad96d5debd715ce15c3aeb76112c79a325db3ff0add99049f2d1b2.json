@@ -1,0 +1,49 @@
+{
+ "provider": "anthropic",
+ "model": "claude-haiku-5-5",
+ "createdAt": "2026-10-18T18:42:37.469Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": null,
+   "toolCalls": [
+    {
+     "id": "toolu_018iVVCCb69tDtnf998e8nAT",
+     "name": "sysml_apply_edits",
+     "arguments": "{\"ops\":[{\"op\":\"add\",\"parent\":\"VehicleModel::Vehicle\",\"source\":\"part spare : Wheel;\"}]}"
+    }
+   ],
+   "raw": [
+    {
+     "type": "thinking",
+     "thinking": "",
+     "signature": "CAQSxQYKEAgSGAI4AUIIdGhpbmtpbmcSDLLVhJyQc9wNy2NKLxoMKBzfmynMSPr6TedSIjAbuusm58j/5VkQOqRzGJeZCHp7F+bp8NAuY1nNMM/A27kgb0u5ElCxyNfsrQSH59wq4gXbNPcNDUG9jvSitF4eDNLmcNHv5b7z+chZZjhLtunLPbmFI1Affx9vApAiwILkgjO9eRqTE1qTTTtE+iAmcrbTh/8Ft9uxJhYDS9QCFrkLCm/47MQmwbKA683RKtFau2E6plEhyhmgfUCv0LPzQpNnxGrzgn2cmr9q+dHmH1tlSggR9G0SQ1YFq6q1dVpt8V8IzGt1B0foET9OLjRt8g2Ybg9P4exY1Ysp5y+0YM48YBitNIHHSJiExd+mf3MktEc04BifyzYmP/4LcuaSle2VzisrLAMfjsC8GdF+MV1/MLQcE4Ol66XLMFkJKalA0iXTJucQNax9OO5/nPqmBL0fqofFuYD5qGA+DWV9NUVPkmtkmg9XW4InAoA5XmEfXWBIASJ5rlRQqyY1eNmVxNcvtzHz7mm8u/k4kRFpb4GjybUSgZpzSMgtV6AhM6NwcPOLDuWduFFnLlBfXa7U1Gpurh944Ww60y5aPRrLv74tLxNrFtcu5KDFxZJQ5VR8CqiJ+GSbxU3xk/eMHxZwYBS00Vt5/yKSVhCR/L5qE4vpQ26rVVdrjxnFlynwhL9CrPK91xljCyCRT7weFklf5CAL+1FPMyL6dqA7eZgtUSnJd3+m0VOW8IK8UySOV1UGyevMi17GHOjlnh5SxcVjCV8cYyN87hMT9RyvbNOlV6B7PihslhXoxq1DIdCyq/1J5Co6SG0LNEamqyhha28uFToe+TSjwaSpWrD/1pl9yI3VIu0n09Jl5d8HiKuGa0uKDroK60b0j+PI3IxJAyaE+TsM6bv/nFntDvjJ+ZL4hR+yjNa9XCvXazyovkPRgv/8LJ1fvJXRvdHLbnzDDK/rTFdyTXDs6SEdXawEYrmx/vao/qDSb2hhRn9F8i/E8J+Z82jUJtJBW+uTreM/rMc1VvdhDOj6mgMt2yKkS94YT+ZNifrxzcUNf3+PdIgQnaYUZasd2nViahn+Zi7kiiXfFZZlpg0YAQ=="
+    },
+    {
+     "type": "tool_use",
+     "id": "toolu_018iVVCCb69tDtnf998e8nAT",
+     "name": "sysml_apply_edits",
+     "input": {
+      "ops": [
+       {
+        "op": "add",
+        "parent": "VehicleModel::Vehicle",
+        "source": "part spare : Wheel;"
+       }
+      ]
+     },
+     "caller": {
+      "type": "direct"
+     }
+    }
+   ]
+  },
+  "usage": {
+   "promptTokens": 3069,
+   "completionTokens": 188,
+   "totalTokens": 3257
+  },
+  "finishReason": "tool_calls",
+  "latencyMs": 1172
+ }
+}
