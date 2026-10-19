@@ -1,6 +1,7 @@
 import type { ToolHost } from '../../src/tools.js';
 import { SYSTEM, type Agent, type AgentRun, type LlmStats } from '../agents.js';
 import { TokenBudget } from './budget.js';
+import { CLARIFICATION_TOOL, HITL_SYSTEM_ADDENDUM, MAX_CLARIFICATIONS } from '../hitl.js';
 import { estimateTokens, ProviderError, type ChatMessage, type CompletionRequest, type LLMProvider, type ToolSpec } from './provider.js';
 
 export interface LlmAgentOptions {
@@ -14,6 +15,12 @@ export interface LlmAgentOptions {
   /** Tool results longer than this are truncated before being sent back to the model. */
   maxToolResultChars?: number;
   temperature?: number;
+  /**
+   * hitl configuration: offers request_clarification and answers it with this function (the
+   * simulated human). Absent in the default configuration, which then sends exactly the same
+   * requests as before.
+   */
+  clarify?: (scenarioId: string, question: string) => string;
 }
 
 export const LLM_DEFAULTS = { maxTurns: 12, maxOutputTokens: 1024, scenarioTokenBudget: 60_000, maxToolResultChars: 12_000, temperature: 0 } as const;
@@ -35,11 +42,17 @@ export function llmAgent(provider: LLMProvider, options: LlmAgentOptions = {}): 
     name: `${provider.provider}:${provider.model}`,
     async run(s, host) {
       const tools: ToolSpec[] = host.toolDefinitions().map((t) => ({ name: t.name, description: t.description, parameters: t.input_schema }));
-      const messages: ChatMessage[] = [{ role: 'system', content: SYSTEM }, { role: 'user', content: s.task }];
+      if (o.clarify) tools.push(CLARIFICATION_TOOL);
+      const system = o.clarify ? `${SYSTEM}\n${HITL_SYSTEM_ADDENDUM}` : SYSTEM;
+      const messages: ChatMessage[] = [{ role: 'system', content: system }, { role: 'user', content: s.task }];
       const transcript: AgentRun['transcript'] = [];
+      let clarifications = 0;
       const budget = new TokenBudget(o.scenarioTokenBudget);
       const stats: LlmStats = { turns: 0, promptTokens: 0, completionTokens: 0, totalTokens: 0, billedTokens: 0, cacheHits: 0, llmLatencyMs: 0, malformedToolCalls: 0, estimatedUsageTurns: 0 };
-      const done = (stopReason: LlmStopReason): AgentRun => ({ toolCalls: transcript.length, transcript, stopReason, llm: stats });
+      const done = (stopReason: LlmStopReason, finalText?: string): AgentRun => ({
+        toolCalls: transcript.length, transcript, stopReason, llm: stats,
+        ...(finalText ? { finalText } : {}), ...(o.clarify ? { clarifications } : {}),
+      });
 
       while (true) {
         if (stats.turns >= o.maxTurns) return done('max_turns');
@@ -74,7 +87,7 @@ export function llmAgent(provider: LLMProvider, options: LlmAgentOptions = {}): 
         messages.push(res.message);
 
         const calls = res.message.toolCalls ?? [];
-        if (!calls.length) return done(res.finishReason === 'length' ? 'output_truncated' : res.finishReason === 'refusal' ? 'refused' : 'model_done');
+        if (!calls.length) return done(res.finishReason === 'length' ? 'output_truncated' : res.finishReason === 'refusal' ? 'refused' : 'model_done', res.message.content ?? undefined);
 
         for (const c of calls) {
           let result: unknown;
@@ -85,6 +98,13 @@ export function llmAgent(provider: LLMProvider, options: LlmAgentOptions = {}): 
             stats.malformedToolCalls++;
             args = c.arguments;
             result = { error: { code: 'INVALID_JSON', message: `Tool arguments are not valid JSON: ${(e as Error).message}` } };
+          }
+          // A clarification goes to the simulated human, never to the kernel; it changes nothing.
+          if (result === undefined && o.clarify && c.name === CLARIFICATION_TOOL.name) {
+            const question = String((args as { question?: unknown })?.question ?? '');
+            const answer = ++clarifications <= MAX_CLARIFICATIONS ? o.clarify(s.id, question) : 'No more questions can be answered in this run.';
+            result = { answer };
+            host.auditTrail.push({ ts: new Date().toISOString(), tool: 'human.clarification', args: { question }, outcome: 'answered' });
           }
           // The kernel is the only authority: the loop never executes anything itself.
           result ??= host.call(c.name, args);

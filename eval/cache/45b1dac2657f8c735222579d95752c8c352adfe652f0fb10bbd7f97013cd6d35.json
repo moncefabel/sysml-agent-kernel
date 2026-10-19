@@ -1,0 +1,25 @@
+{
+ "provider": "groq",
+ "model": "openai/gpt-oss-120b",
+ "createdAt": "2026-10-19T08:00:49.515Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": null,
+   "toolCalls": [
+    {
+     "id": "fc_c29f1fc9-e6ee-45a0-9c2b-f60c339df622",
+     "name": "sysml_get",
+     "arguments": "{\"path\":\"VehicleModel::LegacyFuelPort\"}"
+    }
+   ]
+  },
+  "usage": {
+   "promptTokens": 2025,
+   "completionTokens": 388,
+   "totalTokens": 2413
+  },
+  "finishReason": "tool_calls",
+  "latencyMs": 1786
+ }
+}

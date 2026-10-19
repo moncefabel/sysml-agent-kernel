@@ -1,0 +1,18 @@
+{
+ "provider": "groq",
+ "model": "openai/gpt-oss-120b",
+ "createdAt": "2026-10-19T08:11:30.870Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": "All validation errors fixed; engine now correctly typed as Engine and connection updated."
+  },
+  "usage": {
+   "promptTokens": 2628,
+   "completionTokens": 68,
+   "totalTokens": 2696
+  },
+  "finishReason": "stop",
+  "latencyMs": 653
+ }
+}

@@ -1,0 +1,49 @@
+{
+ "provider": "anthropic",
+ "model": "claude-haiku-5-5",
+ "createdAt": "2026-10-19T08:17:19.010Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": null,
+   "toolCalls": [
+    {
+     "id": "toolu_01QxePSsZv2Kt21tkunCnsgV",
+     "name": "sysml_apply_edits",
+     "arguments": "{\"ops\":[{\"op\":\"remove\",\"path\":\"VehicleModel::Vehicle#connect[0]\"},{\"op\":\"add\",\"parent\":\"VehicleModel::Vehicle\",\"source\":\"part filter : FuelFilter;\\n    connect tank.fuelOut to filter.inlet;\\n    connect filter.outlet to engine.fuelIn;\"}],\"dryRun\":true}"
+    }
+   ],
+   "raw": [
+    {
+     "type": "tool_use",
+     "id": "toolu_01QxePSsZv2Kt21tkunCnsgV",
+     "name": "sysml_apply_edits",
+     "input": {
+      "ops": [
+       {
+        "op": "remove",
+        "path": "VehicleModel::Vehicle#connect[0]"
+       },
+       {
+        "op": "add",
+        "parent": "VehicleModel::Vehicle",
+        "source": "part filter : FuelFilter;\n    connect tank.fuelOut to filter.inlet;\n    connect filter.outlet to engine.fuelIn;"
+       }
+      ],
+      "dryRun": true
+     },
+     "caller": {
+      "type": "direct"
+     }
+    }
+   ]
+  },
+  "usage": {
+   "promptTokens": 3876,
+   "completionTokens": 192,
+   "totalTokens": 4068
+  },
+  "finishReason": "tool_calls",
+  "latencyMs": 1234
+ }
+}

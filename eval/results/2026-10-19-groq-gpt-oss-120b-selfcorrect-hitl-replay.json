@@ -1,0 +1,217 @@
+{
+  "agent": "groq:openai/gpt-oss-120b",
+  "provider": "groq",
+  "model": "openai/gpt-oss-120b",
+  "suite": "selfcorrect",
+  "pass": 1,
+  "config": "hitl",
+  "replay": true,
+  "policy": {
+    "mode": "write",
+    "maxRemovalsPerTx": 3,
+    "maxOpsPerTx": 20,
+    "maxRemovedElementsPerSession": 5,
+    "maxOpsPerSession": 40
+  },
+  "date": "2026-10-19T08:18:26.561Z",
+  "passed": 0,
+  "total": 1,
+  "summary": {
+    "completed": 1,
+    "passed": 0,
+    "withErrors": 1,
+    "selfCorrected": 0,
+    "rollbacks": 1,
+    "meanTurns": 9,
+    "tokens": {
+      "prompt": 17587,
+      "completion": 3942,
+      "total": 25451,
+      "billed": 0
+    },
+    "cacheHits": 9,
+    "llmLatencyMs": 13614
+  },
+  "incomplete": [],
+  "retries": {
+    "retries": 0,
+    "waitedMs": 0,
+    "byStatus": {}
+  },
+  "rateLimit": {},
+  "rows": [
+    {
+      "id": "sc-hidden-port-type",
+      "category": "self-correction",
+      "success": false,
+      "toolCalls": 8,
+      "committed": 0,
+      "rejected": 1,
+      "policyBlocks": 0,
+      "ms": 25,
+      "stopReason": "output_truncated",
+      "structuredErrors": 2,
+      "selfCorrected": false,
+      "rollbacks": 1,
+      "footprint": {
+        "removed": [],
+        "added": [],
+        "modified": [],
+        "recreated": [],
+        "touched": 0,
+        "reference": {
+          "removed": [
+            "VehicleModel::Vehicle#connect(tank.fuelOut>engine.fuelIn|)"
+          ],
+          "added": [
+            "VehicleModel::Vehicle::filter",
+            "VehicleModel::Vehicle#connect(tank.fuelOut>filter.inlet|)",
+            "VehicleModel::Vehicle#connect(filter.outlet>engine.fuelIn|)"
+          ],
+          "modified": [
+            "VehicleModel::FuelFilter::inlet"
+          ],
+          "recreated": [],
+          "touched": 5
+        },
+        "extra": [],
+        "deleteAndRecreate": false
+      },
+      "outcome": "failure",
+      "clarifications": 0,
+      "llm": {
+        "turns": 9,
+        "promptTokens": 17587,
+        "completionTokens": 3942,
+        "totalTokens": 25451,
+        "billedTokens": 0,
+        "cacheHits": 9,
+        "llmLatencyMs": 13614,
+        "malformedToolCalls": 1,
+        "estimatedUsageTurns": 1
+      },
+      "checks": [
+        {
+          "check": "no_errors",
+          "ok": true,
+          "detail": "0 errors"
+        },
+        {
+          "check": "exists",
+          "ok": false,
+          "detail": "VehicleModel::Vehicle::filter"
+        },
+        {
+          "check": "text_includes",
+          "ok": false,
+          "detail": "connect tank.fuelOut to filter.inlet;"
+        },
+        {
+          "check": "text_includes",
+          "ok": false,
+          "detail": "connect filter.outlet to engine.fuelIn;"
+        },
+        {
+          "check": "text_excludes",
+          "ok": false,
+          "detail": "connect tank.fuelOut to engine.fuelIn;"
+        },
+        {
+          "check": "preserved",
+          "ok": true,
+          "detail": "6 kept"
+        }
+      ],
+      "audit": [
+        {
+          "ts": "2026-10-19T08:18:26.532Z",
+          "tool": "sysml_outline",
+          "args": {
+            "depth": 2
+          },
+          "version": 0,
+          "ms": 2,
+          "outcome": "ok"
+        },
+        {
+          "ts": "2026-10-19T08:18:26.533Z",
+          "tool": "sysml_get",
+          "args": {
+            "path": "VehicleModel::Vehicle"
+          },
+          "version": 0,
+          "ms": 0,
+          "outcome": "ok"
+        },
+        {
+          "ts": "2026-10-19T08:18:26.534Z",
+          "tool": "sysml_get",
+          "args": {
+            "path": "VehicleModel::FuelFilter"
+          },
+          "version": 0,
+          "ms": 0,
+          "outcome": "ok"
+        },
+        {
+          "ts": "2026-10-19T08:18:26.537Z",
+          "tool": "sysml_context_slice",
+          "args": {
+            "budgetChars": 2000,
+            "path": "VehicleModel::Vehicle"
+          },
+          "version": 0,
+          "ms": 2,
+          "outcome": "ok"
+        },
+        {
+          "ts": "2026-10-19T08:18:26.542Z",
+          "tool": "sysml_apply_edits",
+          "args": {
+            "dryRun": false,
+            "expectedVersion": 0,
+            "ops": [
+              {
+                "op": "remove",
+                "path": "VehicleModel::Vehicle"
+              },
+              {
+                "op": "add",
+                "parent": "VehicleModel",
+                "source": "part def Vehicle {\n    part engine : Engine;\n    part tank : FuelTank;\n    part filter : FuelFilter;\n    part wheels : Wheel[4];\n    connect tank.fuelOut to filter.inlet;\n    connect filter.outlet to engine.fuelIn;\n}"
+              }
+            ]
+          },
+          "version": 0,
+          "ms": 4,
+          "outcome": "rejected:introduces_errors"
+        },
+        {
+          "ts": "2026-10-19T08:18:26.544Z",
+          "tool": "sysml_get",
+          "args": {
+            "path": "VehicleModel::FuelFilter"
+          },
+          "version": 0,
+          "ms": 0,
+          "outcome": "ok"
+        },
+        {
+          "ts": "2026-10-19T08:18:26.545Z",
+          "tool": "sysml_get",
+          "args": {
+            "path": "VehicleModel::FuelFilter::inlet"
+          },
+          "version": 0,
+          "ms": 0,
+          "outcome": "ok"
+        }
+      ],
+      "finalModel": "package VehicleModel {\n    doc /* Simplified vehicle architecture used for agent evaluation. */\n    import ScalarValues::*;\n    port def FuelPort {\n        attribute flowRate : Real;\n    }\n    port def PowerPort;\n    part def Engine {\n        attribute mass : Real = 180;\n        port fuelIn : FuelPort;\n        port powerOut : PowerPort;\n    }\n    part def ElectricMotor :> Engine {\n        attribute peakTorque : Real = 320;\n    }\n    part def FuelTank {\n        attribute capacity : Real = 55;\n        port fuelOut : ~FuelPort;\n    }\n    port def LegacyFuelPort {\n        attribute flowRate : Real;\n    }\n    part def FuelFilter {\n        port inlet : LegacyFuelPort;\n        port outlet : ~FuelPort;\n    }\n    part def Wheel;\n    part def Vehicle {\n        part engine : Engine;\n        part tank : FuelTank;\n        part wheels : Wheel[4];\n        connect tank.fuelOut to engine.fuelIn;\n    }\n    requirement def MassRequirement {\n        doc /* The total vehicle mass shall not exceed 2000 kg. */\n    }\n    requirement vehicleMass : MassRequirement;\n    satisfy vehicleMass by Vehicle;\n}\n",
+      "retries": {
+        "retries": 0,
+        "waitedMs": 0
+      }
+    }
+  ]
+}

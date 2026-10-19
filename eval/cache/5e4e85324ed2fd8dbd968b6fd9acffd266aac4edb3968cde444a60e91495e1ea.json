@@ -1,0 +1,24 @@
+{
+ "provider": "anthropic",
+ "model": "claude-haiku-5-5",
+ "createdAt": "2026-10-19T08:17:23.518Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": "Added `part filter : FuelFilter` to Vehicle and replaced the direct tank-to-engine connection with `tank.fuelOut to filter.inlet` and `filter.outlet to engine.fuelIn`. To make the first connection valid, I retyped `FuelFilter::inlet` from `LegacyFuelPort` to `FuelPort` (you approved this); no definitions were deleted, and the model has no remaining errors.",
+   "raw": [
+    {
+     "type": "text",
+     "text": "Added `part filter : FuelFilter` to Vehicle and replaced the direct tank-to-engine connection with `tank.fuelOut to filter.inlet` and `filter.outlet to engine.fuelIn`. To make the first connection valid, I retyped `FuelFilter::inlet` from `LegacyFuelPort` to `FuelPort` (you approved this); no definitions were deleted, and the model has no remaining errors."
+    }
+   ]
+  },
+  "usage": {
+   "promptTokens": 4801,
+   "completionTokens": 146,
+   "totalTokens": 4947
+  },
+  "finishReason": "stop",
+  "latencyMs": 1301
+ }
+}

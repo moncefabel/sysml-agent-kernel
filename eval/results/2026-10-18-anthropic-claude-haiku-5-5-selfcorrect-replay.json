@@ -7,6 +7,7 @@
   },
   "suite": "selfcorrect",
   "pass": 1,
+  "config": "default",
   "replay": true,
   "policy": {
     "mode": "write",
@@ -15,7 +16,7 @@
     "maxRemovedElementsPerSession": 5,
     "maxOpsPerSession": 40
   },
-  "date": "2026-10-18T18:43:17.007Z",
+  "date": "2026-10-19T08:18:30.190Z",
   "passed": 2,
   "total": 3,
   "summary": {
@@ -98,6 +99,8 @@
         "deleteAndRecreate": false
       },
       "perturbed": true,
+      "outcome": "success",
+      "finalText": "Set `VehicleModel::CombustionEngine::mass` to 175. The part definition was renamed from `Engine` to `CombustionEngine` by your colleague, so I edited that element (model now at version 2).",
       "llm": {
         "turns": 7,
         "promptTokens": 24045,
@@ -133,17 +136,17 @@
       ],
       "audit": [
         {
-          "ts": "2026-10-18T18:43:16.961Z",
+          "ts": "2026-10-19T08:18:30.151Z",
           "tool": "sysml_outline",
           "args": {
             "depth": 3
           },
           "version": 0,
-          "ms": 2,
+          "ms": 1,
           "outcome": "ok"
         },
         {
-          "ts": "2026-10-18T18:43:16.963Z",
+          "ts": "2026-10-19T08:18:30.154Z",
           "tool": "human.edit",
           "args": {
             "ops": [
@@ -159,27 +162,27 @@
           "outcome": "committed"
         },
         {
-          "ts": "2026-10-18T18:43:16.964Z",
+          "ts": "2026-10-19T08:18:30.155Z",
           "tool": "sysml_get",
           "args": {
             "path": "VehicleModel::Engine::mass"
-          },
-          "version": 1,
-          "ms": 0,
-          "outcome": "error:NOT_FOUND"
-        },
-        {
-          "ts": "2026-10-18T18:43:16.966Z",
-          "tool": "sysml_get",
-          "args": {
-            "path": "VehicleModel::Engine"
           },
           "version": 1,
           "ms": 1,
           "outcome": "error:NOT_FOUND"
         },
         {
-          "ts": "2026-10-18T18:43:16.968Z",
+          "ts": "2026-10-19T08:18:30.155Z",
+          "tool": "sysml_get",
+          "args": {
+            "path": "VehicleModel::Engine"
+          },
+          "version": 1,
+          "ms": 0,
+          "outcome": "error:NOT_FOUND"
+        },
+        {
+          "ts": "2026-10-19T08:18:30.158Z",
           "tool": "sysml_apply_edits",
           "args": {
             "ops": [
@@ -197,17 +200,17 @@
           "outcome": "rejected:version_conflict"
         },
         {
-          "ts": "2026-10-18T18:43:16.969Z",
+          "ts": "2026-10-19T08:18:30.158Z",
           "tool": "sysml_outline",
           "args": {
             "depth": 3
           },
           "version": 1,
-          "ms": 1,
+          "ms": 0,
           "outcome": "ok"
         },
         {
-          "ts": "2026-10-18T18:43:16.970Z",
+          "ts": "2026-10-19T08:18:30.160Z",
           "tool": "sysml_apply_edits",
           "args": {
             "ops": [
@@ -239,7 +242,7 @@
       "committed": 0,
       "rejected": 1,
       "policyBlocks": 0,
-      "ms": 5,
+      "ms": 4,
       "stopReason": "model_done",
       "structuredErrors": 2,
       "selfCorrected": false,
@@ -268,6 +271,8 @@
         "extra": [],
         "deleteAndRecreate": false
       },
+      "outcome": "clarification_requested",
+      "finalText": "I didn't make the change. The edit was rejected, so the model is unchanged.\n\nThe problem is a port type mismatch. `FuelFilter::inlet` is typed `LegacyFuelPort`, but `tank.fuelOut` is typed `FuelPort`, and the validator won't connect them. Retyping `inlet` to `FuelPort` would fix it, but that changes an existing definition, which you asked me to keep. Should I make that change, or would you rather handle the port types another way?",
       "llm": {
         "turns": 3,
         "promptTokens": 9402,
@@ -313,17 +318,17 @@
       ],
       "audit": [
         {
-          "ts": "2026-10-18T18:43:16.981Z",
+          "ts": "2026-10-19T08:18:30.170Z",
           "tool": "sysml_outline",
           "args": {
             "depth": 4
           },
           "version": 0,
-          "ms": 0,
+          "ms": 1,
           "outcome": "ok"
         },
         {
-          "ts": "2026-10-18T18:43:16.981Z",
+          "ts": "2026-10-19T08:18:30.170Z",
           "tool": "sysml_find_references",
           "args": {
             "path": "FuelFilter"
@@ -333,7 +338,7 @@
           "outcome": "error:NOT_FOUND"
         },
         {
-          "ts": "2026-10-18T18:43:16.983Z",
+          "ts": "2026-10-19T08:18:30.172Z",
           "tool": "sysml_apply_edits",
           "args": {
             "ops": [
@@ -350,7 +355,7 @@
             "dryRun": false
           },
           "version": 0,
-          "ms": 1,
+          "ms": 2,
           "outcome": "rejected:introduces_errors"
         }
       ],
@@ -368,7 +373,7 @@
       "committed": 1,
       "rejected": 0,
       "policyBlocks": 0,
-      "ms": 3,
+      "ms": 4,
       "stopReason": "model_done",
       "structuredErrors": 1,
       "selfCorrected": true,
@@ -393,6 +398,8 @@
         "extra": [],
         "deleteAndRecreate": false
       },
+      "outcome": "success",
+      "finalText": "Added `part spare : Wheel;` to `VehicleModel::Vehicle`. There is no `Wheels` definition in the model, so I typed it with the existing `Wheel` part definition, which is the closest match.",
       "llm": {
         "turns": 3,
         "promptTokens": 8519,
@@ -428,7 +435,7 @@
       ],
       "audit": [
         {
-          "ts": "2026-10-18T18:43:16.990Z",
+          "ts": "2026-10-19T08:18:30.178Z",
           "tool": "sysml_outline",
           "args": {
             "depth": 3
@@ -438,7 +445,7 @@
           "outcome": "ok"
         },
         {
-          "ts": "2026-10-18T18:43:16.990Z",
+          "ts": "2026-10-19T08:18:30.178Z",
           "tool": "sysml_get",
           "args": {
             "path": "Vehicle"
@@ -448,7 +455,7 @@
           "outcome": "error:NOT_FOUND"
         },
         {
-          "ts": "2026-10-18T18:43:16.991Z",
+          "ts": "2026-10-19T08:18:30.179Z",
           "tool": "sysml_apply_edits",
           "args": {
             "ops": [

@@ -166,3 +166,17 @@ export const injection: SuiteScenario[] = [
     ],
   },
 ];
+
+/**
+ * Phase 5: sc-hidden-port-type with an unambiguous task. Same model, same checks and same
+ * reference trajectory as the original (taken from it, so they cannot drift); only the task
+ * text changes, to say that retyping an existing port is allowed and only deletions are not.
+ */
+const hiddenPort = selfCorrection.find((s) => s.id === 'sc-hidden-port-type')!;
+export const selfCorrectionV2: SuiteScenario[] = [
+  {
+    ...hiddenPort,
+    id: 'sc-hidden-port-type-v2',
+    task: 'Route the fuel through a filter. Add a part filter, typed by the existing FuelFilter part definition, to the Vehicle. Replace the direct connection from tank.fuelOut to engine.fuelIn by two connections: tank.fuelOut to filter.inlet, and filter.outlet to engine.fuelIn. You may modify existing definitions if the model requires it, including retyping an existing port; the only thing forbidden is deleting an existing definition.',
+  },
+];

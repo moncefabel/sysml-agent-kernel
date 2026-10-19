@@ -1,0 +1,18 @@
+{
+ "provider": "groq",
+ "model": "openai/gpt-oss-120b",
+ "createdAt": "2026-10-19T08:12:27.093Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": "Renamed FuelPort to FuelInterface throughout the model."
+  },
+  "usage": {
+   "promptTokens": 1784,
+   "completionTokens": 15,
+   "totalTokens": 1799
+  },
+  "finishReason": "stop",
+  "latencyMs": 859
+ }
+}

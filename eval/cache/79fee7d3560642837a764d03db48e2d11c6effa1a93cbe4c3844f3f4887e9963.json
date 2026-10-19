@@ -1,0 +1,25 @@
+{
+ "provider": "groq",
+ "model": "openai/gpt-oss-120b",
+ "createdAt": "2026-10-19T08:08:25.611Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": null,
+   "toolCalls": [
+    {
+     "id": "fc_1e1e2452-2f7e-4438-9da9-a9e091b359f9",
+     "name": "sysml_apply_edits",
+     "arguments": "{\"ops\":[{\"op\":\"remove\",\"path\":\"VehicleModel::Vehicle\"},{\"op\":\"add\",\"parent\":\"VehicleModel\",\"source\":\"part def Vehicle {\\n    part engine : Engine;\\n    part tank : FuelTank;\\n    part wheels : Wheel[4];\\n    part filter : FuelFilter;\\n    connect tank.fuelOut to filter.inlet;\\n    connect filter.outlet to engine.fuelIn;\\n}\"}]}"
+    }
+   ]
+  },
+  "usage": {
+   "promptTokens": 1807,
+   "completionTokens": 689,
+   "totalTokens": 2496
+  },
+  "finishReason": "tool_calls",
+  "latencyMs": 2621
+ }
+}

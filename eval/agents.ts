@@ -18,7 +18,16 @@ export interface LlmStats {
   estimatedUsageTurns: number;
 }
 
-export interface AgentRun { toolCalls: number; transcript: Array<{ tool: string; args: unknown; result: unknown }>; stopReason: string; llm?: LlmStats; }
+export interface AgentRun {
+  toolCalls: number;
+  transcript: Array<{ tool: string; args: unknown; result: unknown }>;
+  stopReason: string;
+  llm?: LlmStats;
+  /** Text of the model's last message, when the run ended on one. */
+  finalText?: string;
+  /** Questions asked through request_clarification (hitl configuration only). */
+  clarifications?: number;
+}
 
 /** What an agent may see of a scenario: never its checks. */
 export type AgentTask = Pick<Scenario, 'id' | 'task' | 'scripted'>;

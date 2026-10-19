@@ -7,6 +7,7 @@
   },
   "suite": "main",
   "pass": 1,
+  "config": "default",
   "replay": true,
   "policy": {
     "mode": "write",
@@ -15,7 +16,7 @@
     "maxRemovedElementsPerSession": 5,
     "maxOpsPerSession": 40
   },
-  "date": "2026-10-18T18:43:16.744Z",
+  "date": "2026-10-19T08:18:29.948Z",
   "passed": 6,
   "total": 6,
   "summary": {
@@ -50,7 +51,7 @@
       "committed": 1,
       "rejected": 0,
       "policyBlocks": 0,
-      "ms": 15,
+      "ms": 17,
       "stopReason": "model_done",
       "structuredErrors": 0,
       "selfCorrected": null,
@@ -79,6 +80,8 @@
         "extra": [],
         "deleteAndRecreate": false
       },
+      "outcome": "success",
+      "finalText": "Added a `Brake` part definition with a `mass : Real = 12` attribute and gave `Vehicle` four brakes via `part brakes : Brake [4];`; the model validates with no errors.",
       "llm": {
         "turns": 3,
         "promptTokens": 8629,
@@ -109,27 +112,27 @@
       ],
       "audit": [
         {
-          "ts": "2026-10-18T18:43:16.683Z",
+          "ts": "2026-10-19T08:18:29.880Z",
           "tool": "sysml_outline",
           "args": {
             "depth": 3
-          },
-          "version": 0,
-          "ms": 3,
-          "outcome": "ok"
-        },
-        {
-          "ts": "2026-10-18T18:43:16.685Z",
-          "tool": "sysml_validate",
-          "args": {
-            "limit": 5
           },
           "version": 0,
           "ms": 2,
           "outcome": "ok"
         },
         {
-          "ts": "2026-10-18T18:43:16.688Z",
+          "ts": "2026-10-19T08:18:29.881Z",
+          "tool": "sysml_validate",
+          "args": {
+            "limit": 5
+          },
+          "version": 0,
+          "ms": 1,
+          "outcome": "ok"
+        },
+        {
+          "ts": "2026-10-19T08:18:29.886Z",
           "tool": "sysml_apply_edits",
           "args": {
             "ops": [
@@ -147,7 +150,7 @@
             "dryRun": false
           },
           "version": 1,
-          "ms": 3,
+          "ms": 4,
           "outcome": "committed"
         }
       ],
@@ -165,7 +168,7 @@
       "committed": 1,
       "rejected": 0,
       "policyBlocks": 0,
-      "ms": 8,
+      "ms": 10,
       "stopReason": "model_done",
       "structuredErrors": 0,
       "selfCorrected": null,
@@ -198,6 +201,8 @@
         "extra": [],
         "deleteAndRecreate": false
       },
+      "outcome": "success",
+      "finalText": "Fixed both validation errors in `VehicleModel::Vehicle` and kept all part usages: the `engine` part's type was corrected from `Engin` to `Engine`, and the connection now targets `engine.fuelIn` (the port that actually exists on `Engine`) instead of `engine.fuelInput`. The model validates with zero errors.",
       "llm": {
         "turns": 4,
         "promptTokens": 12990,
@@ -223,7 +228,7 @@
       ],
       "audit": [
         {
-          "ts": "2026-10-18T18:43:16.698Z",
+          "ts": "2026-10-19T08:18:29.896Z",
           "tool": "sysml_validate",
           "args": {
             "severity": "error"
@@ -233,7 +238,7 @@
           "outcome": "ok"
         },
         {
-          "ts": "2026-10-18T18:43:16.698Z",
+          "ts": "2026-10-19T08:18:29.896Z",
           "tool": "sysml_outline",
           "args": {
             "depth": 3
@@ -243,17 +248,17 @@
           "outcome": "ok"
         },
         {
-          "ts": "2026-10-18T18:43:16.700Z",
+          "ts": "2026-10-19T08:18:29.898Z",
           "tool": "sysml_get",
           "args": {
             "path": "VehicleModel::Vehicle"
           },
           "version": 0,
-          "ms": 0,
+          "ms": 1,
           "outcome": "ok"
         },
         {
-          "ts": "2026-10-18T18:43:16.702Z",
+          "ts": "2026-10-19T08:18:29.902Z",
           "tool": "sysml_apply_edits",
           "args": {
             "ops": [
@@ -276,7 +281,7 @@
             "expectedVersion": 0
           },
           "version": 1,
-          "ms": 1,
+          "ms": 2,
           "outcome": "committed"
         }
       ],
@@ -294,7 +299,7 @@
       "committed": 1,
       "rejected": 0,
       "policyBlocks": 0,
-      "ms": 4,
+      "ms": 6,
       "stopReason": "model_done",
       "structuredErrors": 0,
       "selfCorrected": null,
@@ -324,6 +329,8 @@
         "extra": [],
         "deleteAndRecreate": false
       },
+      "outcome": "success",
+      "finalText": "Added `RangeRequirement` (requirement def) and `vehicleRange` (typed by it) to `VehicleModel`, with `satisfy vehicleRange by Vehicle`; the model validates with no errors or warnings.",
       "llm": {
         "turns": 3,
         "promptTokens": 8614,
@@ -349,17 +356,17 @@
       ],
       "audit": [
         {
-          "ts": "2026-10-18T18:43:16.709Z",
+          "ts": "2026-10-19T08:18:29.910Z",
           "tool": "sysml_outline",
           "args": {
             "depth": 3
           },
           "version": 0,
-          "ms": 0,
+          "ms": 1,
           "outcome": "ok"
         },
         {
-          "ts": "2026-10-18T18:43:16.710Z",
+          "ts": "2026-10-19T08:18:29.913Z",
           "tool": "sysml_apply_edits",
           "args": {
             "ops": [
@@ -376,7 +383,7 @@
           "outcome": "committed"
         },
         {
-          "ts": "2026-10-18T18:43:16.710Z",
+          "ts": "2026-10-19T08:18:29.913Z",
           "tool": "sysml_validate",
           "args": {},
           "version": 1,
@@ -398,7 +405,7 @@
       "committed": 1,
       "rejected": 0,
       "policyBlocks": 0,
-      "ms": 7,
+      "ms": 8,
       "stopReason": "model_done",
       "structuredErrors": 1,
       "selfCorrected": true,
@@ -437,6 +444,8 @@
         "extra": [],
         "deleteAndRecreate": false
       },
+      "outcome": "success",
+      "finalText": "Renamed the port definition `VehicleModel::FuelPort` to `FuelInterface`, updating its references (Engine.fuelIn and FuelTank.fuelOut); validation shows 0 errors and 0 warnings.",
       "llm": {
         "turns": 3,
         "promptTokens": 8495,
@@ -467,7 +476,7 @@
       ],
       "audit": [
         {
-          "ts": "2026-10-18T18:43:16.717Z",
+          "ts": "2026-10-19T08:18:29.922Z",
           "tool": "sysml_outline",
           "args": {
             "depth": 4
@@ -477,17 +486,17 @@
           "outcome": "ok"
         },
         {
-          "ts": "2026-10-18T18:43:16.718Z",
+          "ts": "2026-10-19T08:18:29.922Z",
           "tool": "sysml_find_references",
           "args": {
             "path": "FuelPort"
           },
           "version": 0,
-          "ms": 1,
+          "ms": 0,
           "outcome": "error:NOT_FOUND"
         },
         {
-          "ts": "2026-10-18T18:43:16.720Z",
+          "ts": "2026-10-19T08:18:29.925Z",
           "tool": "sysml_apply_edits",
           "args": {
             "ops": [
@@ -503,7 +512,7 @@
           "outcome": "committed"
         },
         {
-          "ts": "2026-10-18T18:43:16.720Z",
+          "ts": "2026-10-19T08:18:29.925Z",
           "tool": "sysml_validate",
           "args": {},
           "version": 1,
@@ -525,7 +534,7 @@
       "committed": 1,
       "rejected": 0,
       "policyBlocks": 0,
-      "ms": 3,
+      "ms": 4,
       "stopReason": "model_done",
       "structuredErrors": 1,
       "selfCorrected": true,
@@ -558,6 +567,8 @@
         "extra": [],
         "deleteAndRecreate": false
       },
+      "outcome": "success",
+      "finalText": "Removed the FuelTank part definition, along with the `tank` part in Vehicle and the `connect tank.fuelOut to engine.fuelIn` that depended on it; the model validates with no remaining errors.",
       "llm": {
         "turns": 4,
         "promptTokens": 12628,
@@ -588,7 +599,7 @@
       ],
       "audit": [
         {
-          "ts": "2026-10-18T18:43:16.728Z",
+          "ts": "2026-10-19T08:18:29.933Z",
           "tool": "sysml_outline",
           "args": {
             "depth": 4
@@ -598,7 +609,7 @@
           "outcome": "ok"
         },
         {
-          "ts": "2026-10-18T18:43:16.728Z",
+          "ts": "2026-10-19T08:18:29.933Z",
           "tool": "sysml_find_references",
           "args": {
             "path": "FuelTank"
@@ -608,7 +619,7 @@
           "outcome": "error:NOT_FOUND"
         },
         {
-          "ts": "2026-10-18T18:43:16.728Z",
+          "ts": "2026-10-19T08:18:29.934Z",
           "tool": "sysml_find_references",
           "args": {
             "path": "VehicleModel::FuelTank"
@@ -618,7 +629,7 @@
           "outcome": "ok"
         },
         {
-          "ts": "2026-10-18T18:43:16.728Z",
+          "ts": "2026-10-19T08:18:29.934Z",
           "tool": "sysml_get",
           "args": {
             "path": "VehicleModel::Vehicle"
@@ -628,7 +639,7 @@
           "outcome": "ok"
         },
         {
-          "ts": "2026-10-18T18:43:16.729Z",
+          "ts": "2026-10-19T08:18:29.935Z",
           "tool": "sysml_apply_edits",
           "args": {
             "ops": [
@@ -691,6 +702,8 @@
         "extra": [],
         "deleteAndRecreate": false
       },
+      "outcome": "success",
+      "finalText": "Added `attribute color : String;` to the Vehicle part definition (VehicleModel::Vehicle), and the model validates with no errors.",
       "llm": {
         "turns": 3,
         "promptTokens": 8075,
@@ -721,7 +734,7 @@
       ],
       "audit": [
         {
-          "ts": "2026-10-18T18:43:16.733Z",
+          "ts": "2026-10-19T08:18:29.939Z",
           "tool": "sysml_outline",
           "args": {
             "depth": 3
@@ -731,7 +744,7 @@
           "outcome": "ok"
         },
         {
-          "ts": "2026-10-18T18:43:16.734Z",
+          "ts": "2026-10-19T08:18:29.940Z",
           "tool": "sysml_apply_edits",
           "args": {
             "ops": [

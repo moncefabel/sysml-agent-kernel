@@ -1,6 +1,7 @@
 import { writeFileSync, mkdirSync } from 'node:fs';
 import { probes, scenarios as mainSuite } from './scenarios.js';
-import { injection, selfCorrection, type SuiteScenario } from './suites.js';
+import { injection, selfCorrection, selfCorrectionV2, type SuiteScenario } from './suites.js';
+import { simulatedHuman } from './hitl.js';
 import { scriptedAgent, SYSTEM, type Agent } from './agents.js';
 import { runScenario, summarize, type Row } from './harness.js';
 import { Checkpoint } from './checkpoint.js';
@@ -12,8 +13,8 @@ import { groqFromEnv } from './llm/groq.js';
 import { llmAgent, LLM_DEFAULTS } from './llm/loop.js';
 import { canonicalJson, sha256, type LLMProvider } from './llm/provider.js';
 
-// Usage: node dist/eval/run.js [--agent scripted|groq|anthropic] [--suite main|probes|selfcorrect|injection]
-//          [--only <scenario-id>] [--pass n] [--policy default|phase2]
+// Usage: node dist/eval/run.js [--agent scripted|groq|anthropic] [--suite main|probes|selfcorrect|injection|selfcorrect-v2]
+//          [--only <scenario-id>] [--pass n] [--policy default|phase2] [--config default|hitl]
 // LLM options: [--max-turns n] [--max-output-tokens n] [--scenario-budget n] [--run-budget n]
 //              [--cache-dir d] [--no-cache] [--replay-only] [--fresh]
 const argv = process.argv.slice(2);
@@ -24,12 +25,15 @@ const kind = opt('--agent', 'scripted');
 const only = opt('--only', '');
 const pass = num('--pass', 1);
 
-const SUITES: Record<string, SuiteScenario[]> = { main: mainSuite, probes, selfcorrect: selfCorrection, injection };
+const SUITES: Record<string, SuiteScenario[]> = { main: mainSuite, probes, selfcorrect: selfCorrection, injection, 'selfcorrect-v2': selfCorrectionV2 };
 const suiteName = opt('--suite', 'main');
 const scenarios = SUITES[suiteName];
 if (!scenarios) throw new Error(`--suite must be one of ${Object.keys(SUITES).join(', ')}`);
-// File names keep the phase 2 layout for the main suite, pass 1.
-const suffix = (suiteName === 'main' ? '' : `.${suiteName}`) + (pass > 1 ? `.pass${pass}` : '');
+// --config hitl offers request_clarification, answered by the simulated human (eval/hitl.ts).
+const config = opt('--config', 'default');
+if (!['default', 'hitl'].includes(config)) throw new Error('--config must be default or hitl');
+// File names keep the phase 2 layout for the main suite, pass 1, default configuration.
+const suffix = (suiteName === 'main' ? '' : `.${suiteName}`) + (config === 'hitl' ? '.hitl' : '') + (pass > 1 ? `.pass${pass}` : '');
 // --policy phase2 reproduces the phase 2 runs, which had per transaction limits only.
 const policyName = opt('--policy', 'default');
 if (!['default', 'phase2'].includes(policyName)) throw new Error('--policy must be default or phase2');
@@ -52,12 +56,14 @@ if (kind === 'groq' || kind === 'anthropic') {
   let provider: LLMProvider = base = kind === 'groq' ? groqFromEnv() : anthropicFromEnv();
   if (!flag('--no-cache')) provider = cache = new CachedProvider(provider, opt('--cache-dir', 'eval/cache'), flag('--replay-only') ? 'readonly' : 'readwrite', pass);
   runBudget = argv.includes('--run-budget') ? new TokenBudget(num('--run-budget', 1)) : undefined;
-  agent = llmAgent(provider, { ...loopOptions, runBudget });
+  agent = llmAgent(provider, { ...loopOptions, runBudget, ...(config === 'hitl' ? { clarify: (id: string) => simulatedHuman(id) } : {}) });
   // Everything that can change a recorded row is fingerprinted; the run budget and the cache
   // only decide whether a scenario runs now, so they may change between resumes. The policy
   // entered the fingerprint in phase 3, so phase 2 checkpoints need --fresh.
   checkpoint = new Checkpoint(`eval/reports/${agent.name.replace(/[^a-z0-9-]/gi, '_')}${suffix}.checkpoint.jsonl`, {
     agent: agent.name, ...(base.settings ? { settings: base.settings } : {}), loopOptions, system: sha256(SYSTEM), policy, pass,
+    // Absent for the default configuration, so earlier checkpoints stay valid.
+    ...(config === 'hitl' ? { config } : {}),
     scenarios: sha256(canonicalJson(scenarios.map((s) => ({ id: s.id, task: s.task, model: s.model, checks: s.checks, perturb: s.perturb })))),
   });
   if (flag('--fresh')) checkpoint.discard();
@@ -119,7 +125,7 @@ for (const x of incomplete) console.log(`  NOT COMPLETED ${x.id}: ${x.reason}`);
 mkdirSync('eval/reports', { recursive: true });
 const out = `eval/reports/${agent.name.replace(/[^a-z0-9-]/gi, '_')}${suffix}.json`;
 writeFileSync(out, JSON.stringify({
-  agent: agent.name, provider: base?.provider ?? 'scripted', model: base?.model ?? 'reference', ...(base?.settings ? { settings: base.settings } : {}), suite: suiteName, pass,
+  agent: agent.name, provider: base?.provider ?? 'scripted', model: base?.model ?? 'reference', ...(base?.settings ? { settings: base.settings } : {}), suite: suiteName, pass, config,
   replay: flag('--replay-only'), policy, ...(runBudget ? { billedThisInvocation: runBudget.used } : {}), date: new Date().toISOString(), passed: sum.passed, total, summary: sum, incomplete,
   ...(base?.retryStats ? { retries: base.retryStats } : {}), ...(base?.rateLimit ? { rateLimit: base.rateLimit } : {}), rows,
 }, null, 2));

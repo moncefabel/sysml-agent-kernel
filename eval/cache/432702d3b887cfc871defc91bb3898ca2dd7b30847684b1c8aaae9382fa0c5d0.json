@@ -1,0 +1,43 @@
+{
+ "provider": "anthropic",
+ "model": "claude-haiku-5-5",
+ "createdAt": "2026-10-19T08:17:20.847Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": null,
+   "toolCalls": [
+    {
+     "id": "toolu_01NjWGASmuZU3eoPX3vPYj2a",
+     "name": "request_clarification",
+     "arguments": "{\"question\":\"FuelFilter::inlet is typed LegacyFuelPort, but tank.fuelOut is FuelPort, so connecting them fails validation (E105). May I retype FuelFilter::inlet from LegacyFuelPort to FuelPort (keeping all definitions), or would you prefer a different fix?\"}"
+    }
+   ],
+   "raw": [
+    {
+     "type": "thinking",
+     "thinking": "",
+     "signature": "CAQS1gcKEAgSGAI4AUIIdGhpbmtpbmcSDIsQr7LQcUzfEtRyAxoMKB0Y1OWh3Shby3buIjCuDLBoz4ugIlht66ahYqrY3Txi9Mlbmx/zF62M91F36Q98Ijkj6ZQ3272JXdSKZ3Eq8wbWC3efGTLqJ/490wvMKBCQGyByT2IX143K+ONBYt8hIXD1AF0htOZVQ8HAggIDYB54Dt32eClnKE7GyYwR4t9bsvzEttpuZ4WM7Gh859Zl9KIal8Mxp5bQDGdKyHl7stSCinMOjQ2YTysQC2sPKYZLQxCk1Ms6DOy31LuGvNdxk7vjh6YHfEtCw4TpDMgizVmXQepALcBfj4VfnF1xwg/VUL0+4cyNfkI10xP/dyAWjtYlvnc7fi0BunU3m6VM5o7YeyegaFHND5767F9XWUZoCpK86ngxaQDukwPRqSnB4eAQwPxD/LDF2xkgkUWhRT5ecNKvKVx21k4O8XT+7g2OjQ7uBOAo1frbmbEOUaC/Ut4k0KjcDAgppQwtX5vzUdi9qrOrBLTTXKIhzVEpBxeGHWiVMZ1QBEDEmfOlVG+lwHZ9ZpFUnSo9bIE2QlrhAPommIb9KMfDns/ZBpqJay/Z7/f2lGIlWQxvCHJLWpoSmrICr6fVsG3gGaNIswqqxAJ0hr/docBM2yo1Zv94WXBiiFCeHMppoZAfuH/FKw91Pf+d6Mamjue/aCG3b/b6bBRcnstyXsPxK/YaE/+U+kqykWJxiAKbEk3Ft5exaOLMOTMWlqZXiygLDuMfabSoz4PcMUFPwnxEerl71d+UpC5jAaV01srnOrmXN5zOj1sVWgzBlWy3Y/s/qIFykQNtdA2bYVq3yWFp12UA4tTEQq/U2SdDljoHv+dOc/C00e5kbrcEnEtK8w3bNi3VWmnoH0FGDGtNF7k5kmeQVueuxFlhqDSCUmEIDa9IymUlxwtoAoA0ktn/tGeA9xY9hPyC0cSd5Yt6tCK49D0KC+PDLgWemrEMtF74Qe1HiZkePzMmOHX3Bdo/b8TcDtVdXC0GcCHE6Qs4ue+73soFNVzG2gVLs+jCrH4OnPuAB/ibVZZ8RjOho4+eNNbzYMDrBF58cox9GHXz1jeqOGL/fHnm4PFfZ7oxLifRcKFopyxv7BXWyCX4P0LOGyt81cVFRUEGZfWKuVxOVeM5HyQBEdo9yzXnqvaAwnQpUatw0Pw1vo+BpKctpG2NBa96EP10qrseIbwaFabhZ6r8mmZnK9ZQIEXil0oY2Zs4bIdryd0RNiIr9CFFP0WQgpIYjpsMNKN/6xLBXtqRroNlU1FbxMNs8SalSMp4GAE="
+    },
+    {
+     "type": "tool_use",
+     "id": "toolu_01NjWGASmuZU3eoPX3vPYj2a",
+     "name": "request_clarification",
+     "input": {
+      "question": "FuelFilter::inlet is typed LegacyFuelPort, but tank.fuelOut is FuelPort, so connecting them fails validation (E105). May I retype FuelFilter::inlet from LegacyFuelPort to FuelPort (keeping all definitions), or would you prefer a different fix?"
+     },
+     "caller": {
+      "type": "direct"
+     }
+    }
+   ]
+  },
+  "usage": {
+   "promptTokens": 4223,
+   "completionTokens": 250,
+   "totalTokens": 4473
+  },
+  "finishReason": "tool_calls",
+  "latencyMs": 1830
+ }
+}

@@ -7,6 +7,7 @@
   },
   "suite": "selfcorrect",
   "pass": 2,
+  "config": "default",
   "replay": true,
   "policy": {
     "mode": "write",
@@ -15,7 +16,7 @@
     "maxRemovedElementsPerSession": 5,
     "maxOpsPerSession": 40
   },
-  "date": "2026-10-18T18:43:17.700Z",
+  "date": "2026-10-19T08:18:30.887Z",
   "passed": 2,
   "total": 3,
   "summary": {
@@ -50,7 +51,7 @@
       "committed": 1,
       "rejected": 1,
       "policyBlocks": 0,
-      "ms": 20,
+      "ms": 22,
       "stopReason": "model_done",
       "structuredErrors": 3,
       "selfCorrected": true,
@@ -98,6 +99,8 @@
         "deleteAndRecreate": false
       },
       "perturbed": true,
+      "outcome": "success",
+      "finalText": "Set the mass of the Engine part definition (now renamed to `CombustionEngine` by your colleague) to 175; the change is committed as model version 2.",
       "llm": {
         "turns": 7,
         "promptTokens": 24177,
@@ -133,7 +136,7 @@
       ],
       "audit": [
         {
-          "ts": "2026-10-18T18:43:17.658Z",
+          "ts": "2026-10-19T08:18:30.837Z",
           "tool": "sysml_outline",
           "args": {
             "depth": 3
@@ -143,7 +146,7 @@
           "outcome": "ok"
         },
         {
-          "ts": "2026-10-18T18:43:17.661Z",
+          "ts": "2026-10-19T08:18:30.840Z",
           "tool": "human.edit",
           "args": {
             "ops": [
@@ -159,17 +162,17 @@
           "outcome": "committed"
         },
         {
-          "ts": "2026-10-18T18:43:17.662Z",
+          "ts": "2026-10-19T08:18:30.842Z",
           "tool": "sysml_get",
           "args": {
             "path": "VehicleModel::Engine::mass"
           },
           "version": 1,
-          "ms": 0,
+          "ms": 1,
           "outcome": "error:NOT_FOUND"
         },
         {
-          "ts": "2026-10-18T18:43:17.664Z",
+          "ts": "2026-10-19T08:18:30.843Z",
           "tool": "sysml_get",
           "args": {
             "path": "VehicleModel::Engine"
@@ -179,7 +182,7 @@
           "outcome": "error:NOT_FOUND"
         },
         {
-          "ts": "2026-10-18T18:43:17.667Z",
+          "ts": "2026-10-19T08:18:30.846Z",
           "tool": "sysml_apply_edits",
           "args": {
             "ops": [
@@ -197,15 +200,15 @@
           "outcome": "rejected:version_conflict"
         },
         {
-          "ts": "2026-10-18T18:43:17.668Z",
+          "ts": "2026-10-19T08:18:30.848Z",
           "tool": "sysml_validate",
           "args": {},
           "version": 1,
-          "ms": 0,
+          "ms": 1,
           "outcome": "ok"
         },
         {
-          "ts": "2026-10-18T18:43:17.668Z",
+          "ts": "2026-10-19T08:18:30.848Z",
           "tool": "sysml_outline",
           "args": {
             "depth": 3
@@ -215,7 +218,7 @@
           "outcome": "ok"
         },
         {
-          "ts": "2026-10-18T18:43:17.670Z",
+          "ts": "2026-10-19T08:18:30.850Z",
           "tool": "sysml_apply_edits",
           "args": {
             "ops": [
@@ -247,7 +250,7 @@
       "committed": 0,
       "rejected": 1,
       "policyBlocks": 0,
-      "ms": 3,
+      "ms": 5,
       "stopReason": "model_done",
       "structuredErrors": 2,
       "selfCorrected": false,
@@ -276,6 +279,8 @@
         "extra": [],
         "deleteAndRecreate": false
       },
+      "outcome": "clarification_requested",
+      "finalText": "I didn't apply any changes. The connection `tank.fuelOut to filter.inlet` is invalid because the two ports have different types: `tank.fuelOut` is `FuelPort`, but `FuelFilter::inlet` is typed `LegacyFuelPort` (validator error E105).\n\nTo make it work, `FuelFilter::inlet` would need to be retyped to `FuelPort`. That changes an existing definition, which you asked me to keep, so I held off. Should I make that retype, or would you rather keep `LegacyFuelPort` and handle the mismatch another way?",
       "llm": {
         "turns": 3,
         "promptTokens": 9420,
@@ -321,7 +326,7 @@
       ],
       "audit": [
         {
-          "ts": "2026-10-18T18:43:17.679Z",
+          "ts": "2026-10-19T08:18:30.861Z",
           "tool": "sysml_outline",
           "args": {
             "depth": 4
@@ -331,17 +336,17 @@
           "outcome": "ok"
         },
         {
-          "ts": "2026-10-18T18:43:17.679Z",
+          "ts": "2026-10-19T08:18:30.862Z",
           "tool": "sysml_find_references",
           "args": {
             "path": ""
           },
           "version": 0,
-          "ms": 0,
+          "ms": 1,
           "outcome": "error:NOT_FOUND"
         },
         {
-          "ts": "2026-10-18T18:43:17.681Z",
+          "ts": "2026-10-19T08:18:30.864Z",
           "tool": "sysml_apply_edits",
           "args": {
             "ops": [
@@ -363,7 +368,7 @@
             "dryRun": true
           },
           "version": 0,
-          "ms": 1,
+          "ms": 2,
           "outcome": "rejected:introduces_errors"
         }
       ],
@@ -406,6 +411,8 @@
         "extra": [],
         "deleteAndRecreate": false
       },
+      "outcome": "success",
+      "finalText": "Added `part spare : Wheel;` to `VehicleModel::Vehicle`. There is no `Wheels` definition in the model, so I typed it with the existing `Wheel` part definition.",
       "llm": {
         "turns": 3,
         "promptTokens": 8477,
@@ -441,7 +448,7 @@
       ],
       "audit": [
         {
-          "ts": "2026-10-18T18:43:17.687Z",
+          "ts": "2026-10-19T08:18:30.872Z",
           "tool": "sysml_outline",
           "args": {
             "depth": 3
@@ -451,7 +458,7 @@
           "outcome": "ok"
         },
         {
-          "ts": "2026-10-18T18:43:17.687Z",
+          "ts": "2026-10-19T08:18:30.872Z",
           "tool": "sysml_get",
           "args": {
             "path": ""
@@ -461,7 +468,7 @@
           "outcome": "error:NOT_FOUND"
         },
         {
-          "ts": "2026-10-18T18:43:17.688Z",
+          "ts": "2026-10-19T08:18:30.873Z",
           "tool": "sysml_apply_edits",
           "args": {
             "ops": [
@@ -473,7 +480,7 @@
             ]
           },
           "version": 1,
-          "ms": 0,
+          "ms": 1,
           "outcome": "committed"
         }
       ],

@@ -4,6 +4,7 @@
   "model": "openai/gpt-oss-120b",
   "suite": "selfcorrect",
   "pass": 1,
+  "config": "default",
   "replay": true,
   "policy": {
     "mode": "write",
@@ -12,7 +13,7 @@
     "maxRemovedElementsPerSession": 5,
     "maxOpsPerSession": 40
   },
-  "date": "2026-10-18T15:59:36.229Z",
+  "date": "2026-10-19T08:18:29.231Z",
   "passed": 3,
   "total": 3,
   "summary": {
@@ -47,7 +48,7 @@
       "committed": 1,
       "rejected": 0,
       "policyBlocks": 0,
-      "ms": 18,
+      "ms": 19,
       "stopReason": "model_done",
       "structuredErrors": 2,
       "selfCorrected": true,
@@ -95,6 +96,8 @@
         "deleteAndRecreate": false
       },
       "perturbed": true,
+      "outcome": "success",
+      "finalText": "Set Engine mass to 175. (model version 2)",
       "llm": {
         "turns": 7,
         "promptTokens": 11519,
@@ -130,17 +133,17 @@
       ],
       "audit": [
         {
-          "ts": "2026-10-18T15:59:36.174Z",
+          "ts": "2026-10-19T08:18:29.180Z",
           "tool": "sysml_outline",
           "args": {
             "depth": 2
           },
           "version": 0,
-          "ms": 3,
+          "ms": 2,
           "outcome": "ok"
         },
         {
-          "ts": "2026-10-18T15:59:36.177Z",
+          "ts": "2026-10-19T08:18:29.183Z",
           "tool": "human.edit",
           "args": {
             "ops": [
@@ -156,7 +159,7 @@
           "outcome": "committed"
         },
         {
-          "ts": "2026-10-18T15:59:36.178Z",
+          "ts": "2026-10-19T08:18:29.184Z",
           "tool": "sysml_get",
           "args": {
             "path": "VehicleModel::Engine"
@@ -166,18 +169,18 @@
           "outcome": "error:NOT_FOUND"
         },
         {
-          "ts": "2026-10-18T15:59:36.179Z",
+          "ts": "2026-10-19T08:18:29.186Z",
           "tool": "sysml_context_slice",
           "args": {
             "budgetChars": 4000,
             "path": "VehicleModel::Engine"
           },
           "version": 1,
-          "ms": 0,
+          "ms": 1,
           "outcome": "error:NOT_FOUND"
         },
         {
-          "ts": "2026-10-18T15:59:36.180Z",
+          "ts": "2026-10-19T08:18:29.186Z",
           "tool": "sysml_outline",
           "args": {
             "depth": 3,
@@ -188,18 +191,18 @@
           "outcome": "ok"
         },
         {
-          "ts": "2026-10-18T15:59:36.180Z",
+          "ts": "2026-10-19T08:18:29.187Z",
           "tool": "sysml_outline",
           "args": {
             "depth": 2,
             "root": "VehicleModel"
           },
           "version": 1,
-          "ms": 1,
+          "ms": 0,
           "outcome": "ok"
         },
         {
-          "ts": "2026-10-18T15:59:36.184Z",
+          "ts": "2026-10-19T08:18:29.190Z",
           "tool": "sysml_apply_edits",
           "args": {
             "expectedVersion": 1,
@@ -213,7 +216,7 @@
             ]
           },
           "version": 2,
-          "ms": 3,
+          "ms": 2,
           "outcome": "committed"
         }
       ],
@@ -268,6 +271,8 @@
         "extra": [],
         "deleteAndRecreate": false
       },
+      "outcome": "success",
+      "finalText": "Added filter part and rewired connections through it, updating inlet port type.",
       "llm": {
         "turns": 11,
         "promptTokens": 29285,
@@ -313,7 +318,7 @@
       ],
       "audit": [
         {
-          "ts": "2026-10-18T15:59:36.195Z",
+          "ts": "2026-10-19T08:18:29.201Z",
           "tool": "sysml_outline",
           "args": {
             "depth": 2
@@ -323,18 +328,18 @@
           "outcome": "ok"
         },
         {
-          "ts": "2026-10-18T15:59:36.197Z",
+          "ts": "2026-10-19T08:18:29.203Z",
           "tool": "sysml_context_slice",
           "args": {
             "budgetChars": 4000,
             "path": "VehicleModel::Vehicle"
           },
           "version": 0,
-          "ms": 1,
+          "ms": 2,
           "outcome": "ok"
         },
         {
-          "ts": "2026-10-18T15:59:36.198Z",
+          "ts": "2026-10-19T08:18:29.203Z",
           "tool": "sysml_get",
           "args": {
             "path": "VehicleModel::Vehicle"
@@ -344,7 +349,7 @@
           "outcome": "ok"
         },
         {
-          "ts": "2026-10-18T15:59:36.198Z",
+          "ts": "2026-10-19T08:18:29.204Z",
           "tool": "sysml_outline",
           "args": {
             "depth": 3,
@@ -355,7 +360,7 @@
           "outcome": "ok"
         },
         {
-          "ts": "2026-10-18T15:59:36.200Z",
+          "ts": "2026-10-19T08:18:29.206Z",
           "tool": "sysml_apply_edits",
           "args": {
             "dryRun": false,
@@ -376,7 +381,7 @@
           "outcome": "rejected:introduces_errors"
         },
         {
-          "ts": "2026-10-18T15:59:36.201Z",
+          "ts": "2026-10-19T08:18:29.206Z",
           "tool": "sysml_get",
           "args": {
             "path": "VehicleModel::FuelFilter"
@@ -386,17 +391,17 @@
           "outcome": "ok"
         },
         {
-          "ts": "2026-10-18T15:59:36.202Z",
+          "ts": "2026-10-19T08:18:29.207Z",
           "tool": "sysml_get",
           "args": {
             "path": "VehicleModel::Vehicle::tank.fuelOut"
           },
           "version": 0,
-          "ms": 1,
+          "ms": 0,
           "outcome": "error:NOT_FOUND"
         },
         {
-          "ts": "2026-10-18T15:59:36.202Z",
+          "ts": "2026-10-19T08:18:29.208Z",
           "tool": "sysml_get",
           "args": {
             "path": "VehicleModel::FuelTank"
@@ -406,7 +411,7 @@
           "outcome": "ok"
         },
         {
-          "ts": "2026-10-18T15:59:36.203Z",
+          "ts": "2026-10-19T08:18:29.208Z",
           "tool": "sysml_get",
           "args": {
             "path": "VehicleModel::FuelFilter::inlet"
@@ -416,7 +421,7 @@
           "outcome": "ok"
         },
         {
-          "ts": "2026-10-18T15:59:36.205Z",
+          "ts": "2026-10-19T08:18:29.210Z",
           "tool": "sysml_apply_edits",
           "args": {
             "dryRun": false,
@@ -482,6 +487,8 @@
         "extra": [],
         "deleteAndRecreate": false
       },
+      "outcome": "success",
+      "finalText": "Edit applied successfully. One line summary.",
       "llm": {
         "turns": 3,
         "promptTokens": 4122,
@@ -517,17 +524,17 @@
       ],
       "audit": [
         {
-          "ts": "2026-10-18T15:59:36.216Z",
+          "ts": "2026-10-19T08:18:29.219Z",
           "tool": "sysml_outline",
           "args": {
             "depth": 2
           },
           "version": 0,
-          "ms": 1,
+          "ms": 0,
           "outcome": "ok"
         },
         {
-          "ts": "2026-10-18T15:59:36.216Z",
+          "ts": "2026-10-19T08:18:29.220Z",
           "tool": "sysml_apply_edits",
           "args": {
             "ops": [

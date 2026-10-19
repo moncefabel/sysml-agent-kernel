@@ -1,0 +1,266 @@
+{
+  "agent": "groq:openai/gpt-oss-120b",
+  "provider": "groq",
+  "model": "openai/gpt-oss-120b",
+  "suite": "selfcorrect-v2",
+  "pass": 1,
+  "config": "default",
+  "replay": false,
+  "policy": {
+    "mode": "write",
+    "maxRemovalsPerTx": 3,
+    "maxOpsPerTx": 20,
+    "maxRemovedElementsPerSession": 5,
+    "maxOpsPerSession": 40
+  },
+  "billedThisInvocation": 30542,
+  "date": "2026-10-19T08:02:59.624Z",
+  "passed": 0,
+  "total": 1,
+  "summary": {
+    "completed": 1,
+    "passed": 0,
+    "withErrors": 1,
+    "selfCorrected": 0,
+    "rollbacks": 0,
+    "meanTurns": 12,
+    "tokens": {
+      "prompt": 26695,
+      "completion": 3847,
+      "total": 30542,
+      "billed": 30542
+    },
+    "cacheHits": 0,
+    "llmLatencyMs": 15662
+  },
+  "incomplete": [],
+  "retries": {
+    "retries": 10,
+    "waitedMs": 151000,
+    "byStatus": {
+      "429": 10
+    }
+  },
+  "rateLimit": {
+    "x-ratelimit-limit-requests": "1000",
+    "x-ratelimit-limit-tokens": "8000",
+    "x-ratelimit-remaining-requests": "988",
+    "x-ratelimit-remaining-tokens": "337",
+    "x-ratelimit-reset-requests": "17m16.8s",
+    "x-ratelimit-reset-tokens": "57.472s"
+  },
+  "rows": [
+    {
+      "id": "sc-hidden-port-type-v2",
+      "category": "self-correction",
+      "success": false,
+      "toolCalls": 12,
+      "committed": 0,
+      "rejected": 0,
+      "policyBlocks": 0,
+      "ms": 168892,
+      "stopReason": "max_turns",
+      "structuredErrors": 2,
+      "selfCorrected": false,
+      "rollbacks": 0,
+      "footprint": {
+        "removed": [],
+        "added": [],
+        "modified": [],
+        "recreated": [],
+        "touched": 0,
+        "reference": {
+          "removed": [
+            "VehicleModel::Vehicle#connect(tank.fuelOut>engine.fuelIn|)"
+          ],
+          "added": [
+            "VehicleModel::Vehicle::filter",
+            "VehicleModel::Vehicle#connect(tank.fuelOut>filter.inlet|)",
+            "VehicleModel::Vehicle#connect(filter.outlet>engine.fuelIn|)"
+          ],
+          "modified": [
+            "VehicleModel::FuelFilter::inlet"
+          ],
+          "recreated": [],
+          "touched": 5
+        },
+        "extra": [],
+        "deleteAndRecreate": false
+      },
+      "outcome": "failure",
+      "llm": {
+        "turns": 12,
+        "promptTokens": 26695,
+        "completionTokens": 3847,
+        "totalTokens": 30542,
+        "billedTokens": 30542,
+        "cacheHits": 0,
+        "llmLatencyMs": 15662,
+        "malformedToolCalls": 0,
+        "estimatedUsageTurns": 0
+      },
+      "checks": [
+        {
+          "check": "no_errors",
+          "ok": true,
+          "detail": "0 errors"
+        },
+        {
+          "check": "exists",
+          "ok": false,
+          "detail": "VehicleModel::Vehicle::filter"
+        },
+        {
+          "check": "text_includes",
+          "ok": false,
+          "detail": "connect tank.fuelOut to filter.inlet;"
+        },
+        {
+          "check": "text_includes",
+          "ok": false,
+          "detail": "connect filter.outlet to engine.fuelIn;"
+        },
+        {
+          "check": "text_excludes",
+          "ok": false,
+          "detail": "connect tank.fuelOut to engine.fuelIn;"
+        },
+        {
+          "check": "preserved",
+          "ok": true,
+          "detail": "6 kept"
+        }
+      ],
+      "audit": [
+        {
+          "ts": "2026-10-19T08:00:11.500Z",
+          "tool": "sysml_outline",
+          "args": {
+            "depth": 2,
+            "root": ""
+          },
+          "version": 0,
+          "ms": 2,
+          "outcome": "ok"
+        },
+        {
+          "ts": "2026-10-19T08:00:12.137Z",
+          "tool": "sysml_get",
+          "args": {
+            "path": "VehicleModel::Vehicle"
+          },
+          "version": 0,
+          "ms": 1,
+          "outcome": "ok"
+        },
+        {
+          "ts": "2026-10-19T08:00:12.592Z",
+          "tool": "sysml_get",
+          "args": {
+            "path": "VehicleModel::FuelFilter"
+          },
+          "version": 0,
+          "ms": 0,
+          "outcome": "ok"
+        },
+        {
+          "ts": "2026-10-19T08:00:13.110Z",
+          "tool": "sysml_get",
+          "args": {
+            "path": "VehicleModel::FuelPort"
+          },
+          "version": 0,
+          "ms": 0,
+          "outcome": "ok"
+        },
+        {
+          "ts": "2026-10-19T08:00:15.776Z",
+          "tool": "sysml_get",
+          "args": {
+            "path": "VehicleModel::FuelTank"
+          },
+          "version": 0,
+          "ms": 0,
+          "outcome": "ok"
+        },
+        {
+          "ts": "2026-10-19T08:00:33.604Z",
+          "tool": "sysml_get",
+          "args": {
+            "path": "VehicleModel::Engine"
+          },
+          "version": 0,
+          "ms": 0,
+          "outcome": "ok"
+        },
+        {
+          "ts": "2026-10-19T08:00:49.516Z",
+          "tool": "sysml_get",
+          "args": {
+            "path": "VehicleModel::LegacyFuelPort"
+          },
+          "version": 0,
+          "ms": 0,
+          "outcome": "ok"
+        },
+        {
+          "ts": "2026-10-19T08:01:08.333Z",
+          "tool": "sysml_context_slice",
+          "args": {
+            "budgetChars": 2000,
+            "path": "VehicleModel::FuelFilter"
+          },
+          "version": 0,
+          "ms": 2,
+          "outcome": "ok"
+        },
+        {
+          "ts": "2026-10-19T08:01:30.452Z",
+          "tool": "sysml_find_references",
+          "args": {
+            "path": "VehicleModel::Vehicle::tank.fuelOut"
+          },
+          "version": 0,
+          "ms": 1,
+          "outcome": "error:NOT_FOUND"
+        },
+        {
+          "ts": "2026-10-19T08:01:54.431Z",
+          "tool": "sysml_context_slice",
+          "args": {
+            "budgetChars": 2000,
+            "path": "VehicleModel::Vehicle"
+          },
+          "version": 0,
+          "ms": 1,
+          "outcome": "ok"
+        },
+        {
+          "ts": "2026-10-19T08:02:26.767Z",
+          "tool": "sysml_find_references",
+          "args": {
+            "path": "VehicleModel::Vehicle"
+          },
+          "version": 0,
+          "ms": 0,
+          "outcome": "ok"
+        },
+        {
+          "ts": "2026-10-19T08:02:59.610Z",
+          "tool": "sysml_find_references",
+          "args": {
+            "path": "VehicleModel::Vehicle::tank.fuelOut"
+          },
+          "version": 0,
+          "ms": 0,
+          "outcome": "error:NOT_FOUND"
+        }
+      ],
+      "finalModel": "package VehicleModel {\n    doc /* Simplified vehicle architecture used for agent evaluation. */\n    import ScalarValues::*;\n    port def FuelPort {\n        attribute flowRate : Real;\n    }\n    port def PowerPort;\n    part def Engine {\n        attribute mass : Real = 180;\n        port fuelIn : FuelPort;\n        port powerOut : PowerPort;\n    }\n    part def ElectricMotor :> Engine {\n        attribute peakTorque : Real = 320;\n    }\n    part def FuelTank {\n        attribute capacity : Real = 55;\n        port fuelOut : ~FuelPort;\n    }\n    port def LegacyFuelPort {\n        attribute flowRate : Real;\n    }\n    part def FuelFilter {\n        port inlet : LegacyFuelPort;\n        port outlet : ~FuelPort;\n    }\n    part def Wheel;\n    part def Vehicle {\n        part engine : Engine;\n        part tank : FuelTank;\n        part wheels : Wheel[4];\n        connect tank.fuelOut to engine.fuelIn;\n    }\n    requirement def MassRequirement {\n        doc /* The total vehicle mass shall not exceed 2000 kg. */\n    }\n    requirement vehicleMass : MassRequirement;\n    satisfy vehicleMass by Vehicle;\n}\n",
+      "retries": {
+        "retries": 10,
+        "waitedMs": 151000
+      }
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+ "provider": "groq",
+ "model": "openai/gpt-oss-120b",
+ "createdAt": "2026-10-19T08:01:30.451Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": null,
+   "toolCalls": [
+    {
+     "id": "fc_f0cf88bc-eb13-435c-a1c4-1469c28f2702",
+     "name": "sysml_find_references",
+     "arguments": "{\"path\":\"VehicleModel::Vehicle::tank.fuelOut\"}"
+    }
+   ]
+  },
+  "usage": {
+   "promptTokens": 2736,
+   "completionTokens": 582,
+   "totalTokens": 3318
+  },
+  "finishReason": "tool_calls",
+  "latencyMs": 1969
+ }
+}

@@ -1,0 +1,59 @@
+{
+ "provider": "anthropic",
+ "model": "claude-haiku-5-5",
+ "createdAt": "2026-10-19T08:16:54.000Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": null,
+   "toolCalls": [
+    {
+     "id": "toolu_01PF7yqMZDT7Hwi3hngu16m2",
+     "name": "sysml_get",
+     "arguments": "{\"path\":\"VehicleModel::FuelFilter\"}"
+    },
+    {
+     "id": "toolu_01TWfe1KbuFhMq12omq2uxBv",
+     "name": "sysml_get",
+     "arguments": "{\"path\":\"VehicleModel::Vehicle\"}"
+    }
+   ],
+   "raw": [
+    {
+     "type": "thinking",
+     "thinking": "",
+     "signature": "CAQS3goKEAgSGAI4AUIIdGhpbmtpbmcSDPOjew7XlkrCXZnXmxoMYUw61gk8X4y+uZq/IjCsyLmM9m1kAEoOwY+wbPsB2aRCDXyqdmqAtSGpvmSv7wV0ZF/bx4Ct4fa9egH3QiEq+wmHZwhYvh0yekmmpMHkS0kNMkHUI1JuyGUMrKttyhfkrpUC41R8XJNLT8ndi9Z/p4smAdgknfOypRYAXH7N8kKoAawFsBqL9sFyi7+vr8T5+MGz+RDBp9+NHTvBuZmyHkd6ccNzznyOA6cP1IBGIIpUQRujsuwBzq5HSQKLrjHVIiyS5bOS7r0t6or4OjMJny+uV4IR5dhOqHCXFmtO5wpB9vvUXTfHSz86RE95GbcGov2zElwRubi26ZuWb5VsAE3MkDDkhISK5nmpAVSqVqANdjbT77ClZCQ1/LMUO0nUq1lzfP9JAER2O26GxUxCdtlHduGiEEwwhiOIVQaPS9vfIyMT2LmFsbQvfNwoTy0htXBOWd2o+bLGwJh5zl0O18DK3N6c+zp/pSoX1Th5JYUXPj3EWJ5TS/UJ+BDXTDGmwgveIilMGgEIJ1oXzM/8j6le/Y0QuFfGOK4dV7YZVO1nzrpMNnGaak/tPvqTf+9X6GqVPr/e4jo4ETbrRxtgaZYopm2T8hCkeaiElzhZ78AXYiTOn8u5R7Mf7NQscTBOYl2p10DTDv51iLhKjfnd+V+IcW4SSo08zF+cJaFl9F3nVvDmyajOw6AUY5bFIhk2bIPyy8Ok6JyklxbQeo+5iPtCPrJYCI9a6NL6zSIcAvq7grgjPv+RUQ+lZcR4+znYELT6Byb8vDAVTgFm4UPoMI/h/UxxNIv/QQKSDmlbH9mg/x4HKGtbB5UHdPPaKl47madcKd8x57pDyOkt/2ko2f5vMHBAbzsFQH7dU4ahMm+/M0DxVvwz5pnXlqt5VvojZP1dOmXEs0xlg11h30s9EEgVea1gVQVGHZ2Uo1beK9wD1/PJkkvyvHj53D2C86HOaBM0YoTnA9DjbgdE7Y6qJjDc7bLtEDQAXSH+OOo3oxRNBbJn6lxDPEDUPe7DQIF5fqJv5UbcXYd/tnx7HzGaj1HrIq68tjnCAwHI4wT6E7gKnoBEtLV1TJUv0Rbruwv/oo09Egqml3n1vQ7ybduYAc+l3usDifs2ffh3vjnqNIf6IledAHIr/XuwZzq32cShRxPJmliP8qvPNg5SItWhO2tniBmu2EefttJOwvaRFm/r8X57iqEY/C0/3omCKMQMHc5KlIAdWLxtEAJapHeZMRyguf3539D2YrbyVuLqlyA9bTKnW07SH4p5pWBGmOtlKU2mNlERqKQFwVz+2isoA1p3qYtQYxvU6mDyptSSIi+h2evDQ79ZFM5izj08cQQELGNEb/G/UTpWXY4sPS9oepTwawQ9VsexIjNCf0V7TkQCMOj4XrYWQQqWJLQWFymO3iP0ef8lvadOHl3izrWax3CSe16KohFW8g4RpIY64A0u1yUL1qZFb3hsN9nnDgHHoVW1+Vy6uynroXzeiecI2FSb7IEfN6c0Vo7FZ0EQeraksvUV9vsNKdArSWxs8VwHhGX9y+Ua28kV9B/GFFWYRjoxJRkUBwXbOPAiiatXxqmTDFqUhf6P1/iaLKoTOPy6VltzQ5VOjKPIW7IcYcvz1SbiFtMCSOvobu4M9M4xEufRBDRk1yykdH0v9RTKvIm8Mp+JgAPM9Vzg1HCjfFLkiXP9OFcde2/xUf2BV8TFfcs8XxrKL+9/YnrHEnhKsWSiiC/BChzbaSnpVZvP2O1bJPK21Wy0T3ycW6KMYFeYgNtVMMXLARu/BrQTeUoYAQ=="
+    },
+    {
+     "type": "tool_use",
+     "id": "toolu_01PF7yqMZDT7Hwi3hngu16m2",
+     "name": "sysml_get",
+     "input": {
+      "path": "VehicleModel::FuelFilter"
+     },
+     "caller": {
+      "type": "direct"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "toolu_01TWfe1KbuFhMq12omq2uxBv",
+     "name": "sysml_get",
+     "input": {
+      "path": "VehicleModel::Vehicle"
+     },
+     "caller": {
+      "type": "direct"
+     }
+    }
+   ]
+  },
+  "usage": {
+   "promptTokens": 3406,
+   "completionTokens": 484,
+   "totalTokens": 3890
+  },
+  "finishReason": "tool_calls",
+  "latencyMs": 3858
+ }
+}

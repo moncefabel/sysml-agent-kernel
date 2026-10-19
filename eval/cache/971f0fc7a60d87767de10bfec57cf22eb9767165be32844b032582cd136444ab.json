@@ -1,0 +1,60 @@
+{
+ "provider": "anthropic",
+ "model": "claude-haiku-5-5",
+ "createdAt": "2026-10-19T08:17:03.783Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": null,
+   "toolCalls": [
+    {
+     "id": "toolu_01FyNorJeYBPxYeGTXHatdYp",
+     "name": "sysml_apply_edits",
+     "arguments": "{\"ops\":[{\"op\":\"set\",\"path\":\"VehicleModel::FuelFilter::inlet\",\"field\":\"type\",\"value\":\"FuelPort\"},{\"op\":\"remove\",\"path\":\"VehicleModel::Vehicle#connect[0]\"},{\"op\":\"add\",\"parent\":\"VehicleModel::Vehicle\",\"source\":\"part filter : FuelFilter;\\n        connect tank.fuelOut to filter.inlet;\\n        connect filter.outlet to engine.fuelIn;\"}],\"dryRun\":false}"
+    }
+   ],
+   "raw": [
+    {
+     "type": "thinking",
+     "thinking": "",
+     "signature": "CAQSzgcKEAgSGAI4AUIIdGhpbmtpbmcSDLIS67SEDuFF5fkF1BoMiod5Zgpq0WsmYaNeIjDDX5xlI6wqwF2DB2qANmQHsS73HcSjprCnMwrh7LTF1DxLdVVKyNf3APJtPD5DKtgq6wbdDxS7ajJnEsj/512HRH4EILJ6fgdA5XGtmPWl48pc1hFFUIH8EPFvBuzsHLT0HRUC9cG9GJhTh5hpsJUquSOLNNoGq6Cp7+U8Jf/CbGzcAEti757N9spT4XFrFY1l9e72YrEyZlb8rWUV5M+fK/0UrZEJk0ZMvP4PQ3hU66dPfvsvkfJs+L+7UM0lXa6F5YExAyobftC7ngkg8BKlRucDSBX3JRinL2TGYTBlWxuQcoVXmZbMYEvHYW/yWQWKNdyeUnudx4x3p8HRjUQ4A9TduKwDSaLgYDeAP5QOtRFH0YPpNSkMdJXXsBgWDGMhyHRBoM4avs5H4cz/te1JFNbIqDIuWP/AIxnkfJjPpqK9CPouJ78aNQU7zb2uM7tBxZcscT220sJiuE185u6hkJDkUpPnSAOGrEnpVnHT4Vu2uRmctcnFqogZg8JxSP+EHuM7JW5ManGtB+1y6c3YA+cGJ1P4ufnStBxdXPZ/57X7Y0+jMEGPc8se+mdXvRg35Q+x2vs3lf2XOJHwpR3gEA578fO81dGqqgJ+d7rLsFJhxvINOZitqsdCK15vUQogIQsFt5HHI02/xrzGXK7Xmh8Se3bjLiXwcGbN96qfYK44DQ4bc1KcrVv73kyLOEldWyx8B6v7s9gXkpTq5jRQlKE5BZC1XqpWnhko41cu56hWaCu1tW0ShBVA/uvXKaX18ekZTprk+Do04O8/kR04ZjCONWOb1L3z9irJPaaRCBFY111Cbnz+k7ZB/o2m0hpvFpijwqhpttKwZ+m67e5Qwo50sp06ndKHSUusiku57iHNXa2khXF59FdP0YTvklXpvc0JbYRYzoYwTl22NSN2f8x7xP2+30X/xBst3L6rIFPEKaGYjeo9i8drrsC5iZzkgGcQEujiaeYdPIBpvVqDJ+z9DFB17qYE+nP01ua3+HAajeTe0aDcVJxrcHXOi+P/RIjPCjPlb21/W6JSIcIqtycOAwEsEvT4Fq6y1JzuZJWb4j/5ZoplLUcQ7UpgXWIQV3oJp9CkdZ7BQp8NyPD6BDqs+nDqeMYbveqMgufy6wjMy0GrclofYPPslFHfKgFeUdMvl1Zsz8etOrktBC/6t0dx5HBJ4vFpxg43fhUOjoZWw3psKda8zkT6FKgPgb4ngroFY0NHpovFOCIhJhgB"
+    },
+    {
+     "type": "tool_use",
+     "id": "toolu_01FyNorJeYBPxYeGTXHatdYp",
+     "name": "sysml_apply_edits",
+     "input": {
+      "ops": [
+       {
+        "op": "set",
+        "path": "VehicleModel::FuelFilter::inlet",
+        "field": "type",
+        "value": "FuelPort"
+       },
+       {
+        "op": "remove",
+        "path": "VehicleModel::Vehicle#connect[0]"
+       },
+       {
+        "op": "add",
+        "parent": "VehicleModel::Vehicle",
+        "source": "part filter : FuelFilter;\n        connect tank.fuelOut to filter.inlet;\n        connect filter.outlet to engine.fuelIn;"
+       }
+      ],
+      "dryRun": false
+     },
+     "caller": {
+      "type": "direct"
+     }
+    }
+   ]
+  },
+  "usage": {
+   "promptTokens": 4393,
+   "completionTokens": 363,
+   "totalTokens": 4756
+  },
+  "finishReason": "tool_calls",
+  "latencyMs": 1929
+ }
+}

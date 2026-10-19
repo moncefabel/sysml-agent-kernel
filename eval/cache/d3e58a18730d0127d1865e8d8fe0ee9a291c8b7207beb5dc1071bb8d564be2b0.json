@@ -1,0 +1,10 @@
+{
+ "provider": "groq",
+ "model": "openai/gpt-oss-120b",
+ "createdAt": "2026-10-19T08:11:09.516Z",
+ "toolUseFailed": {
+  "message": "Groq 400: Failed to parse tool call arguments as JSON",
+  "status": 400,
+  "failedGeneration": "{\"name\": \"sysml_apply_edits\", \"arguments\": {\n  \"dryRun\": false,\n  \"ops\"}"
+ }
+}

@@ -3,6 +3,7 @@ import { DEFAULT_POLICY, READ_TOOLS, schemas, ToolHost, type Policy } from '../s
 import { scriptedAgent, type Agent, type AgentRun } from './agents.js';
 import { compareFootprint, footprint, type Footprint, type FootprintComparison } from './footprint.js';
 import { ProviderError } from './llm/provider.js';
+import { endsWithQuestion } from './hitl.js';
 import type { AnyCheck, SuiteScenario } from './suites.js';
 
 /**
@@ -63,6 +64,15 @@ export interface Row {
   footprint?: FootprintComparison;
   /** Provider retries during this scenario (set by the runner; absent in phase 2 reports). */
   retries?: { retries: number; waitedMs: number };
+  /**
+   * success when the checks pass; otherwise clarification_requested when the model ended with a
+   * question in plain text, else failure. clarification_requested is never a success.
+   */
+  outcome?: 'success' | 'clarification_requested' | 'failure';
+  /** Last message of the model, when the run ended on one. */
+  finalText?: string;
+  /** Questions asked through request_clarification (hitl configuration only). */
+  clarifications?: number;
   /** For scenarios with a concurrent edit: whether it actually fired during the run. */
   perturbed?: boolean;
   llm?: AgentRun['llm'];
@@ -137,6 +147,9 @@ export async function runScenario(s: SuiteScenario, agent: Agent, policy: Policy
     rollbacks: countRollbacks(host.auditTrail),
     footprint: compareFootprint(footprint(s.model, host.auditTrail, finalModel), await referenceFootprint(s)),
     ...(s.perturb ? { perturbed } : {}),
+    ...(run?.llm ? { outcome: success ? 'success' as const : endsWithQuestion(run.finalText) ? 'clarification_requested' as const : 'failure' as const } : {}),
+    ...(run?.finalText ? { finalText: run.finalText } : {}),
+    ...(run?.clarifications !== undefined ? { clarifications: run.clarifications } : {}),
     ...(run?.llm ? { llm: run.llm } : {}),
     checks: results, crash, ...(fatal ? { fatal } : {}), audit: host.auditTrail, finalModel,
   };

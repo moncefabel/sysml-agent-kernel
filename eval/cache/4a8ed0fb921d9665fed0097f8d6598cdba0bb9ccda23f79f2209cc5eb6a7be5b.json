@@ -1,0 +1,18 @@
+{
+ "provider": "groq",
+ "model": "openai/gpt-oss-120b",
+ "createdAt": "2026-10-19T08:09:36.340Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": "Edits applied successfully."
+  },
+  "usage": {
+   "promptTokens": 2970,
+   "completionTokens": 9,
+   "totalTokens": 2979
+  },
+  "finishReason": "stop",
+  "latencyMs": 857
+ }
+}

@@ -1,0 +1,18 @@
+{
+ "provider": "groq",
+ "model": "openai/gpt-oss-120b",
+ "createdAt": "2026-10-19T08:16:35.289Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": "Added spare wheel part to Vehicle."
+  },
+  "usage": {
+   "promptTokens": 1493,
+   "completionTokens": 11,
+   "totalTokens": 1504
+  },
+  "finishReason": "stop",
+  "latencyMs": 285
+ }
+}
