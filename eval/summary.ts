@@ -144,7 +144,7 @@ for (const [k, m] of [...bySuitePolicy].sort()) {
     out.push(`| ${suite} (${policyLabel}) | ${model} | ${rows.length} | ${rows.filter((x) => x.success).length}/${rows.length} | ${turns.length ? (turns.reduce((a, b) => a + b, 0) / turns.length).toFixed(1) : '-'} | ${rows.reduce((a, x) => a + (x.llm?.totalTokens ?? 0), 0)} | ${rows.reduce((a, x) => a + x.rollbacks, 0)} | ${rows.reduce((a, x) => a + x.structuredErrors, 0)} | ${withErr ? `${rows.filter((x) => x.selfCorrected === true).length}/${withErr}` : 'n/a'} | ${fps.filter((f) => f?.deleteAndRecreate).length}/${rows.length} | ${fps.reduce((a, f) => a + (f?.extra.length ?? 0), 0)} | ${retries} | ${(rows.reduce((a, x) => a + (x.llm?.llmLatencyMs ?? 0), 0) / 1000).toFixed(1)} s |`);
   }
 }
-out.push('', 'Retries count only attempts that completed; an attempt dropped by a budget stop keeps its retries in the run output only (STATUS.md). "partial": some rows predate per scenario retry accounting.', '');
+out.push('', 'Retries count only attempts that completed; an attempt dropped by a budget stop keeps its retries in the run output only. "partial": some rows predate per scenario retry accounting.', '');
 
 // Outcome of a run row. Rows written before phase 5 have no outcome field; the replay of the
 // same run, re-run with the phase 5 code, carries it, and replays are checked identical below.

@@ -207,7 +207,7 @@ Token counts use each provider's own tokenizer, so they are not directly compara
 | selfcorrect (session limit of 5 removed elements) | anthropic:claude-haiku-5-5 | 6 | 4/6 | 4.3 | 88251 | 1 | 12 | 4/6 | 0/6 | 0 | 0 | 29.9 s |
 | selfcorrect (session limit of 5 removed elements) | groq:openai/gpt-oss-120b | 6 | 5/6 | 7.2 | 101471 | 3 | 10 | 3/4 | 0/6 | 0 | partial | 57.1 s |
 
-Retries count only attempts that completed; an attempt dropped by a budget stop keeps its retries in the run output only (STATUS.md). "partial": some rows predate per scenario retry accounting.
+Retries count only attempts that completed; an attempt dropped by a budget stop keeps its retries in the run output only. "partial": some rows predate per scenario retry accounting.
 
 ## Variance across passes
 
