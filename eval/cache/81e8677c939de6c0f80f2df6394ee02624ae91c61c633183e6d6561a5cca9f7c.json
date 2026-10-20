@@ -1,0 +1,24 @@
+{
+ "provider": "anthropic",
+ "model": "claude-haiku-5-5",
+ "createdAt": "2026-10-20T08:07:36.378Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": "Removed the FuelTank part definition, along with the `tank` part in Vehicle that typed to it and the `tank.fuelOut to engine.fuelIn` connection that referenced it; the model now validates with 0 errors and 0 warnings.",
+   "raw": [
+    {
+     "type": "text",
+     "text": "Removed the FuelTank part definition, along with the `tank` part in Vehicle that typed to it and the `tank.fuelOut to engine.fuelIn` connection that referenced it; the model now validates with 0 errors and 0 warnings."
+    }
+   ]
+  },
+  "usage": {
+   "promptTokens": 3968,
+   "completionTokens": 82,
+   "totalTokens": 4050
+  },
+  "finishReason": "stop",
+  "latencyMs": 1497
+ }
+}

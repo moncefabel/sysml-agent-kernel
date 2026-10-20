@@ -1,0 +1,59 @@
+{
+ "provider": "anthropic",
+ "model": "claude-haiku-5-5",
+ "createdAt": "2026-10-20T08:08:01.032Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": "Forty requirements. I'll look for the satisfy relations to find the unsatisfied one.",
+   "toolCalls": [
+    {
+     "id": "toolu_01NeaUYcfu7552qn5N3QCJnJ",
+     "name": "sysml_validate",
+     "arguments": "{\"severity\":\"all\",\"limit\":50}"
+    },
+    {
+     "id": "toolu_01CEZLYPnTCDT3KwqgjLvqcA",
+     "name": "sysml_get",
+     "arguments": "{\"path\":\"Plant::Requirements\"}"
+    }
+   ],
+   "raw": [
+    {
+     "type": "text",
+     "text": "Forty requirements. I'll look for the satisfy relations to find the unsatisfied one."
+    },
+    {
+     "type": "tool_use",
+     "id": "toolu_01NeaUYcfu7552qn5N3QCJnJ",
+     "name": "sysml_validate",
+     "input": {
+      "severity": "all",
+      "limit": 50
+     },
+     "caller": {
+      "type": "direct"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "toolu_01CEZLYPnTCDT3KwqgjLvqcA",
+     "name": "sysml_get",
+     "input": {
+      "path": "Plant::Requirements"
+     },
+     "caller": {
+      "type": "direct"
+     }
+    }
+   ]
+  },
+  "usage": {
+   "promptTokens": 10459,
+   "completionTokens": 157,
+   "totalTokens": 10616
+  },
+  "finishReason": "tool_calls",
+  "latencyMs": 1122
+ }
+}

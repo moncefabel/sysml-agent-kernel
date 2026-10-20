@@ -1,16 +1,19 @@
 import { Workspace } from '../src/workspace.js';
 import { DEFAULT_POLICY, READ_TOOLS, schemas, ToolHost, type Policy } from '../src/tools.js';
-import { scriptedAgent, type Agent, type AgentRun } from './agents.js';
+import { scriptedAgent, type Agent, type AgentRun, type ToolEndpoint } from './agents.js';
+import { McpToolClient } from './mcp-client.js';
+import { contextRead, type ContextRead } from './context-metrics.js';
 import { compareFootprint, footprint, type Footprint, type FootprintComparison } from './footprint.js';
 import { ProviderError } from './llm/provider.js';
 import { endsWithQuestion } from './hitl.js';
-import type { AnyCheck, SuiteScenario } from './suites.js';
+import type { AnyCheck } from './suites.js';
+import type { EvalScenario as SuiteScenario, SatisfiedByCheck } from './large.js';
 
 /**
  * Deterministic success checks, evaluated on the final model. The phase 3 suites add value,
  * type and text checks, and two trajectory checks that read the audit trail.
  */
-export function check(ws: Workspace, c: AnyCheck, audit: Array<Record<string, unknown>> = []): { ok: boolean; detail: string } {
+export function check(ws: Workspace, c: AnyCheck | SatisfiedByCheck, audit: Array<Record<string, unknown>> = []): { ok: boolean; detail: string } {
   const idx = ws.index();
   switch (c.type) {
     case 'value_equals': { const v = idx.get(c.path)?.value; return { ok: v === c.value, detail: `${c.path} = ${v ?? '<missing>'}` }; }
@@ -20,6 +23,11 @@ export function check(ws: Workspace, c: AnyCheck, audit: Array<Record<string, un
       return { ok: t === c.typePath, detail: `${c.path} : ${t ?? e?.el.type ?? '<missing>'}` };
     }
     case 'text_includes': return { ok: ws.text().includes(c.pattern), detail: c.pattern };
+    case 'satisfied_by': {
+      const found = [...idx.byPath.values()].some(({ el, parent }) => el.kind === 'satisfy'
+        && idx.resolveName(el.from!, parent ?? '')?.path === c.requirement && idx.resolveFeaturePath(el.to!, parent ?? '')?.path === c.subject);
+      return { ok: found, detail: `${c.requirement} by ${c.subject}` };
+    }
     case 'not_called': { const n = audit.filter((a) => a.tool === c.tool).length; return { ok: n === 0, detail: `${c.tool} called ${n} time(s)` }; }
     case 'no_unknown_tool': {
       const unknown = audit.filter((a) => typeof a.tool === 'string' && !(a.tool in schemas) && !a.tool.startsWith('human.')).map((a) => a.tool);
@@ -73,6 +81,8 @@ export interface Row {
   finalText?: string;
   /** Questions asked through request_clarification (hitl configuration only). */
   clarifications?: number;
+  /** What the model was shown of the model under edit (phase 6; LLM runs only). */
+  context?: ContextRead;
   /** For scenarios with a concurrent edit: whether it actually fired during the run. */
   perturbed?: boolean;
   llm?: AgentRun['llm'];
@@ -89,27 +99,58 @@ export interface Row {
  * committed right after the agent's first read tool call, through the kernel like any edit,
  * and recorded in the audit trail as 'human.edit'.
  */
-async function execute(s: SuiteScenario, agent: Agent, policy: Policy) {
-  const host = new ToolHost(new Workspace(s.model), policy);
+export type Transport = 'inprocess' | 'mcp';
+
+/**
+ * Runs an agent on a scenario. For scenarios with a perturbation, the colleague's edit is
+ * committed right after the agent's first read tool call, through the kernel like any edit,
+ * and recorded in the audit trail as 'human.edit'. Over MCP the colleague's edit goes through
+ * the same server connection (its audit entry is relabelled), since the model lives there.
+ */
+async function execute(s: SuiteScenario, agent: Agent, policy: Policy, transport: Transport = 'inprocess') {
+  let endpoint: ToolEndpoint, finish: () => Promise<Workspace>;
+  if (transport === 'mcp') {
+    // The server runs DEFAULT_POLICY in write mode (plus the large catalog when asked).
+    const { catalog, ...rest } = policy;
+    if (JSON.stringify(rest) !== JSON.stringify(DEFAULT_POLICY)) throw new Error('The mcp transport runs the server default policy only');
+    const client = await McpToolClient.start(s.model, catalog ? { catalog } : {});
+    endpoint = client;
+    finish = async () => new Workspace(await client.close());
+  } else {
+    const host = new ToolHost(new Workspace(s.model), policy);
+    endpoint = host;
+    finish = async () => host.ws;
+  }
   let perturbed = false;
   if (s.perturb) {
-    const call = host.call.bind(host);
-    host.call = (name: string, args: unknown) => {
-      const result = call(name, args);
+    const call = endpoint.call.bind(endpoint);
+    endpoint.call = async (name: string, args: unknown) => {
+      const result = await call(name, args);
       if (!perturbed && READ_TOOLS.has(name as any)) {
         perturbed = true;
-        const tx = host.ws.transact(s.perturb!.ops);
-        host.auditTrail.push({ ts: new Date().toISOString(), tool: 'human.edit', args: { ops: s.perturb!.ops, note: s.perturb!.note }, version: host.ws.version, outcome: tx.status });
+        const entry = { tool: 'human.edit', args: { ops: s.perturb!.ops, note: s.perturb!.note } };
+        if (endpoint instanceof ToolHost) {
+          const tx = endpoint.ws.transact(s.perturb!.ops);
+          endpoint.auditTrail.push({ ts: new Date().toISOString(), ...entry, version: endpoint.ws.version, outcome: tx.status });
+        } else {
+          await call('sysml_apply_edits', { ops: s.perturb!.ops });
+          Object.assign(endpoint.auditTrail[endpoint.auditTrail.length - 1], entry);
+        }
       }
       return result;
     };
   }
   let run: AgentRun | undefined, crash: string | undefined, fatal = false;
-  try { run = await agent.run(s, host); } catch (e) {
+  try { run = await agent.run(s, endpoint); } catch (e) {
     crash = String(e);
     fatal = e instanceof ProviderError && (e.kind === 'rate_limit' || e.kind === 'auth' || e.kind === 'config');
   }
-  return { host, run, crash, fatal, perturbed };
+  let ws: Workspace;
+  try { ws = await finish(); } catch (e) {
+    crash ??= `transport: ${String(e)}`;
+    ws = new Workspace(s.model);
+  }
+  return { ws, audit: endpoint.auditTrail, run, crash, fatal, perturbed };
 }
 
 const referenceFootprints = new Map<string, Footprint>();
@@ -118,40 +159,40 @@ const referenceFootprints = new Map<string, Footprint>();
 export async function referenceFootprint(s: SuiteScenario): Promise<Footprint> {
   const key = `${s.id}\n${s.model}`;
   if (!referenceFootprints.has(key)) {
-    const { host } = await execute(s, scriptedAgent, DEFAULT_POLICY);
-    referenceFootprints.set(key, footprint(s.model, host.auditTrail, host.ws.text()));
+    const { ws, audit } = await execute(s, scriptedAgent, DEFAULT_POLICY);
+    referenceFootprints.set(key, footprint(s.model, audit, ws.text()));
   }
   return referenceFootprints.get(key)!;
 }
 
-export async function runScenario(s: SuiteScenario, agent: Agent, policy: Policy = DEFAULT_POLICY): Promise<Row> {
+export async function runScenario(s: SuiteScenario, agent: Agent, policy: Policy = DEFAULT_POLICY, transport: Transport = 'inprocess'): Promise<Row> {
   const t0 = Date.now();
-  const { host, run, crash, fatal, perturbed } = await execute(s, agent, policy);
+  const { ws, audit, run, crash, fatal, perturbed } = await execute(s, agent, policy, transport);
   const ms = Date.now() - t0;
-  const results = crash ? [] : s.checks.map((c) => ({ check: c.type, ...check(host.ws, c, host.auditTrail) }));
-  const outcomes = host.auditTrail.map((a) => a.outcome as string);
+  const results = crash ? [] : s.checks.map((c) => ({ check: c.type, ...check(ws, c, audit) }));
+  const outcomes = audit.map((a) => a.outcome as string);
   const success = !crash && results.every((r) => r.ok);
   const structuredErrors = (run?.transcript ?? []).filter((t) => isStructuredError(t.result)).length;
-  const finalModel = host.ws.text();
+  const finalModel = ws.text();
   return {
     id: s.id, category: s.category,
     success,
     toolCalls: run?.toolCalls ?? 0,
-    committed: outcomes.filter((o) => o === 'committed').length - host.auditTrail.filter((a) => a.tool === 'human.edit' && a.outcome === 'committed').length,
+    committed: outcomes.filter((o) => o === 'committed').length - audit.filter((a) => a.tool === 'human.edit' && a.outcome === 'committed').length,
     rejected: outcomes.filter((o) => o.startsWith('rejected')).length,
     policyBlocks: outcomes.filter((o) => o === 'error:POLICY_LIMIT' || o === 'error:SESSION_LIMIT' || o === 'error:PERMISSION_DENIED').length,
     ms,
     stopReason: run?.stopReason,
     structuredErrors,
     selfCorrected: structuredErrors > 0 ? success : null,
-    rollbacks: countRollbacks(host.auditTrail),
-    footprint: compareFootprint(footprint(s.model, host.auditTrail, finalModel), await referenceFootprint(s)),
+    rollbacks: countRollbacks(audit),
+    footprint: compareFootprint(footprint(s.model, audit, finalModel), await referenceFootprint(s)),
     ...(s.perturb ? { perturbed } : {}),
     ...(run?.llm ? { outcome: success ? 'success' as const : endsWithQuestion(run.finalText) ? 'clarification_requested' as const : 'failure' as const } : {}),
     ...(run?.finalText ? { finalText: run.finalText } : {}),
     ...(run?.clarifications !== undefined ? { clarifications: run.clarifications } : {}),
-    ...(run?.llm ? { llm: run.llm } : {}),
-    checks: results, crash, ...(fatal ? { fatal } : {}), audit: host.auditTrail, finalModel,
+    ...(run?.llm ? { llm: run.llm, context: contextRead(s.model, run.transcript) } : {}),
+    checks: results, crash, ...(fatal ? { fatal } : {}), audit, finalModel,
   };
 }
 

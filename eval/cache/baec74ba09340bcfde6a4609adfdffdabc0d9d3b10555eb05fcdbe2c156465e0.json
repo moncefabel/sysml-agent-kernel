@@ -1,0 +1,71 @@
+{
+ "provider": "anthropic",
+ "model": "claude-haiku-5-5",
+ "createdAt": "2026-10-20T08:07:34.867Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": null,
+   "toolCalls": [
+    {
+     "id": "toolu_01YMjBjuXYt7NsNKBkmbH4Kh",
+     "name": "sysml_apply_edits",
+     "arguments": "{\"ops\":[{\"op\":\"remove\",\"path\":\"VehicleModel::Vehicle#connect[0]\"},{\"op\":\"remove\",\"path\":\"VehicleModel::Vehicle::tank\"},{\"op\":\"remove\",\"path\":\"VehicleModel::FuelTank\"}],\"dryRun\":false}"
+    },
+    {
+     "id": "toolu_013aybRVMSsKREUDpbKf8xS3",
+     "name": "sysml_validate",
+     "arguments": "{}"
+    }
+   ],
+   "raw": [
+    {
+     "type": "thinking",
+     "thinking": "",
+     "signature": "CAQS+wYKEAgTGAI4AUIIdGhpbmtpbmcSDDrASVSWHVel2Ta0kBoM94Y84oeDxF190irQIjA0hnoQEU0AkoCrhai41B38U6UthaiNDCgZa4ragB/NfFcGWkEoOAPAcUSaXLX83F4qmAb9cTxnybeuY1+6gIEdEdwIGdC6Ej2BVe04CFvbsGGFdYRzn5DbMsH3CWmVNXViDK+2wTZAjCcDPmS6xOP5vC6MV0h3FRZ9/yjAfqeVUo9Co99gz0xb+XgynG1U/CgikZTOBi907PCkErTyqKy4IEETAt2DMr2McQ/3tK7Qa/CMjJJJXCbUjWeqg83Pk17KdVVY0fEKHOTBJ0mjvOSKSiCIKf5yJWIt8vFpvDxrIZ/FVB8rMl4lLQMB9yQsL6bc9yA1g13JJKMM7gY884utWLEdU5ok/MV1nUXjq9rhgNUfd2AtlljQvZrH4rzob2r9svZgkj7FtNZTxN/CcYO23HmUGOIfVL8mtu1VlISUkeocBNIW6i99EmOJ2MKzLGK6AtgpIB1YAtn4nPG1HXR89cWbXZlHWRlhv4SIVYhujiBip7Ou1D0hnbgB/wc6uK6aGakTOm5t+alHbLj+4Rw/VYN12ucjscVpn9eDI3fLZvxxYPEp7MHZQLrU8Egp9eblWzTVA4sgiHEqlb/kP1NVc9X5bjGrrF1w8lLc0Bfqv7HhzcrMFAcuCjnTPPB0ss/JQr1IXYrcopbc2nQWRU+J9Q1DUMGYjDHy1FzmaR3OaevQhOQPAXglNxwYku6cyCCov/fyv9UoCNwpKJnmOKxDxFXWTRVEZaL34AcBu3ClD4zH1UucZeIAVd5HkwUqJrMftI6iiPLDTTZBG5PZU29H1AUePkY02AB0jjy584hRicKOa9hySs8uvSXxcczPTYXK0HtCOrKVWn0Tp79w1c0a5AZwk6/L0TANOjnsuEMbx+e6ypxbO8tee9yY6oxm8zVDU1g2gsBoOUTYPkuRLG/eKornfD6di0CLergsrVbM2XEVKgwymzdnMAROPRv0BrFo1jEKHUl2BHngsIcgs7N307rdjtAM6pFqUQUhY8R/HmcQXP6lvpYBEf9aoKR1fXVHdyRbp6duFy5Yg3X1tWLFV4KqsPQJUbTMh1r0wtMnmJ1uWdw8sd15aYInGhms3NttuHTf/CShkf9JjaZyHLqGiUTLyhQoM9pWrXAYAQ=="
+    },
+    {
+     "type": "tool_use",
+     "id": "toolu_01YMjBjuXYt7NsNKBkmbH4Kh",
+     "name": "sysml_apply_edits",
+     "input": {
+      "ops": [
+       {
+        "op": "remove",
+        "path": "VehicleModel::Vehicle#connect[0]"
+       },
+       {
+        "op": "remove",
+        "path": "VehicleModel::Vehicle::tank"
+       },
+       {
+        "op": "remove",
+        "path": "VehicleModel::FuelTank"
+       }
+      ],
+      "dryRun": false
+     },
+     "caller": {
+      "type": "direct"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "toolu_013aybRVMSsKREUDpbKf8xS3",
+     "name": "sysml_validate",
+     "input": {},
+     "caller": {
+      "type": "direct"
+     }
+    }
+   ]
+  },
+  "usage": {
+   "promptTokens": 3549,
+   "completionTokens": 267,
+   "totalTokens": 3816
+  },
+  "finishReason": "tool_calls",
+  "latencyMs": 1680
+ }
+}

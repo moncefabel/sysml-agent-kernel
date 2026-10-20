@@ -1,4 +1,3 @@
-import type { ToolHost } from '../src/tools.js';
 import type { Scenario } from './scenarios.js';
 
 export interface LlmStats {
@@ -16,6 +15,20 @@ export interface LlmStats {
   malformedToolCalls: number;
   /** Turns whose usage was missing from the response and had to be estimated. */
   estimatedUsageTurns: number;
+  /** Largest prompt of a single call, as reported by the API (phase 6; absent in older rows). */
+  maxPromptTokens?: number;
+  /** Characters of all requests sent (messages and tools), cache hits included (phase 6). */
+  requestChars?: number;
+}
+
+/**
+ * What the agent calls tools through: the in-process ToolHost, or an MCP client talking to
+ * the real server. Both expose the same catalog, the same results and an audit trail.
+ */
+export interface ToolEndpoint {
+  toolDefinitions(): Array<{ name: string; description: string; input_schema: unknown }>;
+  call(name: string, args: unknown): unknown | Promise<unknown>;
+  readonly auditTrail: Array<Record<string, unknown>>;
 }
 
 export interface AgentRun {
@@ -32,13 +45,14 @@ export interface AgentRun {
 /** What an agent may see of a scenario: never its checks. */
 export type AgentTask = Pick<Scenario, 'id' | 'task' | 'scripted'>;
 
-export interface Agent { name: string; run(s: AgentTask, host: ToolHost): Promise<AgentRun>; }
+export interface Agent { name: string; run(s: AgentTask, host: ToolEndpoint): Promise<AgentRun>; }
 
 /** Replays the reference trajectory. Validates the harness and the kernel independently of any LLM. */
 export const scriptedAgent: Agent = {
   name: 'scripted-baseline',
   async run(s, host) {
-    const transcript = s.scripted.map((step) => ({ ...step, result: host.call(step.tool, step.args) }));
+    const transcript: AgentRun['transcript'] = [];
+    for (const step of s.scripted) transcript.push({ ...step, result: await host.call(step.tool, step.args) });
     return { toolCalls: transcript.length, transcript, stopReason: 'script_end' };
   },
 };

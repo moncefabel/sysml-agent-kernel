@@ -1,0 +1,55 @@
+{
+ "provider": "anthropic",
+ "model": "claude-haiku-5-5",
+ "createdAt": "2026-10-20T08:07:13.672Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": null,
+   "toolCalls": [
+    {
+     "id": "toolu_01F76LPKPacpyKVFeoCZLE1n",
+     "name": "sysml_apply_edits",
+     "arguments": "{\"ops\":[{\"op\":\"add\",\"parent\":\"VehicleModel\",\"source\":\"part def Brake {\\n    attribute mass : Real = 12;\\n}\"},{\"op\":\"add\",\"parent\":\"VehicleModel::Vehicle\",\"source\":\"part brakes : Brake[4];\"}],\"expectedVersion\":0}"
+    }
+   ],
+   "raw": [
+    {
+     "type": "thinking",
+     "thinking": "",
+     "signature": "CAQSgQYKEAgTGAI4AUIIdGhpbmtpbmcSDKYUv4mDQXrjN8IK2xoMwfRZlpB/Y70GCEpPIjDA6IFuof4/PlBskvjUpH2lqjKQz+/kvgoAdA1hR0jpHKLWudFLLmFmjCLL4Gf0S/kqngUlStJvsfOhIh4ecd0gOhb+HLcJHQnusVoPIWFeGwFaK0IcaZHlVpwxSFYPiqkf5hxosmZr/SQ0fhoJ3A5Mh78MKge1xVvq68rHqZL2E/lu/H3UAnJbselUTzm70mgFNyGzID0eSi8zT1746nGJd7S8wKiPv0V20NtqMv8gu3KCto3qqgNy2IPL6tDBeX8ndfemoOHnn4h4eMfiPqduZf6fzbp7MNch3X6SZmIaOw95id5hWoe5d2hVQGpkDJt0iY8j7vbFO26uFghqazvP8ZHAeTCT7M7ZSQKiTV1uC0ulpv5L6py0m/BAI5vfMM2dH7U9QkcRVjchFuGehnt4Af1ndRKTLlTQsWdEDgDD+9soPB4RfelRibVbDv/QES1TjJKlK1UAiHpnQR9gM7QuPSu4l3mtm0+FOVQwYSo7myiO9J7E1UqzHWPa9Cp+3ke59RUzMUps6JGpA8QFKKZfcGr1BO5evNTys52hLMwotuyZ1xCy4Y1NlGhyvohsJFY7bCAoOlf3Xvv4YPkvas1X3TK/lhO342B0RxE60aDD2TJ3LX1WWxwUmVQXOuZzWzzUq18JBws52mS/xDEoUOmPKUJka/7xIkkEmr9w0dP4FQWFvQ2uSuu0jUD3A3svXlahqRweLlsCqjSjYEhAQU8HQe6j3Q2xlQCR2rE08wU6uvihakpavD7xeEuNHsV84MJm16NIOtTb9ocQp9Rs5CwT0d6czxqeEN9Nblj98arFdD9w0tigcb9yzH3v8PKtejMA5ur83qSm/Rd74N0QSe2pw21Z+QlOy2PUd1CkJ5ADp4EI6ziW1bEVdR/Bn1jbsoECi9bVYflEY5tCKRGEJy07Z7rwTefOGaYrdBXyxSu2IU/jS2seJHHO+9rYWGNrgIn+GAE="
+    },
+    {
+     "type": "tool_use",
+     "id": "toolu_01F76LPKPacpyKVFeoCZLE1n",
+     "name": "sysml_apply_edits",
+     "input": {
+      "ops": [
+       {
+        "op": "add",
+        "parent": "VehicleModel",
+        "source": "part def Brake {\n    attribute mass : Real = 12;\n}"
+       },
+       {
+        "op": "add",
+        "parent": "VehicleModel::Vehicle",
+        "source": "part brakes : Brake[4];"
+       }
+      ],
+      "expectedVersion": 0
+     },
+     "caller": {
+      "type": "direct"
+     }
+    }
+   ]
+  },
+  "usage": {
+   "promptTokens": 3080,
+   "completionTokens": 242,
+   "totalTokens": 3322
+  },
+  "finishReason": "tool_calls",
+  "latencyMs": 1406
+ }
+}

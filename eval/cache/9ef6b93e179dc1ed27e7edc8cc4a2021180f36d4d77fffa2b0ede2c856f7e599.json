@@ -1,0 +1,25 @@
+{
+ "provider": "groq",
+ "model": "openai/gpt-oss-120b",
+ "createdAt": "2026-10-20T08:01:39.261Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": null,
+   "toolCalls": [
+    {
+     "id": "fc_beddbd81-861b-4631-ae75-72b34c37c8d8",
+     "name": "sysml_find_elements",
+     "arguments": "{\"kind\":\"portDef\",\"limit\":20,\"pattern\":\"FluidPort\"}"
+    }
+   ]
+  },
+  "usage": {
+   "promptTokens": 1387,
+   "completionTokens": 71,
+   "totalTokens": 1458
+  },
+  "finishReason": "tool_calls",
+  "latencyMs": 495
+ }
+}

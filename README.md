@@ -68,18 +68,22 @@ Name resolution handles nested namespaces, imports (`X::*` and single), and feat
 | `sysml_find_references` | read | Who uses this element |
 | `sysml_context_slice` | read | Budgeted context window |
 | `sysml_apply_edits` | write | Atomic transaction of typed operations, with dry run |
+| `sysml_find_elements` | read | Find elements by name (substring or `*` pattern) and kind, bounded results. **Only in the `large` catalog** (`Policy.catalog = 'large'`, MCP server `--catalog large`); the default catalog is the six tools above |
 
 ## Run it
 
 ```bash
 npm install
-npm test          # 58 tests, all offline: kernel, session limits, agent loop, cache, budget,
-                  # checkpoint, footprint, phase 3 suites, Groq and Anthropic adapters (mocked)
-npm run eval      # scripted baseline over the main suite (add -- --suite selfcorrect|injection|probes)
+npm test          # 92 tests, all offline: kernel, session limits, agent loop, cache, budget,
+                  # checkpoint, footprint, suites, MCP transport, large model, traces, adapters (mocked)
+npm run eval      # scripted baseline over the main suite (add -- --suite <name> [--transport mcp])
 npm run bench     # parse / validate / transaction / slice timings
 npm run estimate  # offline token estimate of a full LLM run, no network
 npm run summary   # rebuild eval/results/SUMMARY.md from the saved reports
+npm run traces    # rebuild the HTML traces in docs/traces from the reports and the cache
 ```
+
+**Trace viewer.** `npm run traces` writes one self-contained HTML page per run into `docs/traces` (no script, no external font or stylesheet), plus `docs/traces/index.html`. Open `docs/traces/index.html` directly in a browser (double click, or `open docs/traces/index.html`); it works offline. Each run is rebuilt from the response cache, so every turn shows its tokens and latency, the model's text, each tool call with its arguments and the kernel's decision (commit, rollback with error codes, policy or session limit, provider rejection), the final message and the check results; the page says whether the rebuilt run matches the saved report. By default it renders a representative set (listed in `eval/traces.ts`); `-- --all` renders every LLM run.
 
 MCP server (works with any MCP client, e.g. Claude Desktop or an IDE agent):
 
@@ -101,7 +105,11 @@ node dist/eval/run.js --agent groq --replay-only        # cache only, guaranteed
 
 Behind an HTTPS proxy, Node's built-in `fetch` ignores `HTTPS_PROXY` unless `NODE_USE_ENV_PROXY=1` is set (Node 22.21 or later).
 
-Options: `--agent scripted|groq|anthropic`, `--suite main|probes|selfcorrect|injection`, `--only <id>`, `--pass <n>` (pass n gets its own cache keys, so it samples the model again), `--policy default|phase2`, `--max-turns` (12), `--max-output-tokens` (1024), `--scenario-budget` (60000 tokens), `--run-budget`, `--cache-dir` (`eval/cache`), `--no-cache`, `--fresh` (discard the checkpoint), `--replay-only`.
+**MCP transport.** `--transport mcp` makes the agent loop call the tools through the real MCP server: the official SDK client spawns `dist/src/mcp-server.js` over stdio, lists its tools and calls them; the server holds the model, writes the audit file and saves the model on commit, and the harness reads both back for the checks. The in-process transport calls `ToolHost` directly. Both expose the same catalog (the client strips the `$schema` key the server adds, exactly as `ToolHost` does), and the same results; see "MCP transport equivalence" in `eval/results/SUMMARY.md`.
+
+**Large models.** `--suite large` runs on a generated 8,045 element model (fixed seed, `eval/large.ts`) with the `large` configuration: the `sysml_find_elements` search tool and a hard cap of 100,000 input tokens per call (estimated at 3 characters per token before each call; a call that could exceed it is not sent and the scenario stops with `input_cap`). The agent cannot read the model whole; it has to locate what it needs with validation, search, the outline and targeted reads. Rows record the largest prompt, the characters sent and the share of the model the agent was shown.
+
+Options: `--agent scripted|groq|anthropic`, `--suite main|probes|selfcorrect|injection|selfcorrect-v2|large`, `--config default|hitl|large`, `--transport inprocess|mcp`, `--legacy-tool-feedback`, `--only <id>`, `--pass <n>` (pass n gets its own cache keys, so it samples the model again), `--policy default|phase2`, `--max-turns` (12), `--max-output-tokens` (1024), `--scenario-budget` (60000 tokens), `--run-budget`, `--cache-dir` (`eval/cache`), `--no-cache`, `--fresh` (discard the checkpoint), `--replay-only`.
 
 ## Evaluation
 
@@ -200,6 +208,28 @@ Haiku: `claude-haiku-5-5`, effort `low`, default sampling (the model rejects sam
 
 **Tokens and cost.** Haiku: 271,193 tokens in phase 4 (about $0.032) and 75,934 in phase 5 (71,622 input, 4,312 output, about $0.0093), at $0.10 input and $0.50 output per million tokens for prompts of 100K tokens or fewer (Claude API reference). gpt-oss on Groq: 189,287 tokens on 2026-10-18 and 192,709 on 2026-10-19, on a quota limited account for which no price is stated. Every run replays offline with invalid keys and no network: all replay reports match their originals (23 replay files in `eval/results`).
 
+### Phase 6: large model, real MCP, traces
+
+Runs on 2026-10-20, session policy. Numbers from [`eval/results/SUMMARY.md`](eval/results/SUMMARY.md), sections "Large model context" and "MCP transport equivalence".
+
+**Large suite (8,045 elements, 293,910 characters), two passes per model.**
+
+| Model | Pass | fix buried type | rename port def (3,204 elements rewritten) | unsatisfied requirement | Largest prompt (tokens) | Most of the model read |
+|---|---:|---|---|---|---:|---:|
+| claude-haiku-5-5 | 1 | pass | pass | pass | 14,596 | 3.33 % |
+| claude-haiku-5-5 | 2 | pass | pass | pass | 14,613 | 3.33 % |
+| gpt-oss-120b | 1 | pass | pass | **fail** | 1,794 (reported calls only) | 0.29 % |
+| gpt-oss-120b | 2 | pass | pass | pass | 4,486 | 1.33 % |
+
+- **No request came near the cap.** The largest prompt of any run was 14,613 tokens, against the 100,000 cap; no run stopped on `input_cap`. Both models located what they needed with `sysml_validate`, `sysml_find_elements` and one or two targeted reads, and read at most 3.33 % of the model.
+- **gpt-oss pass 1 failure, and a harness defect it revealed.** On `large-unsatisfied-requirement` it called `sysml_find_elements` with `limit: 200` (the schema maximum is 50). Groq checks tool arguments against the schema itself and rejected the call with `tool_use_failed`, ten times in a row: the loop's feedback said the call "could not be parsed" and showed the raw output, but not Groq's reason. The loop now sends the provider's error message back (option `reportProviderError`, on for new runs; `--legacy-tool-feedback` reproduces the old behaviour so that run still replays). Pass 2 ran with the fix and passed, but it hit no rejected call, so the fix is shown by a test, not yet by a live run. The same event also shows that a provider's own schema check can pre-empt the kernel's structured `INVALID_ARGUMENTS` error.
+- **Real MCP, live.** A third pass of the main suite on Haiku ran through the MCP server end to end: 6/6, 61,726 tokens. Replayed in process, every request hit the cache: the requests over MCP were byte for byte the ones the in-process path sends.
+- **MCP equivalence of every saved run.** All saved main, self-correction and injection runs of both models, replayed over MCP: every LLM call served from the cache (0 misses), and final models, check results, tools and outcomes identical. The one divergence: the MCP SDK fills in schema defaults before the server sees a call, so the audit records `{"root":"","depth":4}` where the in-process audit records `{"depth":4}` (identical once defaults are applied). A second divergence is structural and was not exercised by any saved run: over MCP, an unknown tool or arguments that fail the schema are rejected by the SDK before the kernel, so the kernel's structured error is replaced by a protocol error and the server does not audit the call (the client records it, marked `recordedBy: mcp-client`).
+
+**Phase 6 tokens and cost.** Haiku: 191,760 tokens (186,506 input, 5,254 output), about **$0.021** at $0.10 input and $0.50 output per million tokens for prompts of 100K tokens or fewer. gpt-oss on Groq: 82,419 tokens counted against the run budget, of which 49,667 reported by the API; the other 32,752 are the loop's reservations for the ten rejected calls, for which Groq returned no usage. No price is stated for the quota limited Groq account.
+
+**Limits.** Two passes per model on three large scenarios. The large model is synthetic and regular (generated units with a prev chain), which makes search and validation hints unusually effective; real models are less uniform. The share read counts elements whose qualified path or full source reached the model, which over-counts paths merely listed in an outline. The MCP equivalence covers the default policy only (the server has no policy flags beyond the catalog), and the transport adds process start and stdio overhead not measured here.
+
 ## Benchmarks
 
 Synthetic models on a CPU container, Node 22:
@@ -224,11 +254,13 @@ The transaction cost is dominated by the full re-validation and the print/repars
 ```
 src/        lexer, parser, printer, semantic validator, workspace (transactions),
             context engine, tool catalog with policy and audit, MCP server
-eval/       scenarios (original six), suites (phase 3), harness (checks, metrics), footprint,
-            runner, checkpoint, estimate, summary, bench, scripted baseline agent
+eval/       scenarios (original six), suites (phase 3 and 5), large (phase 6), harness (checks,
+            metrics), footprint, context metrics, MCP client, runner, checkpoint, estimate,
+            summary, traces, bench, scripted baseline agent
 eval/llm/   provider interface, Groq and Anthropic adapters, shared HTTP retries, agent loop,
             cache, token budget, mocks
 eval/results/  saved reports and SUMMARY.md;  eval/cache/  every LLM response
+docs/traces/   HTML traces (open index.html in a browser)
 test/       node:test suite
 examples/   vehicle.sysml
 ```

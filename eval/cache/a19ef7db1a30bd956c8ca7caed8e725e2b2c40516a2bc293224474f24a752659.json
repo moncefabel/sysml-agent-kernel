@@ -1,0 +1,25 @@
+{
+ "provider": "groq",
+ "model": "openai/gpt-oss-120b",
+ "createdAt": "2026-10-20T08:01:37.372Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": null,
+   "toolCalls": [
+    {
+     "id": "fc_a633fe28-b0d4-461b-b88c-a3e90d21463d",
+     "name": "sysml_apply_edits",
+     "arguments": "{\"dryRun\":false,\"ops\":[{\"field\":\"type\",\"op\":\"set\",\"path\":\"Plant::Area17::Unit_17_63::prev\",\"value\":\"Plant::Area17::Unit_17_62\"}]}"
+    }
+   ]
+  },
+  "usage": {
+   "promptTokens": 1540,
+   "completionTokens": 279,
+   "totalTokens": 1819
+  },
+  "finishReason": "tool_calls",
+  "latencyMs": 957
+ }
+}

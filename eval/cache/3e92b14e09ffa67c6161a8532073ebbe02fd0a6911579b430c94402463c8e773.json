@@ -1,0 +1,50 @@
+{
+ "provider": "anthropic",
+ "model": "claude-haiku-5-5",
+ "createdAt": "2026-10-20T08:07:50.487Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": "The error is a typo: 'Unti_17_62' should be 'Unit_17_62'. I'll fix it by changing the type.",
+   "toolCalls": [
+    {
+     "id": "toolu_01U61emR5zJF4WAu8YXpvUoC",
+     "name": "sysml_apply_edits",
+     "arguments": "{\"ops\":[{\"op\":\"set\",\"path\":\"Plant::Area17::Unit_17_63::prev\",\"field\":\"type\",\"value\":\"Unit_17_62\"}],\"dryRun\":true}"
+    }
+   ],
+   "raw": [
+    {
+     "type": "text",
+     "text": "The error is a typo: 'Unti_17_62' should be 'Unit_17_62'. I'll fix it by changing the type."
+    },
+    {
+     "type": "tool_use",
+     "id": "toolu_01U61emR5zJF4WAu8YXpvUoC",
+     "name": "sysml_apply_edits",
+     "input": {
+      "ops": [
+       {
+        "op": "set",
+        "path": "Plant::Area17::Unit_17_63::prev",
+        "field": "type",
+        "value": "Unit_17_62"
+       }
+      ],
+      "dryRun": true
+     },
+     "caller": {
+      "type": "direct"
+     }
+    }
+   ]
+  },
+  "usage": {
+   "promptTokens": 2639,
+   "completionTokens": 168,
+   "totalTokens": 2807
+  },
+  "finishReason": "tool_calls",
+  "latencyMs": 1163
+ }
+}

@@ -1,0 +1,60 @@
+{
+ "provider": "anthropic",
+ "model": "claude-haiku-5-5",
+ "createdAt": "2026-10-20T08:01:20.027Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": null,
+   "toolCalls": [
+    {
+     "id": "toolu_01RUTiqUE4GAnixK8Gw8s2P3",
+     "name": "sysml_validate",
+     "arguments": "{\"severity\":\"all\",\"limit\":50}"
+    },
+    {
+     "id": "toolu_01FgBNbdtuAv51AfYvVYNhpk",
+     "name": "sysml_get",
+     "arguments": "{\"path\":\"Plant::Requirements\"}"
+    }
+   ],
+   "raw": [
+    {
+     "type": "thinking",
+     "thinking": "",
+     "signature": "CAQS2wUKEAgTGAI4AUIIdGhpbmtpbmcSDFAQbh4qvDAuAMSdnBoMtaLWGlwFN/GewpK0IjAgLjDY3iHFOtISyuV2IsPAGZbn5RDTJOFeD/APL26YJ3oATmmos6fE7DAuZGMtM6oq+ARbd493wru00wB/Mtiql0rRqn3w8FwR8UaBBaAfJ4jK2BmcTouqu8KCCcTARHAKqGRgI4v/0Cbu1NixualHKplYeTRn2dsA33hZrNm4bq63i6INwUFt/Ok/8NzLsbezxbgENSvEgI/bb4sZT3S6GR5gy++vxGAhlvxFJQsZkclMbBb3UuW+obVIO733RZz7I3uCE89q73IOHuCKXoD08dzkioOVba6g+r1dUCE4MEMCOM2H8HTvubUaifvHDqYJqafyd1AJ4x2wo/lziv+UEtAz2YPsO3PfdB8twvYoxxPb6iYN0xSu9nGPXyJtEXAYdn1U8tbRoAOA2errekCpyx8YCvudctI0J57dmCQySW3HYykkriJ36NWrAGBKPdIXKizweWuWV7QqZ6VNkxHMxoehgcAhzXqeEYduDQOX75yZM4kT1Il45L/T9s4VaA8iQnteDDml/LMpSlJNlhga5Lfip0oX8C/AMhPGxkWP+5qYwyzcp6aTFhyLTV9w00462NGCLiOHZPLddLEyNFB89QrDYmsFM+afESiEMC2qSKIm+ArSPblp8nKOEMCxmDjaSHxDKECfCpkMMD9BeTjYT8GYq7miSg5ZI/RX+YZlS8LGlCpRymbE7GaTbd0yyQGbVUKeOQbqlnbglUl11s4qgCmyLHHIeOvSeyEdt0xV0aFH7YIGbeTIzQQQBSH4afUuIDVrZufboOw4oLia/8LpOomNK4arfWhEVbeeb3iMdH3kgvh4iWbJhTSuuM/HTrUtRXNwcMJZNeDKmkfGbtVIGNJP6+zev/jSXB0Pm+gXrDrO/52yFkF8iFtks7ADFTeKEueig96383fTwRgB"
+    },
+    {
+     "type": "tool_use",
+     "id": "toolu_01RUTiqUE4GAnixK8Gw8s2P3",
+     "name": "sysml_validate",
+     "input": {
+      "severity": "all",
+      "limit": 50
+     },
+     "caller": {
+      "type": "direct"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "toolu_01FgBNbdtuAv51AfYvVYNhpk",
+     "name": "sysml_get",
+     "input": {
+      "path": "Plant::Requirements"
+     },
+     "caller": {
+      "type": "direct"
+     }
+    }
+   ]
+  },
+  "usage": {
+   "promptTokens": 10459,
+   "completionTokens": 172,
+   "totalTokens": 10631
+  },
+  "finishReason": "tool_calls",
+  "latencyMs": 1024
+ }
+}

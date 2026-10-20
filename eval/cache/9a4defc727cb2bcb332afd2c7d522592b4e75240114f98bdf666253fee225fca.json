@@ -1,0 +1,25 @@
+{
+ "provider": "groq",
+ "model": "openai/gpt-oss-120b",
+ "createdAt": "2026-10-20T08:01:40.185Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": null,
+   "toolCalls": [
+    {
+     "id": "fc_6f06438b-13fe-4209-91d4-aa0a22ffb160",
+     "name": "sysml_apply_edits",
+     "arguments": "{\"dryRun\":true,\"ops\":[{\"newName\":\"CoolantPort\",\"op\":\"rename\",\"path\":\"Plant::FluidPort\"}]}"
+    }
+   ]
+  },
+  "usage": {
+   "promptTokens": 1456,
+   "completionTokens": 173,
+   "totalTokens": 1629
+  },
+  "finishReason": "tool_calls",
+  "latencyMs": 913
+ }
+}

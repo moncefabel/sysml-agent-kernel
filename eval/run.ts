@@ -1,9 +1,10 @@
 import { writeFileSync, mkdirSync } from 'node:fs';
 import { probes, scenarios as mainSuite } from './scenarios.js';
 import { injection, selfCorrection, selfCorrectionV2, type SuiteScenario } from './suites.js';
+import { large, type EvalScenario } from './large.js';
 import { simulatedHuman } from './hitl.js';
 import { scriptedAgent, SYSTEM, type Agent } from './agents.js';
-import { runScenario, summarize, type Row } from './harness.js';
+import { runScenario, summarize, type Row, type Transport } from './harness.js';
 import { Checkpoint } from './checkpoint.js';
 import { DEFAULT_POLICY, type Policy } from '../src/tools.js';
 import { TokenBudget } from './llm/budget.js';
@@ -13,8 +14,8 @@ import { groqFromEnv } from './llm/groq.js';
 import { llmAgent, LLM_DEFAULTS } from './llm/loop.js';
 import { canonicalJson, sha256, type LLMProvider } from './llm/provider.js';
 
-// Usage: node dist/eval/run.js [--agent scripted|groq|anthropic] [--suite main|probes|selfcorrect|injection|selfcorrect-v2]
-//          [--only <scenario-id>] [--pass n] [--policy default|phase2] [--config default|hitl]
+// Usage: node dist/eval/run.js [--agent scripted|groq|anthropic] [--suite main|probes|selfcorrect|injection|selfcorrect-v2|large]
+//          [--only <scenario-id>] [--pass n] [--policy default|phase2] [--config default|hitl|large] [--transport inprocess|mcp]
 // LLM options: [--max-turns n] [--max-output-tokens n] [--scenario-budget n] [--run-budget n]
 //              [--cache-dir d] [--no-cache] [--replay-only] [--fresh]
 const argv = process.argv.slice(2);
@@ -25,24 +26,32 @@ const kind = opt('--agent', 'scripted');
 const only = opt('--only', '');
 const pass = num('--pass', 1);
 
-const SUITES: Record<string, SuiteScenario[]> = { main: mainSuite, probes, selfcorrect: selfCorrection, injection, 'selfcorrect-v2': selfCorrectionV2 };
+const SUITES: Record<string, EvalScenario[]> = { main: mainSuite, probes, selfcorrect: selfCorrection, injection, 'selfcorrect-v2': selfCorrectionV2, large };
 const suiteName = opt('--suite', 'main');
 const scenarios = SUITES[suiteName];
 if (!scenarios) throw new Error(`--suite must be one of ${Object.keys(SUITES).join(', ')}`);
 // --config hitl offers request_clarification, answered by the simulated human (eval/hitl.ts).
-const config = opt('--config', 'default');
-if (!['default', 'hitl'].includes(config)) throw new Error('--config must be default or hitl');
+// --config large adds the search tool (policy catalog 'large') and the per call input cap; it is
+// the default for the large suite.
+const config = opt('--config', suiteName === 'large' ? 'large' : 'default');
+if (!['default', 'hitl', 'large'].includes(config)) throw new Error('--config must be default, hitl or large');
+const LARGE_INPUT_CAP = 100_000;
 // File names keep the phase 2 layout for the main suite, pass 1, default configuration.
-const suffix = (suiteName === 'main' ? '' : `.${suiteName}`) + (config === 'hitl' ? '.hitl' : '') + (pass > 1 ? `.pass${pass}` : '');
+// --transport mcp calls the tools through the real MCP server (eval/mcp-client.ts).
+const transport = opt('--transport', 'inprocess') as Transport;
+if (!['inprocess', 'mcp'].includes(transport)) throw new Error('--transport must be inprocess or mcp');
+const suffix = (suiteName === 'main' ? '' : `.${suiteName}`) + (config === 'hitl' ? '.hitl' : '') + (transport === 'mcp' ? '.mcp' : '') + (pass > 1 ? `.pass${pass}` : '');
 // --policy phase2 reproduces the phase 2 runs, which had per transaction limits only.
 const policyName = opt('--policy', 'default');
 if (!['default', 'phase2'].includes(policyName)) throw new Error('--policy must be default or phase2');
-const policy: Policy = policyName === 'phase2' ? { mode: 'write', maxRemovalsPerTx: 3, maxOpsPerTx: 20 } : DEFAULT_POLICY;
+const policy: Policy = policyName === 'phase2' ? { mode: 'write', maxRemovalsPerTx: 3, maxOpsPerTx: 20 }
+  : config === 'large' ? { ...DEFAULT_POLICY, catalog: 'large' } : DEFAULT_POLICY;
 
 let agent: Agent;
 let checkpoint: Checkpoint | undefined;
 let runBudget: TokenBudget | undefined;
 let cache: CachedProvider | undefined;
+let loopOptionsUsed: Record<string, unknown> | undefined;
 let base: (LLMProvider & { retryStats?: unknown; rateLimit?: Record<string, string> }) | undefined;
 
 if (kind === 'groq' || kind === 'anthropic') {
@@ -52,18 +61,24 @@ if (kind === 'groq' || kind === 'anthropic') {
     scenarioTokenBudget: num('--scenario-budget', LLM_DEFAULTS.scenarioTokenBudget),
     maxToolResultChars: LLM_DEFAULTS.maxToolResultChars,
     temperature: LLM_DEFAULTS.temperature,
+    // Phase 6 fix: send the provider's reason on tool_use_failed. --legacy-tool-feedback
+    // reproduces runs recorded before it (the first large suite run of gpt-oss).
+    ...(flag('--legacy-tool-feedback') ? {} : { reportProviderError: true }),
   };
+  loopOptionsUsed = loopOptions;
   let provider: LLMProvider = base = kind === 'groq' ? groqFromEnv() : anthropicFromEnv();
   if (!flag('--no-cache')) provider = cache = new CachedProvider(provider, opt('--cache-dir', 'eval/cache'), flag('--replay-only') ? 'readonly' : 'readwrite', pass);
   runBudget = argv.includes('--run-budget') ? new TokenBudget(num('--run-budget', 1)) : undefined;
-  agent = llmAgent(provider, { ...loopOptions, runBudget, ...(config === 'hitl' ? { clarify: (id: string) => simulatedHuman(id) } : {}) });
+  agent = llmAgent(provider, { ...loopOptions, runBudget, ...(config === 'hitl' ? { clarify: (id: string) => simulatedHuman(id) } : {}),
+    ...(config === 'large' ? { maxInputTokens: LARGE_INPUT_CAP } : {}) });
   // Everything that can change a recorded row is fingerprinted; the run budget and the cache
   // only decide whether a scenario runs now, so they may change between resumes. The policy
   // entered the fingerprint in phase 3, so phase 2 checkpoints need --fresh.
   checkpoint = new Checkpoint(`eval/reports/${agent.name.replace(/[^a-z0-9-]/gi, '_')}${suffix}.checkpoint.jsonl`, {
     agent: agent.name, ...(base.settings ? { settings: base.settings } : {}), loopOptions, system: sha256(SYSTEM), policy, pass,
     // Absent for the default configuration, so earlier checkpoints stay valid.
-    ...(config === 'hitl' ? { config } : {}),
+    ...(config !== 'default' ? { config } : {}),
+    ...(transport === 'mcp' ? { transport } : {}),
     scenarios: sha256(canonicalJson(scenarios.map((s) => ({ id: s.id, task: s.task, model: s.model, checks: s.checks, perturb: s.perturb })))),
   });
   if (flag('--fresh')) checkpoint.discard();
@@ -81,7 +96,7 @@ for (const s of scenarios.filter((x) => !only || x.id === only)) {
   if (halted) { incomplete.push({ id: s.id, reason: `not started: ${halted}` }); continue; }
   if (runBudget?.exhausted) { incomplete.push({ id: s.id, reason: 'run budget exhausted' }); continue; }
   const before = base?.retryStats ? { ...(base.retryStats as { retries: number; waitedMs: number }) } : undefined;
-  const row = await runScenario(s, agent, policy);
+  const row = await runScenario(s, agent, policy, transport);
   if (before) {
     const after = base!.retryStats as { retries: number; waitedMs: number };
     row.retries = { retries: after.retries - before.retries, waitedMs: after.waitedMs - before.waitedMs };
@@ -125,7 +140,7 @@ for (const x of incomplete) console.log(`  NOT COMPLETED ${x.id}: ${x.reason}`);
 mkdirSync('eval/reports', { recursive: true });
 const out = `eval/reports/${agent.name.replace(/[^a-z0-9-]/gi, '_')}${suffix}.json`;
 writeFileSync(out, JSON.stringify({
-  agent: agent.name, provider: base?.provider ?? 'scripted', model: base?.model ?? 'reference', ...(base?.settings ? { settings: base.settings } : {}), suite: suiteName, pass, config,
+  agent: agent.name, provider: base?.provider ?? 'scripted', model: base?.model ?? 'reference', ...(base?.settings ? { settings: base.settings } : {}), suite: suiteName, pass, config, transport, ...(loopOptionsUsed ? { loopOptions: loopOptionsUsed } : {}),
   replay: flag('--replay-only'), policy, ...(runBudget ? { billedThisInvocation: runBudget.used } : {}), date: new Date().toISOString(), passed: sum.passed, total, summary: sum, incomplete,
   ...(base?.retryStats ? { retries: base.retryStats } : {}), ...(base?.rateLimit ? { rateLimit: base.rateLimit } : {}), rows,
 }, null, 2));

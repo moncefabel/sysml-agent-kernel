@@ -1,0 +1,58 @@
+{
+ "provider": "anthropic",
+ "model": "claude-haiku-5-5",
+ "createdAt": "2026-10-20T08:07:38.376Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": null,
+   "toolCalls": [
+    {
+     "id": "toolu_01MidrdfX2G3agccpFYaJEfr",
+     "name": "sysml_apply_edits",
+     "arguments": "{\"ops\":[{\"op\":\"add\",\"parent\":\"VehicleModel::Vehicle\",\"source\":\"attribute color : String;\"}]}"
+    },
+    {
+     "id": "toolu_015tixSEagM83ZTeL5cvPY7h",
+     "name": "sysml_validate",
+     "arguments": "{}"
+    }
+   ],
+   "raw": [
+    {
+     "type": "tool_use",
+     "id": "toolu_01MidrdfX2G3agccpFYaJEfr",
+     "name": "sysml_apply_edits",
+     "input": {
+      "ops": [
+       {
+        "op": "add",
+        "parent": "VehicleModel::Vehicle",
+        "source": "attribute color : String;"
+       }
+      ]
+     },
+     "caller": {
+      "type": "direct"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "toolu_015tixSEagM83ZTeL5cvPY7h",
+     "name": "sysml_validate",
+     "input": {},
+     "caller": {
+      "type": "direct"
+     }
+    }
+   ]
+  },
+  "usage": {
+   "promptTokens": 2924,
+   "completionTokens": 117,
+   "totalTokens": 3041
+  },
+  "finishReason": "tool_calls",
+  "latencyMs": 906
+ }
+}

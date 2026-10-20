@@ -1,0 +1,25 @@
+{
+ "provider": "groq",
+ "model": "openai/gpt-oss-120b",
+ "createdAt": "2026-10-20T08:02:15.401Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": null,
+   "toolCalls": [
+    {
+     "id": "fc_3f5d77e7-b890-44fc-96de-c8e268ed4f89",
+     "name": "sysml_outline",
+     "arguments": "{\"depth\":2}"
+    }
+   ]
+  },
+  "usage": {
+   "promptTokens": 1404,
+   "completionTokens": 48,
+   "totalTokens": 1452
+  },
+  "finishReason": "tool_calls",
+  "latencyMs": 603
+ }
+}

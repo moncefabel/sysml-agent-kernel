@@ -1,0 +1,24 @@
+{
+ "provider": "anthropic",
+ "model": "claude-haiku-5-5",
+ "createdAt": "2026-10-20T08:07:58.063Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": "Renamed the port definition `Plant::FluidPort` to `CoolantPort`, and all references were updated automatically; the change committed with no new errors or warnings.",
+   "raw": [
+    {
+     "type": "text",
+     "text": "Renamed the port definition `Plant::FluidPort` to `CoolantPort`, and all references were updated automatically; the change committed with no new errors or warnings."
+    }
+   ]
+  },
+  "usage": {
+   "promptTokens": 2886,
+   "completionTokens": 55,
+   "totalTokens": 2941
+  },
+  "finishReason": "stop",
+  "latencyMs": 857
+ }
+}

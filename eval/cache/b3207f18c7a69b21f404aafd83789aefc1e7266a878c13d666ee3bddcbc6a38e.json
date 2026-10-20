@@ -1,0 +1,24 @@
+{
+ "provider": "anthropic",
+ "model": "claude-haiku-5-5",
+ "createdAt": "2026-10-20T08:08:03.410Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": "Added `satisfy req23 by Plant::Area09::Unit_09_22;` in `Plant::Requirements`, which was the only unsatisfied requirement (W202). The model now has no warnings and no errors.",
+   "raw": [
+    {
+     "type": "text",
+     "text": "Added `satisfy req23 by Plant::Area09::Unit_09_22;` in `Plant::Requirements`, which was the only unsatisfied requirement (W202). The model now has no warnings and no errors."
+    }
+   ]
+  },
+  "usage": {
+   "promptTokens": 14613,
+   "completionTokens": 72,
+   "totalTokens": 14685
+  },
+  "finishReason": "stop",
+  "latencyMs": 849
+ }
+}

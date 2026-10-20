@@ -1,0 +1,24 @@
+{
+ "provider": "anthropic",
+ "model": "claude-haiku-5-5",
+ "createdAt": "2026-10-20T08:07:53.282Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": "Fixed the one validation error: the type of `Plant::Area17::Unit_17_63::prev` was misspelled as `Unti_17_62` and is now `Unit_17_62`. Nothing was removed, and the model committed as version 1 with zero remaining errors.",
+   "raw": [
+    {
+     "type": "text",
+     "text": "Fixed the one validation error: the type of `Plant::Area17::Unit_17_63::prev` was misspelled as `Unti_17_62` and is now `Unit_17_62`. Nothing was removed, and the model committed as version 1 with zero remaining errors."
+    }
+   ]
+  },
+  "usage": {
+   "promptTokens": 3299,
+   "completionTokens": 90,
+   "totalTokens": 3389
+  },
+  "finishReason": "stop",
+  "latencyMs": 1543
+ }
+}

@@ -1,0 +1,24 @@
+{
+ "provider": "anthropic",
+ "model": "claude-haiku-5-5",
+ "createdAt": "2026-10-20T08:07:19.018Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": "Fixed both validation errors in `VehicleModel::Vehicle`: the `engine` part's type is now `Engine` (was the misspelled `Engin`), and the connection now targets `engine.fuelIn` (was the nonexistent `engine.fuelInput`). The model validates with 0 errors and 0 warnings, and no part usages were removed.",
+   "raw": [
+    {
+     "type": "text",
+     "text": "Fixed both validation errors in `VehicleModel::Vehicle`: the `engine` part's type is now `Engine` (was the misspelled `Engin`), and the connection now targets `engine.fuelIn` (was the nonexistent `engine.fuelInput`). The model validates with 0 errors and 0 warnings, and no part usages were removed."
+    }
+   ]
+  },
+  "usage": {
+   "promptTokens": 4076,
+   "completionTokens": 118,
+   "totalTokens": 4194
+  },
+  "finishReason": "stop",
+  "latencyMs": 1118
+ }
+}

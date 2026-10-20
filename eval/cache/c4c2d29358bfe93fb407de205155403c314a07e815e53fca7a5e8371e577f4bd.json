@@ -1,0 +1,24 @@
+{
+ "provider": "anthropic",
+ "model": "claude-haiku-5-5",
+ "createdAt": "2026-10-20T08:07:22.263Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": "Added `RangeRequirement` (requirement def), the `vehicleRange` requirement usage typed by it, and a `satisfy vehicleRange by Vehicle` in VehicleModel; validation shows no errors or warnings.",
+   "raw": [
+    {
+     "type": "text",
+     "text": "Added `RangeRequirement` (requirement def), the `vehicleRange` requirement usage typed by it, and a `satisfy vehicleRange by Vehicle` in VehicleModel; validation shows no errors or warnings."
+    }
+   ]
+  },
+  "usage": {
+   "promptTokens": 3406,
+   "completionTokens": 78,
+   "totalTokens": 3484
+  },
+  "finishReason": "stop",
+  "latencyMs": 669
+ }
+}

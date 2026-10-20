@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Agent traces</title><style>
+:root { --bg:#fbfbfa; --fg:#1d1d1f; --muted:#6b6b70; --card:#ffffff; --line:#e3e3e0; --code:#f3f3f1;
+  --commit:#1f7a3d; --rollback:#b42318; --reject:#b54708; --policy:#6941c6; --error:#b42318; --read:#475467; --human:#0e7490; }
+@media (prefers-color-scheme: dark) { :root { --bg:#141416; --fg:#ececee; --muted:#9a9aa2; --card:#1c1c20; --line:#2e2e34; --code:#24242a;
+  --commit:#4ade80; --rollback:#f87171; --reject:#fbbf24; --policy:#c4b5fd; --error:#f87171; --read:#a1a1aa; --human:#67e8f9; } }
+* { box-sizing:border-box } body { margin:0; background:var(--bg); color:var(--fg); font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif }
+main { max-width:980px; margin:0 auto; padding:24px 16px 64px } h1 { font-size:22px; margin:0 0 4px } h2 { font-size:17px; margin:28px 0 10px }
+.muted { color:var(--muted) } a { color:inherit }
+.meta { display:flex; flex-wrap:wrap; gap:6px 16px; font-size:13px; color:var(--muted); margin:8px 0 16px }
+.card { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:14px 16px; margin:10px 0 }
+.turnhead { display:flex; flex-wrap:wrap; gap:4px 14px; font-size:13px; color:var(--muted); margin-bottom:8px } .turnhead b { color:var(--fg) }
+.say { white-space:pre-wrap; margin:6px 0 10px }
+.call { border-top:1px solid var(--line); padding-top:10px; margin-top:10px }
+.callhead { display:flex; flex-wrap:wrap; align-items:center; gap:8px } code, pre { font:12.5px/1.45 ui-monospace,SFMono-Regular,Menlo,monospace }
+pre { background:var(--code); border-radius:6px; padding:8px 10px; overflow:auto; margin:6px 0; white-space:pre-wrap; word-break:break-word }
+.badge { display:inline-block; font-size:12px; font-weight:600; padding:1px 8px; border-radius:99px; border:1px solid currentColor }
+.commit{color:var(--commit)} .rollback{color:var(--rollback)} .reject{color:var(--reject)} .policy{color:var(--policy)} .error{color:var(--error)} .read{color:var(--read)} .human{color:var(--human)}
+.ok{color:var(--commit)} .fail{color:var(--rollback)}
+.event { font-size:13px; color:var(--human); margin:6px 0 } details summary { cursor:pointer; font-size:13px; color:var(--muted) }
+table { border-collapse:collapse; width:100%; font-size:14px } td, th { text-align:left; padding:6px 8px; border-bottom:1px solid var(--line); vertical-align:top }
+</style></head>
+<body><main><h1>Agent traces</h1><p class="muted">One page per run, rebuilt offline from the saved reports and the response cache. Open any page directly in a browser; nothing is loaded from the network.</p><h2>large, anthropic:claude-haiku-5-5</h2><table><tr><th>Scenario</th><th>Pass</th><th>Configuration</th><th>Outcome</th><th>Turns</th><th>Why it is here</th></tr>
+<tr><td><a href="2026-10-20-anthropic-claude-haiku-5-5-large--large-unsatisfied-requirement.html">large-unsatisfied-requirement</a></td><td>1</td><td>large</td><td class="ok">success</td><td>4</td><td>Large model (8,045 elements): search, validate and one targeted read</td></tr></table><h2>large, groq:openai/gpt-oss-120b</h2><table><tr><th>Scenario</th><th>Pass</th><th>Configuration</th><th>Outcome</th><th>Turns</th><th>Why it is here</th></tr>
+<tr><td><a href="2026-10-20-groq-gpt-oss-120b-large--large-unsatisfied-requirement.html">large-unsatisfied-requirement</a></td><td>1</td><td>large</td><td class="fail">failure</td><td>12</td><td>Large model: the provider rejects the same search call ten times; the feedback did not say why</td></tr></table><h2>main, groq:openai/gpt-oss-120b</h2><table><tr><th>Scenario</th><th>Pass</th><th>Configuration</th><th>Outcome</th><th>Turns</th><th>Why it is here</th></tr>
+<tr><td><a href="2026-10-18-groq-gpt-oss-120b-main--guarded-delete.html">guarded-delete</a></td><td>1</td><td>default, phase 2 policy</td><td class="ok">success</td><td>7</td><td>Phase 2: the destructive delete-and-recreate of Vehicle, passing the checks</td></tr><tr><td><a href="2026-10-18-groq-gpt-oss-120b-main-session-policy--guarded-delete.html">guarded-delete</a></td><td>1</td><td>default</td><td class="ok">success</td><td>10</td><td>Phase 3: the same edit refused by the session limit, then the minimal edit</td></tr></table><h2>selfcorrect, anthropic:claude-haiku-5-5</h2><table><tr><th>Scenario</th><th>Pass</th><th>Configuration</th><th>Outcome</th><th>Turns</th><th>Why it is here</th></tr>
+<tr><td><a href="2026-10-18-anthropic-claude-haiku-5-5-selfcorrect--sc-concurrent-edit.html">sc-concurrent-edit</a></td><td>1</td><td>default</td><td class="ok">success</td><td>7</td><td>Haiku hits the designed version conflict and recovers</td></tr><tr><td><a href="2026-10-19-anthropic-claude-haiku-5-5-selfcorrect-hitl--sc-hidden-port-type.html">sc-hidden-port-type</a></td><td>1</td><td>hitl</td><td class="ok">success</td><td>5</td><td>Haiku asks through request_clarification, then fixes the model</td></tr></table><h2>selfcorrect, groq:openai/gpt-oss-120b</h2><table><tr><th>Scenario</th><th>Pass</th><th>Configuration</th><th>Outcome</th><th>Turns</th><th>Why it is here</th></tr>
+<tr><td><a href="2026-10-19-groq-gpt-oss-120b-selfcorrect-pass2-complete--sc-hidden-port-type.html">sc-hidden-port-type</a></td><td>2</td><td>default</td><td class="fail">failure</td><td>12</td><td>gpt-oss claims a change it never made; the checks catch it</td></tr></table></main></body></html>

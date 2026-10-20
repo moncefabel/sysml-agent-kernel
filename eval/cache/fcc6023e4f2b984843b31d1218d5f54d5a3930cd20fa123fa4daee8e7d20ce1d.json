@@ -1,0 +1,18 @@
+{
+ "provider": "groq",
+ "model": "openai/gpt-oss-120b",
+ "createdAt": "2026-10-20T08:02:04.752Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": "Renamed FluidPort to CoolantPort throughout the model."
+  },
+  "usage": {
+   "promptTokens": 1609,
+   "completionTokens": 16,
+   "totalTokens": 1625
+  },
+  "finishReason": "stop",
+  "latencyMs": 823
+ }
+}

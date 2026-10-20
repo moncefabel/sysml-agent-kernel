@@ -9,7 +9,8 @@
     "mcp": "node dist/src/mcp-server.js",
     "bench": "tsc && node eval/bench.mjs",
     "estimate": "tsc && node dist/eval/estimate.js",
-    "summary": "tsc && node dist/eval/summary.js"
+    "summary": "tsc && node dist/eval/summary.js",
+    "traces": "tsc && node dist/eval/traces.js"
   },
   "license": "MIT",
   "dependencies": {

@@ -1,4 +1,3 @@
-import type { ToolHost } from '../../src/tools.js';
 import { SYSTEM, type Agent, type AgentRun, type LlmStats } from '../agents.js';
 import { TokenBudget } from './budget.js';
 import { CLARIFICATION_TOOL, HITL_SYSTEM_ADDENDUM, MAX_CLARIFICATIONS } from '../hitl.js';
@@ -21,11 +20,26 @@ export interface LlmAgentOptions {
    * requests as before.
    */
   clarify?: (scenarioId: string, question: string) => string;
+  /**
+   * Hard cap on the input tokens of a single call (large configuration). Checked before each
+   * call with a conservative estimate (characters / 3); a call that could exceed it is not
+   * sent and the scenario stops with 'input_cap'.
+   */
+  maxInputTokens?: number;
+  /**
+   * When the provider rejects a tool call it generated (tool_use_failed), also send its error
+   * message back, not only the raw output. Off by default so earlier runs replay unchanged;
+   * the runner turns it on for runs from phase 6 on.
+   */
+  reportProviderError?: boolean;
 }
 
 export const LLM_DEFAULTS = { maxTurns: 12, maxOutputTokens: 1024, scenarioTokenBudget: 60_000, maxToolResultChars: 12_000, temperature: 0 } as const;
 
-export type LlmStopReason = 'model_done' | 'max_turns' | 'token_budget' | 'run_budget' | 'output_truncated' | 'refused';
+export type LlmStopReason = 'model_done' | 'max_turns' | 'token_budget' | 'run_budget' | 'output_truncated' | 'refused' | 'input_cap';
+
+/** Characters per token used for the input cap: lower than the budget's 4, so it errs on the safe side. */
+export const CAP_CHARS_PER_TOKEN = 3;
 
 /**
  * Tool-use loop. The model only proposes tool calls; every call goes through ToolHost.call,
@@ -59,11 +73,14 @@ export function llmAgent(provider: LLMProvider, options: LlmAgentOptions = {}): 
         const req: CompletionRequest = { messages: structuredClone(messages), tools, maxOutputTokens: o.maxOutputTokens, temperature: o.temperature };
         // Reserve the worst case of this call before making it: estimated prompt + full output.
         const reserve = estimateTokens({ messages: req.messages, tools }) + o.maxOutputTokens;
+        const requestChars = JSON.stringify({ messages: req.messages, tools }).length;
+        if (o.maxInputTokens && Math.ceil(requestChars / CAP_CHARS_PER_TOKEN) > o.maxInputTokens) return done('input_cap');
         if (!budget.canAfford(reserve)) return done('token_budget');
         const cached = provider.isCached?.(req) ?? false;
         if (o.runBudget && !cached && !o.runBudget.canAfford(reserve)) return done('run_budget');
 
         stats.turns++;
+        stats.requestChars = (stats.requestChars ?? 0) + requestChars;
         let res;
         try {
           res = await provider.complete(req);
@@ -75,13 +92,20 @@ export function llmAgent(provider: LLMProvider, options: LlmAgentOptions = {}): 
           charge(reserve, cached);
           const generation = (e.failedGeneration ?? '').slice(0, 1000);
           transcript.push({ tool: '<malformed>', args: generation, result: { error: { code: 'MALFORMED_TOOL_CALL', message: e.message } } });
-          messages.push({ role: 'user', content: `Your previous tool call could not be parsed and was not executed. Raw output: ${generation}\nCall the tool again with arguments that are valid JSON matching its schema.` });
+          // The provider's reason (for example a schema violation it checked itself) goes back to
+          // the model; without it a model can repeat the same rejected call until the turn limit.
+          messages.push({ role: 'user', content: o.reportProviderError
+            ? `Your previous tool call could not be parsed or did not match the tool's schema, and was not executed. API error: ${e.message.slice(0, 600)}\nRaw output: ${generation}\nCall the tool again with arguments that are valid JSON matching its schema.`
+            : `Your previous tool call could not be parsed and was not executed. Raw output: ${generation}\nCall the tool again with arguments that are valid JSON matching its schema.` });
           continue;
         }
 
         let used = res.usage.totalTokens;
         if (!used) { used = reserve; stats.estimatedUsageTurns++; }
-        else { stats.promptTokens += res.usage.promptTokens; stats.completionTokens += res.usage.completionTokens; }
+        else {
+          stats.promptTokens += res.usage.promptTokens; stats.completionTokens += res.usage.completionTokens;
+          stats.maxPromptTokens = Math.max(stats.maxPromptTokens ?? 0, res.usage.promptTokens);
+        }
         charge(used, res.cached ?? false);
         stats.llmLatencyMs += res.latencyMs;
         messages.push(res.message);
@@ -107,7 +131,7 @@ export function llmAgent(provider: LLMProvider, options: LlmAgentOptions = {}): 
             host.auditTrail.push({ ts: new Date().toISOString(), tool: 'human.clarification', args: { question }, outcome: 'answered' });
           }
           // The kernel is the only authority: the loop never executes anything itself.
-          result ??= host.call(c.name, args);
+          result ??= await host.call(c.name, args);
           transcript.push({ tool: c.name, args, result });
           messages.push({ role: 'tool', toolCallId: c.id, content: clip(JSON.stringify(result), o.maxToolResultChars) });
         }

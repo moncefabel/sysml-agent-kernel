@@ -1,0 +1,69 @@
+{
+ "provider": "anthropic",
+ "model": "claude-haiku-5-5",
+ "createdAt": "2026-10-20T08:07:17.887Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": null,
+   "toolCalls": [
+    {
+     "id": "toolu_01BZvtABPWPhAmVUhzNV4Bbw",
+     "name": "sysml_apply_edits",
+     "arguments": "{\"ops\":[{\"op\":\"set\",\"path\":\"VehicleModel::Vehicle::engine\",\"field\":\"type\",\"value\":\"Engine\"},{\"op\":\"remove\",\"path\":\"VehicleModel::Vehicle#connect[0]\"},{\"op\":\"add\",\"parent\":\"VehicleModel::Vehicle\",\"source\":\"connect tank.fuelOut to engine.fuelIn;\"}],\"expectedVersion\":0}"
+    },
+    {
+     "id": "toolu_01WtxxVRpmUhMF4F9iwxGnjq",
+     "name": "sysml_validate",
+     "arguments": "{}"
+    }
+   ],
+   "raw": [
+    {
+     "type": "tool_use",
+     "id": "toolu_01BZvtABPWPhAmVUhzNV4Bbw",
+     "name": "sysml_apply_edits",
+     "input": {
+      "ops": [
+       {
+        "op": "set",
+        "path": "VehicleModel::Vehicle::engine",
+        "field": "type",
+        "value": "Engine"
+       },
+       {
+        "op": "remove",
+        "path": "VehicleModel::Vehicle#connect[0]"
+       },
+       {
+        "op": "add",
+        "parent": "VehicleModel::Vehicle",
+        "source": "connect tank.fuelOut to engine.fuelIn;"
+       }
+      ],
+      "expectedVersion": 0
+     },
+     "caller": {
+      "type": "direct"
+     }
+    },
+    {
+     "type": "tool_use",
+     "id": "toolu_01WtxxVRpmUhMF4F9iwxGnjq",
+     "name": "sysml_validate",
+     "input": {},
+     "caller": {
+      "type": "direct"
+     }
+    }
+   ]
+  },
+  "usage": {
+   "promptTokens": 3508,
+   "completionTokens": 226,
+   "totalTokens": 3734
+  },
+  "finishReason": "tool_calls",
+  "latencyMs": 1158
+ }
+}

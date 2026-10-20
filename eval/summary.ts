@@ -1,9 +1,12 @@
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { probes, scenarios as mainSuite } from './scenarios.js';
-import { injection, selfCorrection, selfCorrectionV2, type SuiteScenario } from './suites.js';
+import { injection, selfCorrection, selfCorrectionV2 } from './suites.js';
+import { large, type EvalScenario } from './large.js';
 import { compareFootprint, footprint, type FootprintComparison } from './footprint.js';
 import { referenceFootprint, type Row } from './harness.js';
+import { schemas } from '../src/tools.js';
+import { canonicalJson } from './llm/provider.js';
 
 /**
  * Builds eval/results/SUMMARY.md from the saved reports in eval/results. Every number comes
@@ -11,10 +14,10 @@ import { referenceFootprint, type Row } from './harness.js';
  * audit trails and final models, which is deterministic.
  */
 const DIR = process.argv[2] ?? 'eval/results';
-const SUITES: Record<string, SuiteScenario[]> = { main: mainSuite, probes, selfcorrect: selfCorrection, injection, 'selfcorrect-v2': selfCorrectionV2 };
+const SUITES: Record<string, EvalScenario[]> = { main: mainSuite, probes, selfcorrect: selfCorrection, injection, 'selfcorrect-v2': selfCorrectionV2, large };
 
 interface Report {
-  file: string; agent: string; provider: string; model: string; suite: string; pass: number; replay: boolean; date: string;
+  file: string; agent: string; transport?: string; provider: string; model: string; suite: string; pass: number; replay: boolean; date: string;
   total: number; policyLabel: string; rows: Row[]; incomplete: Array<{ id: string; reason: string }>; retries?: { retries: number; waitedMs: number };
 }
 
@@ -30,7 +33,8 @@ function load(): Report[] {
       // The loop configuration is folded into the label, so every grouping keeps hitl runs apart.
       policyLabel: (r.policy?.maxRemovedElementsPerSession !== undefined
         ? `session limit of ${r.policy.maxRemovedElementsPerSession} removed elements` : 'per transaction limits only (phase 2)')
-        + (r.config === 'hitl' ? ', hitl configuration' : ''),
+        + (r.config === 'hitl' ? ', hitl configuration' : '') + (r.config === 'large' ? ', large configuration' : '')
+        + (r.transport === 'mcp' ? ', mcp transport' : ''),
       incomplete: r.incomplete ?? [], retries: r.retries,
     };
   });
@@ -66,7 +70,12 @@ for (const r of loaded.filter((x) => !x.replay)) {
 }
 const reports = loaded.filter((r) => r.rows.length);
 const runs = reports.filter((r) => !r.replay);
-const replays = reports.filter((r) => r.replay);
+// A replay over the other transport than its original (MCP replay of an in-process run, or
+// in-process replay of a live MCP run) is a transport equivalence check, in its own section.
+const otherTransport = (label: string) => label.endsWith(', mcp transport') ? label.replace(', mcp transport', '') : `${label}, mcp transport`;
+const hasRun = (r: Report, label: string) => runs.some((x) => x.suite === r.suite && x.model === r.model && x.provider === r.provider && x.pass === r.pass && x.policyLabel === label);
+const mcpReplays = reports.filter((r) => r.replay && !hasRun(r, r.policyLabel) && hasRun(r, otherTransport(r.policyLabel)));
+const replays = reports.filter((r) => r.replay && !mcpReplays.includes(r));
 const out: string[] = ['# Evaluation summary', '', `Generated from the reports in \`${DIR}\` by \`node dist/eval/summary.js\`. Every number below comes from those files.`, ''];
 if (dupes.length) out.push(`Rows counted once although saved twice (the second copy was replayed entirely from the cache, same run, 0 billed tokens; the sampled copy is kept): ${dupes.join(', ')}.`, '');
 
@@ -181,6 +190,35 @@ for (const [k, rs] of [...groups].sort()) {
 }
 if (!clarRows) out.push('| | | | none yet | | | |');
 out.push('');
+
+out.push('## MCP transport equivalence', '');
+if (!mcpReplays.length) out.push('No replay over the MCP transport saved.', '');
+else {
+  out.push('Saved runs replayed over the other transport with `--replay-only`: in-process runs replayed through the real MCP server (stdio, official SDK client), and the live MCP run replayed in process. Every LLM response must come from the cache, so a cache miss would mean the two paths sent different requests. Compared with the original: final model, check results, the outcome and tool of every audit entry, and the audit arguments after applying the tool schema defaults (the MCP SDK applies them before the server sees the call).', '');
+  out.push('| Replay file | Rows | LLM calls from cache | Not replayable | Final model | Checks | Outcomes and tools | Arguments (raw) | Arguments (after defaults) |', '|---|---:|---:|---|---|---|---|---|---|');
+  const norm = (tool: unknown, args: unknown) => { const sc = (schemas as Record<string, any>)[String(tool)]; const r = sc?.safeParse(args); return canonicalJson(r?.success ? r.data : args); };
+  for (const r of mcpReplays) {
+    const label = otherTransport(r.policyLabel);
+    const origRows = runs.filter((x) => x.suite === r.suite && x.model === r.model && x.provider === r.provider && x.pass === r.pass && x.policyLabel === label).flatMap((x) => x.rows);
+    const pairs = r.rows.map((x) => [x, origRows.find((o) => o.id === x.id)] as const).filter((p): p is readonly [Row, Row] => !!p[1]);
+    const count = (f: (a: Row, b: Row) => boolean) => `${pairs.filter(([a, b]) => f(a, b)).length}/${pairs.length}`;
+    const calls = r.rows.reduce((a, x) => a + (x.llm?.turns ?? 0), 0), hits = r.rows.reduce((a, x) => a + (x.llm?.cacheHits ?? 0), 0);
+    out.push(`| ${r.file} | ${r.rows.length} | ${hits}/${calls} | ${r.incomplete.length ? r.incomplete.map((x) => x.id).join(', ') : '-'} | ${count((a, b) => a.finalModel === b.finalModel)} | ${count((a, b) => JSON.stringify(a.checks) === JSON.stringify(b.checks))} | ${count((a, b) => JSON.stringify(a.audit.map((e) => [e.tool, e.outcome])) === JSON.stringify(b.audit.map((e) => [e.tool, e.outcome])))} | ${count((a, b) => JSON.stringify(a.audit.map((e) => e.args)) === JSON.stringify(b.audit.map((e) => e.args)))} | ${count((a, b) => a.audit.length === b.audit.length && a.audit.every((e, k) => norm(e.tool, e.args) === norm(b.audit[k].tool, b.audit[k].args)))} |`);
+  }
+  out.push('', '"Not replayable": a scenario of that pass that never ran (no cached responses), so nothing to compare.', '');
+}
+
+// Large model: what each run sent and saw (rows from phase 6 carry these fields).
+const largeRuns = runs.filter((r) => r.suite === 'large').sort((a, b) => (a.model + a.pass < b.model + b.pass ? -1 : 1));
+if (largeRuns.length) {
+  out.push('## Large model context', '');
+  const total = largeRuns[0].rows[0]?.context?.elementsTotal;
+  out.push(`The large suite runs on a generated model of ${total ?? '?'} named elements (${largeRuns[0].rows[0]?.context?.modelChars ?? '?'} characters of source), too large to send whole. Largest prompt: the biggest single request in input tokens as reported by the API (the loop refuses any call estimated above 100,000). Context sent: characters of every request of the run. Read: named elements the model was shown at least once.`, '');
+  out.push('| Model | Pass | Scenario | Result | Stop | Turns | Rejected tool calls | Largest prompt | Context sent (chars) | Read | Share read |', '|---|---:|---|---|---|---:|---:|---:|---:|---:|---:|');
+  for (const r of largeRuns) for (const x of r.rows)
+    out.push(`| ${r.provider}:${r.model} | ${r.pass} | ${x.id} | ${x.success ? 'pass' : 'fail'} | ${x.stopReason} | ${x.llm?.turns ?? '-'} | ${x.llm?.malformedToolCalls ?? 0} | ${x.llm?.maxPromptTokens ?? '-'} | ${x.llm?.requestChars ?? '-'} | ${x.context?.elementsRead ?? '-'} | ${x.context ? `${(100 * x.context.shareRead).toFixed(2)} %` : '-'} |`);
+  out.push('', '"Rejected tool calls": calls the provider refused before the kernel saw them (tool_use_failed) or that were not valid JSON.', '');
+}
 
 out.push('## Replay verification', '');
 if (!replays.length) out.push('No replay report saved.', '');

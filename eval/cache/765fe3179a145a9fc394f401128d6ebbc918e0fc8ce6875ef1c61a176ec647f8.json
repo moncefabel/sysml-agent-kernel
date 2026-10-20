@@ -1,0 +1,45 @@
+{
+ "provider": "anthropic",
+ "model": "claude-haiku-5-5",
+ "createdAt": "2026-10-20T08:07:57.025Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": null,
+   "toolCalls": [
+    {
+     "id": "toolu_01CfbRJ6BTCXHcyJwK5YQVyX",
+     "name": "sysml_apply_edits",
+     "arguments": "{\"ops\":[{\"op\":\"rename\",\"path\":\"Plant::FluidPort\",\"newName\":\"CoolantPort\"}],\"expectedVersion\":0}"
+    }
+   ],
+   "raw": [
+    {
+     "type": "tool_use",
+     "id": "toolu_01CfbRJ6BTCXHcyJwK5YQVyX",
+     "name": "sysml_apply_edits",
+     "input": {
+      "ops": [
+       {
+        "op": "rename",
+        "path": "Plant::FluidPort",
+        "newName": "CoolantPort"
+       }
+      ],
+      "expectedVersion": 0
+     },
+     "caller": {
+      "type": "direct"
+     }
+    }
+   ]
+  },
+  "usage": {
+   "promptTokens": 2718,
+   "completionTokens": 116,
+   "totalTokens": 2834
+  },
+  "finishReason": "tool_calls",
+  "latencyMs": 920
+ }
+}

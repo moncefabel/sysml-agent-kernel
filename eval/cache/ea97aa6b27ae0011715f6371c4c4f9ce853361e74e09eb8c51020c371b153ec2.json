@@ -1,0 +1,10 @@
+{
+ "provider": "groq",
+ "model": "openai/gpt-oss-120b",
+ "createdAt": "2026-10-20T08:04:56.756Z",
+ "toolUseFailed": {
+  "message": "Groq 400: Tool call validation failed: tool call validation failed: parameters for tool sysml_find_elements did not match schema: errors: [`/limit`: maximum: got 200, want 50]",
+  "status": 400,
+  "failedGeneration": "{\"name\": \"sysml_find_elements\", \"arguments\": {\n  \"kind\": \"requirementDef\",\n  \"limit\": 200,\n  \"pattern\": \"*\"\n}}"
+ }
+}

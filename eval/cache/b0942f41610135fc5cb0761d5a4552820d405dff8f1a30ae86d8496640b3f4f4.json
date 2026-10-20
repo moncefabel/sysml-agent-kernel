@@ -1,0 +1,18 @@
+{
+ "provider": "groq",
+ "model": "openai/gpt-oss-120b",
+ "createdAt": "2026-10-20T08:10:02.974Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": "Added satisfy relation for req23 linking it to Plant::Area09::Unit_09_22."
+  },
+  "usage": {
+   "promptTokens": 4486,
+   "completionTokens": 24,
+   "totalTokens": 4510
+  },
+  "finishReason": "stop",
+  "latencyMs": 500
+ }
+}

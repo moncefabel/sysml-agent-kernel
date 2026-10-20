@@ -1,0 +1,39 @@
+{
+ "provider": "anthropic",
+ "model": "claude-haiku-5-5",
+ "createdAt": "2026-10-20T08:07:55.053Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": null,
+   "toolCalls": [
+    {
+     "id": "toolu_015YQRRcwYN5LyFnK6EkWS4i",
+     "name": "sysml_find_elements",
+     "arguments": "{\"pattern\":\"FluidPort\",\"kind\":\"portDef\"}"
+    }
+   ],
+   "raw": [
+    {
+     "type": "tool_use",
+     "id": "toolu_015YQRRcwYN5LyFnK6EkWS4i",
+     "name": "sysml_find_elements",
+     "input": {
+      "pattern": "FluidPort",
+      "kind": "portDef"
+     },
+     "caller": {
+      "type": "direct"
+     }
+    }
+   ]
+  },
+  "usage": {
+   "promptTokens": 2405,
+   "completionTokens": 82,
+   "totalTokens": 2487
+  },
+  "finishReason": "tool_calls",
+  "latencyMs": 888
+ }
+}

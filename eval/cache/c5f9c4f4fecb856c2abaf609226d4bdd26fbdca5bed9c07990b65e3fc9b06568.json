@@ -1,0 +1,18 @@
+{
+ "provider": "groq",
+ "model": "openai/gpt-oss-120b",
+ "createdAt": "2026-10-20T08:01:37.925Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": "Fixed unresolved type by correcting the part type reference."
+  },
+  "usage": {
+   "promptTokens": 1729,
+   "completionTokens": 14,
+   "totalTokens": 1743
+  },
+  "finishReason": "stop",
+  "latencyMs": 337
+ }
+}

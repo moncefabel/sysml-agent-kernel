@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Trace sc-concurrent-edit</title><style>
+:root { --bg:#fbfbfa; --fg:#1d1d1f; --muted:#6b6b70; --card:#ffffff; --line:#e3e3e0; --code:#f3f3f1;
+  --commit:#1f7a3d; --rollback:#b42318; --reject:#b54708; --policy:#6941c6; --error:#b42318; --read:#475467; --human:#0e7490; }
+@media (prefers-color-scheme: dark) { :root { --bg:#141416; --fg:#ececee; --muted:#9a9aa2; --card:#1c1c20; --line:#2e2e34; --code:#24242a;
+  --commit:#4ade80; --rollback:#f87171; --reject:#fbbf24; --policy:#c4b5fd; --error:#f87171; --read:#a1a1aa; --human:#67e8f9; } }
+* { box-sizing:border-box } body { margin:0; background:var(--bg); color:var(--fg); font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif }
+main { max-width:980px; margin:0 auto; padding:24px 16px 64px } h1 { font-size:22px; margin:0 0 4px } h2 { font-size:17px; margin:28px 0 10px }
+.muted { color:var(--muted) } a { color:inherit }
+.meta { display:flex; flex-wrap:wrap; gap:6px 16px; font-size:13px; color:var(--muted); margin:8px 0 16px }
+.card { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:14px 16px; margin:10px 0 }
+.turnhead { display:flex; flex-wrap:wrap; gap:4px 14px; font-size:13px; color:var(--muted); margin-bottom:8px } .turnhead b { color:var(--fg) }
+.say { white-space:pre-wrap; margin:6px 0 10px }
+.call { border-top:1px solid var(--line); padding-top:10px; margin-top:10px }
+.callhead { display:flex; flex-wrap:wrap; align-items:center; gap:8px } code, pre { font:12.5px/1.45 ui-monospace,SFMono-Regular,Menlo,monospace }
+pre { background:var(--code); border-radius:6px; padding:8px 10px; overflow:auto; margin:6px 0; white-space:pre-wrap; word-break:break-word }
+.badge { display:inline-block; font-size:12px; font-weight:600; padding:1px 8px; border-radius:99px; border:1px solid currentColor }
+.commit{color:var(--commit)} .rollback{color:var(--rollback)} .reject{color:var(--reject)} .policy{color:var(--policy)} .error{color:var(--error)} .read{color:var(--read)} .human{color:var(--human)}
+.ok{color:var(--commit)} .fail{color:var(--rollback)}
+.event { font-size:13px; color:var(--human); margin:6px 0 } details summary { cursor:pointer; font-size:13px; color:var(--muted) }
+table { border-collapse:collapse; width:100%; font-size:14px } td, th { text-align:left; padding:6px 8px; border-bottom:1px solid var(--line); vertical-align:top }
+</style></head><body><main>
+<p class="muted"><a href="index.html">All traces</a></p>
+<h1>sc-concurrent-edit <span class="badge ok">success</span></h1>
+<div class="meta"><span>model <b>anthropic:claude-haiku-5-5</b></span><span>suite selfcorrect</span><span>pass 1</span>
+<span>configuration default</span><span>policy session limit 5 elements</span>
+<span>run 2026-10-18</span><span>report 2026-10-18-anthropic-claude-haiku-5-5-selfcorrect.json</span></div>
+<p>Haiku hits the designed version conflict and recovers</p>
+<div class="card"><b>Task</b><div class="say">Set the mass attribute of the Engine part definition to 175. A colleague edits this model at the same time: in every sysml_apply_edits call, pass expectedVersion equal to the model version you last read (sysml_outline and sysml_validate return it).</div></div>
+<div class="meta"><span>7 turns</span><span>24,045 prompt and 804 completion tokens</span><span>6,629 ms API latency</span>
+<span>stop: model_done</span><span>1 commit(s), 0 rollback(s), 0 policy block(s)</span>
+<span class="ok">rebuilt from the cache, identical to the saved report</span></div>
+<h2>Timeline</h2>
+<section class="card"><div class="turnhead"><b>Turn 1</b><span>prompt 2,141 tokens</span><span>completion 51</span><span>733 ms</span></div>
+
+
+<div class="call"><div class="callhead"><code>sysml_outline</code><span class="badge read">read</span></div>
+<pre>{
+ &quot;depth&quot;: 3
+}</pre>
+<details><summary>result sent to the model (1,577 characters)</summary><pre>{&quot;version&quot;:0,&quot;outline&quot;:[{&quot;path&quot;:&quot;VehicleModel&quot;,&quot;kind&quot;:&quot;package&quot;,&quot;children&quot;:[{&quot;path&quot;:&quot;VehicleModel::FuelPort&quot;,&quot;kind&quot;:&quot;portDef&quot;,&quot;children&quot;:[{&quot;path&quot;:&quot;VehicleModel::FuelPort::flowRate&quot;,&quot;kind&quot;:&quot;attribute&quot;,&quot;type&quot;:&quot;Real&quot;}]},{&quot;path&quot;:&quot;VehicleModel::PowerPort&quot;,&quot;kind&quot;:&quot;portDef&quot;},{&quot;path&quot;:&quot;VehicleModel::Engine&quot;,&quot;kind&quot;:&quot;partDef&quot;,&quot;children&quot;:[{&quot;path&quot;:&quot;VehicleModel::Engine::mass&quot;,&quot;kind&quot;:&quot;attribute&quot;,&quot;type&quot;:&quot;Real&quot;},{&quot;path&quot;:&quot;VehicleModel::Engine::fuelIn&quot;,&quot;kind&quot;:&quot;port&quot;,&quot;type&quot;:&quot;FuelPort&quot;},{&quot;path&quot;:&quot;VehicleModel::Engine::powerOut&quot;,&quot;kind&quot;:&quot;port&quot;,&quot;type&quot;:&quot;PowerPort&quot;}]},{&quot;path&quot;:&quot;VehicleModel::ElectricMotor&quot;,&quot;kind&quot;:&quot;partDef&quot;,&quot;children&quot;:[{&quot;path&quot;:&quot;VehicleModel::ElectricMotor::peakTorque&quot;,&quot;kind&quot;:&quot;attribute&quot;,&quot;type&quot;:&quot;Real&quot;}]},{&quot;path&quot;:&quot;VehicleModel::FuelTank&quot;,&quot;kind&quot;:&quot;partDef&quot;,&quot;children&quot;:[{&quot;path&quot;:&quot;VehicleModel::FuelTank::capacity&quot;,&quot;kind&quot;:&quot;attribute&quot;,&quot;type&quot;:&quot;Real&quot;},{&quot;path&quot;:&quot;VehicleModel::FuelTank::fuelOut&quot;,&quot;kind&quot;:&quot;port&quot;,&quot;type&quot;:&quot;~FuelPort&quot;}]},{&quot;path&quot;:&quot;VehicleModel::Wheel&quot;,&quot;kind&quot;:&quot;partDef&quot;},{&quot;path&quot;:&quot;VehicleModel::Vehicle&quot;,&quot;kind&quot;:&quot;partDef&quot;,&quot;children&quot;:[{&quot;path&quot;:&quot;VehicleModel::Vehicle::engine&quot;,&quot;kind&quot;:&quot;part&quot;,&quot;type&quot;:&quot;Engine&quot;},{&quot;path&quot;:&quot;VehicleModel::Vehicle::tank&quot;,&quot;kind&quot;:&quot;part&quot;,&quot;type&quot;:&quot;FuelTank&quot;},{&quot;path&quot;:&quot;VehicleModel::Vehicle::wheels&quot;,&quot;kind&quot;:&quot;part&quot;,&quot;type&quot;:&quot;Wheel&quot;},{&quot;path&quot;:&quot;VehicleModel::Vehicle#connect[0]&quot;,&quot;kind&quot;:&quot;connect&quot;,&quot;text&quot;:&quot;tank.fuelOut to engine.fuelIn&quot;}]},{&quot;path&quot;:&quot;VehicleModel::MassRequirement&quot;,&quot;kind&quot;:&quot;requirementDef&quot;},{&quot;path&quot;:&quot;VehicleModel::vehicleMass&quot;,&quot;kind&quot;:&quot;requirement&quot;,&quot;type&quot;:&quot;MassRequirement&quot;},{&quot;path&quot;:&quot;VehicleModel#satisfy[2]&quot;,&quot;kind&quot;:&quot;satisfy&quot;,&quot;text&quot;:&quot;vehicleMass by Vehicle&quot;}]}]}</pre></details>
+<div class="event">A colleague committed a concurrent edit: [{&quot;op&quot;:&quot;rename&quot;,&quot;path&quot;:&quot;VehicleModel::Engine&quot;,&quot;newName&quot;:&quot;CombustionEngine&quot;}] (committed)</div></div>
+
+</section>
+<section class="card"><div class="turnhead"><b>Turn 2</b><span>prompt 2,983 tokens</span><span>completion 61</span><span>795 ms</span></div>
+
+
+<div class="call"><div class="callhead"><code>sysml_get</code><span class="badge error">NOT_FOUND</span></div>
+<pre>{
+ &quot;path&quot;: &quot;VehicleModel::Engine::mass&quot;
+}</pre>
+<details><summary>result sent to the model (85 characters)</summary><pre>{&quot;error&quot;:{&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;No element at 'VehicleModel::Engine::mass'&quot;}}</pre></details>
+</div>
+
+</section>
+<section class="card"><div class="turnhead"><b>Turn 3</b><span>prompt 3,092 tokens</span><span>completion 107</span><span>1,020 ms</span></div>
+
+
+<div class="call"><div class="callhead"><code>sysml_get</code><span class="badge error">NOT_FOUND</span></div>
+<pre>{
+ &quot;path&quot;: &quot;VehicleModel::Engine&quot;
+}</pre>
+<details><summary>result sent to the model (79 characters)</summary><pre>{&quot;error&quot;:{&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;No element at 'VehicleModel::Engine'&quot;}}</pre></details>
+</div>
+
+</section>
+<section class="card"><div class="turnhead"><b>Turn 4</b><span>prompt 3,244 tokens</span><span>completion 214</span><span>1,346 ms</span></div>
+
+
+<div class="call"><div class="callhead"><code>sysml_apply_edits</code><span class="badge reject">rejected: version conflict</span></div>
+<pre>{
+ &quot;ops&quot;: [
+  {
+   &quot;op&quot;: &quot;set&quot;,
+   &quot;path&quot;: &quot;VehicleModel::Engine::mass&quot;,
+   &quot;field&quot;: &quot;value&quot;,
+   &quot;value&quot;: &quot;175&quot;
+  }
+ ],
+ &quot;expectedVersion&quot;: 0
+}</pre>
+<details><summary>result sent to the model (144 characters)</summary><pre>{&quot;status&quot;:&quot;rejected&quot;,&quot;version&quot;:1,&quot;reason&quot;:&quot;version_conflict&quot;,&quot;message&quot;:&quot;Model is at version 1, edit was prepared against 0. Re-read and retry.&quot;}</pre></details>
+</div>
+
+</section>
+<section class="card"><div class="turnhead"><b>Turn 5</b><span>prompt 3,520 tokens</span><span>completion 51</span><span>658 ms</span></div>
+
+
+<div class="call"><div class="callhead"><code>sysml_outline</code><span class="badge read">read</span></div>
+<pre>{
+ &quot;depth&quot;: 3
+}</pre>
+<details><summary>result sent to the model (1,627 characters)</summary><pre>{&quot;version&quot;:1,&quot;outline&quot;:[{&quot;path&quot;:&quot;VehicleModel&quot;,&quot;kind&quot;:&quot;package&quot;,&quot;children&quot;:[{&quot;path&quot;:&quot;VehicleModel::FuelPort&quot;,&quot;kind&quot;:&quot;portDef&quot;,&quot;children&quot;:[{&quot;path&quot;:&quot;VehicleModel::FuelPort::flowRate&quot;,&quot;kind&quot;:&quot;attribute&quot;,&quot;type&quot;:&quot;Real&quot;}]},{&quot;path&quot;:&quot;VehicleModel::PowerPort&quot;,&quot;kind&quot;:&quot;portDef&quot;},{&quot;path&quot;:&quot;VehicleModel::CombustionEngine&quot;,&quot;kind&quot;:&quot;partDef&quot;,&quot;children&quot;:[{&quot;path&quot;:&quot;VehicleModel::CombustionEngine::mass&quot;,&quot;kind&quot;:&quot;attribute&quot;,&quot;type&quot;:&quot;Real&quot;},{&quot;path&quot;:&quot;VehicleModel::CombustionEngine::fuelIn&quot;,&quot;kind&quot;:&quot;port&quot;,&quot;type&quot;:&quot;FuelPort&quot;},{&quot;path&quot;:&quot;VehicleModel::CombustionEngine::powerOut&quot;,&quot;kind&quot;:&quot;port&quot;,&quot;type&quot;:&quot;PowerPort&quot;}]},{&quot;path&quot;:&quot;VehicleModel::ElectricMotor&quot;,&quot;kind&quot;:&quot;partDef&quot;,&quot;children&quot;:[{&quot;path&quot;:&quot;VehicleModel::ElectricMotor::peakTorque&quot;,&quot;kind&quot;:&quot;attribute&quot;,&quot;type&quot;:&quot;Real&quot;}]},{&quot;path&quot;:&quot;VehicleModel::FuelTank&quot;,&quot;kind&quot;:&quot;partDef&quot;,&quot;children&quot;:[{&quot;path&quot;:&quot;VehicleModel::FuelTank::capacity&quot;,&quot;kind&quot;:&quot;attribute&quot;,&quot;type&quot;:&quot;Real&quot;},{&quot;path&quot;:&quot;VehicleModel::FuelTank::fuelOut&quot;,&quot;kind&quot;:&quot;port&quot;,&quot;type&quot;:&quot;~FuelPort&quot;}]},{&quot;path&quot;:&quot;VehicleModel::Wheel&quot;,&quot;kind&quot;:&quot;partDef&quot;},{&quot;path&quot;:&quot;VehicleModel::Vehicle&quot;,&quot;kind&quot;:&quot;partDef&quot;,&quot;children&quot;:[{&quot;path&quot;:&quot;VehicleModel::Vehicle::engine&quot;,&quot;kind&quot;:&quot;part&quot;,&quot;type&quot;:&quot;CombustionEngine&quot;},{&quot;path&quot;:&quot;VehicleModel::Vehicle::tank&quot;,&quot;kind&quot;:&quot;part&quot;,&quot;type&quot;:&quot;FuelTank&quot;},{&quot;path&quot;:&quot;VehicleModel::Vehicle::wheels&quot;,&quot;kind&quot;:&quot;part&quot;,&quot;type&quot;:&quot;Wheel&quot;},{&quot;path&quot;:&quot;VehicleModel::Vehicle#connect[0]&quot;,&quot;kind&quot;:&quot;connect&quot;,&quot;text&quot;:&quot;tank.fuelOut to engine.fuelIn&quot;}]},{&quot;path&quot;:&quot;VehicleModel::MassRequirement&quot;,&quot;kind&quot;:&quot;requirementDef&quot;},{&quot;path&quot;:&quot;VehicleModel::vehicleMass&quot;,&quot;kind&quot;:&quot;requirement&quot;,&quot;type&quot;:&quot;MassRequirement&quot;},{&quot;path&quot;:&quot;VehicleModel#satisfy[2]&quot;,&quot;kind&quot;:&quot;satisfy&quot;,&quot;text&quot;:&quot;vehicleMass by Vehicle&quot;}]}]}</pre></details>
+</div>
+
+</section>
+<section class="card"><div class="turnhead"><b>Turn 6</b><span>prompt 4,382 tokens</span><span>completion 249</span><span>1,380 ms</span></div>
+
+<div class="say">The colleague renamed `Engine` to `CombustionEngine` in version 1, so I'm applying the change to that element.</div>
+<div class="call"><div class="callhead"><code>sysml_apply_edits</code><span class="badge commit">committed, version 2</span></div>
+<pre>{
+ &quot;ops&quot;: [
+  {
+   &quot;op&quot;: &quot;set&quot;,
+   &quot;path&quot;: &quot;VehicleModel::CombustionEngine::mass&quot;,
+   &quot;field&quot;: &quot;value&quot;,
+   &quot;value&quot;: &quot;175&quot;
+  }
+ ],
+ &quot;expectedVersion&quot;: 1
+}</pre>
+<details><summary>result sent to the model (103 characters)</summary><pre>{&quot;status&quot;:&quot;committed&quot;,&quot;version&quot;:2,&quot;introducedWarnings&quot;:[],&quot;resolvedDiagnostics&quot;:[],&quot;remainingErrors&quot;:0}</pre></details>
+</div>
+
+</section>
+<section class="card"><div class="turnhead"><b>Turn 7</b><span>prompt 4,683 tokens</span><span>completion 71</span><span>697 ms</span></div>
+
+<div class="say">Set `VehicleModel::CombustionEngine::mass` to 175. The part definition was renamed from `Engine` to `CombustionEngine` by your colleague, so I edited that element (model now at version 2).</div>
+
+<div class="muted">No tool call: the model ended its turn.</div>
+</section>
+<h2>Result</h2>
+<div class="card">
+<table><tr><th>Check</th><th>Result</th><th>Detail</th></tr><tr><td><code>no_errors</code></td><td class="ok">pass</td><td>0 errors</td></tr><tr><td><code>value_equals</code></td><td class="ok">pass</td><td>VehicleModel::CombustionEngine::mass = 175</td></tr><tr><td><code>exists</code></td><td class="ok">pass</td><td>VehicleModel::CombustionEngine</td></tr><tr><td><code>not_exists</code></td><td class="ok">pass</td><td>VehicleModel::Engine</td></tr></table>
+<p class="muted">Edit footprint: 10 element(s) touched against 10 for the reference trajectory.</p>
+</div></main></body></html>
