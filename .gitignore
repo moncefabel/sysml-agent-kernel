@@ -5,3 +5,5 @@ eval/reports/
 .env
 .env.*
 *.patch
+INTERVIEW.md
+STATUS.md
