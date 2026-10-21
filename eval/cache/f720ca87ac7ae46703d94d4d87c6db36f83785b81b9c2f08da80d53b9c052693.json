@@ -1,0 +1,18 @@
+{
+ "provider": "groq",
+ "model": "openai/gpt-oss-120b",
+ "createdAt": "2026-10-21T10:48:17.557Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": "Renamed the leftover unit part definition to `Unit_11_67`."
+  },
+  "usage": {
+   "promptTokens": 3140,
+   "completionTokens": 19,
+   "totalTokens": 3159
+  },
+  "finishReason": "stop",
+  "latencyMs": 560
+ }
+}

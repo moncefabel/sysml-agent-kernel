@@ -1,12 +1,13 @@
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { probes, scenarios as mainSuite } from './scenarios.js';
-import { injection, selfCorrection, selfCorrectionV2 } from './suites.js';
+import { feedback, injection, selfCorrection, selfCorrectionV2 } from './suites.js';
 import { large, type EvalScenario } from './large.js';
 import { compareFootprint, footprint, type FootprintComparison } from './footprint.js';
 import { referenceFootprint, type Row } from './harness.js';
 import { schemas } from '../src/tools.js';
 import { canonicalJson } from './llm/provider.js';
+import { rebuild } from './traces.js';
 
 /**
  * Builds eval/results/SUMMARY.md from the saved reports in eval/results. Every number comes
@@ -14,7 +15,7 @@ import { canonicalJson } from './llm/provider.js';
  * audit trails and final models, which is deterministic.
  */
 const DIR = process.argv[2] ?? 'eval/results';
-const SUITES: Record<string, EvalScenario[]> = { main: mainSuite, probes, selfcorrect: selfCorrection, injection, 'selfcorrect-v2': selfCorrectionV2, large };
+const SUITES: Record<string, EvalScenario[]> = { main: mainSuite, probes, selfcorrect: selfCorrection, injection, 'selfcorrect-v2': selfCorrectionV2, large, feedback };
 
 interface Report {
   file: string; agent: string; transport?: string; provider: string; model: string; suite: string; pass: number; replay: boolean; date: string;
@@ -34,7 +35,9 @@ function load(): Report[] {
       policyLabel: (r.policy?.maxRemovedElementsPerSession !== undefined
         ? `session limit of ${r.policy.maxRemovedElementsPerSession} removed elements` : 'per transaction limits only (phase 2)')
         + (r.config === 'hitl' ? ', hitl configuration' : '') + (r.config === 'large' ? ', large configuration' : '')
-        + (r.transport === 'mcp' ? ', mcp transport' : ''),
+        + (r.transport === 'mcp' ? ', mcp transport' : '')
+        // Phase 7 compares the loop with and without the provider's reason on tool_use_failed.
+        + (r.suite === 'feedback' ? (r.loopOptions?.reportProviderError ? ', provider error feedback on' : ', provider error feedback off') : ''),
       incomplete: r.incomplete ?? [], retries: r.retries,
     };
   });
@@ -218,6 +221,24 @@ if (largeRuns.length) {
   for (const r of largeRuns) for (const x of r.rows)
     out.push(`| ${r.provider}:${r.model} | ${r.pass} | ${x.id} | ${x.success ? 'pass' : 'fail'} | ${x.stopReason} | ${x.llm?.turns ?? '-'} | ${x.llm?.malformedToolCalls ?? 0} | ${x.llm?.maxPromptTokens ?? '-'} | ${x.llm?.requestChars ?? '-'} | ${x.context?.elementsRead ?? '-'} | ${x.context ? `${(100 * x.context.shareRead).toFixed(2)} %` : '-'} |`);
   out.push('', '"Rejected tool calls": calls the provider refused before the kernel saw them (tool_use_failed) or that were not valid JSON.', '');
+}
+
+// Phase 7: each feedback run rebuilt from the cache (offline), to order rejected and accepted calls.
+const feedbackRuns = runs.filter((r) => r.suite === 'feedback').sort((a, b) => a.pass - b.pass);
+if (feedbackRuns.length) {
+  out.push('## Provider error feedback', '');
+  out.push('Live test of the loop option `reportProviderError` on `fb-suffixed-unit`: the task asks for up to 200 search results in one call, the schema allows 50, and Groq rejects such a call itself (tool_use_failed) before the kernel sees it. Off: the model is told the call could not be parsed and is shown its raw output. On: it is also given the provider\'s error message. Turns come from rebuilding each run from the response cache.', '');
+  out.push('| Model | Pass | Feedback | Result | Stop | Turns | Rejected by the provider | Rejected before the first accepted call | Rejected after an accepted call | Accepted search limits | Tokens |', '|---|---:|---|---|---|---:|---:|---:|---:|---|---:|');
+  for (const r of feedbackRuns) for (const x of r.rows) {
+    const report = JSON.parse(readFileSync(join(DIR, r.file), 'utf8'));
+    const t = await rebuild(report, x);
+    const firstOk = t.turns.findIndex((u) => !u.rejected);
+    const rejected = t.turns.filter((u) => u.rejected).length;
+    const before = firstOk < 0 ? rejected : t.turns.slice(0, firstOk).filter((u) => u.rejected).length;
+    const limits = x.audit.filter((a) => a.tool === 'sysml_find_elements').map((a) => (a.args as any)?.limit ?? 'default');
+    out.push(`| ${r.provider}:${r.model} | ${r.pass} | ${r.policyLabel.endsWith('feedback on') ? 'on' : 'off'} | ${x.success ? 'pass' : 'fail'} | ${x.stopReason} | ${x.llm?.turns ?? '-'} | ${rejected} | ${before} | ${rejected - before} | ${limits.join(', ') || '-'} | ${x.llm?.totalTokens ?? '-'} |`);
+  }
+  out.push('', 'Tokens include the loop\'s reservation for each rejected call, for which the provider reports no usage.', '');
 }
 
 out.push('## Replay verification', '');

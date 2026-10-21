@@ -74,7 +74,7 @@ Name resolution handles nested namespaces, imports (`X::*` and single), and feat
 
 ```bash
 npm install
-npm test          # 92 tests, all offline: kernel, session limits, agent loop, cache, budget,
+npm test          # 96 tests, all offline: kernel, session limits, agent loop, cache, budget,
                   # checkpoint, footprint, suites, MCP transport, large model, traces, adapters (mocked)
 npm run eval      # scripted baseline over the main suite (add -- --suite <name> [--transport mcp])
 npm run bench     # parse / validate / transaction / slice timings
@@ -109,7 +109,7 @@ Behind an HTTPS proxy, Node's built-in `fetch` ignores `HTTPS_PROXY` unless `NOD
 
 **Large models.** `--suite large` runs on a generated 8,045 element model (fixed seed, `eval/large.ts`) with the `large` configuration: the `sysml_find_elements` search tool and a hard cap of 100,000 input tokens per call (estimated at 3 characters per token before each call; a call that could exceed it is not sent and the scenario stops with `input_cap`). The agent cannot read the model whole; it has to locate what it needs with validation, search, the outline and targeted reads. Rows record the largest prompt, the characters sent and the share of the model the agent was shown.
 
-Options: `--agent scripted|groq|anthropic`, `--suite main|probes|selfcorrect|injection|selfcorrect-v2|large`, `--config default|hitl|large`, `--transport inprocess|mcp`, `--legacy-tool-feedback`, `--only <id>`, `--pass <n>` (pass n gets its own cache keys, so it samples the model again), `--policy default|phase2`, `--max-turns` (12), `--max-output-tokens` (1024), `--scenario-budget` (60000 tokens), `--run-budget`, `--cache-dir` (`eval/cache`), `--no-cache`, `--fresh` (discard the checkpoint), `--replay-only`.
+Options: `--agent scripted|groq|anthropic`, `--suite main|probes|selfcorrect|injection|selfcorrect-v2|large|feedback`, `--config default|hitl|large` (`large` is the default for the large and feedback suites), `--transport inprocess|mcp`, `--legacy-tool-feedback`, `--only <id>`, `--pass <n>` (pass n gets its own cache keys, so it samples the model again), `--policy default|phase2`, `--max-turns` (12), `--max-output-tokens` (1024), `--scenario-budget` (60000 tokens), `--run-budget`, `--cache-dir` (`eval/cache`), `--no-cache`, `--fresh` (discard the checkpoint), `--replay-only`.
 
 ## Evaluation
 
@@ -222,13 +222,30 @@ Runs on 2026-10-20, session policy. Numbers from [`eval/results/SUMMARY.md`](eva
 | gpt-oss-120b | 2 | pass | pass | pass | 4,486 | 1.33 % |
 
 - **No request came near the cap.** The largest prompt of any run was 14,613 tokens, against the 100,000 cap; no run stopped on `input_cap`. Both models located what they needed with `sysml_validate`, `sysml_find_elements` and one or two targeted reads, and read at most 3.33 % of the model.
-- **gpt-oss pass 1 failure, and a harness defect it revealed.** On `large-unsatisfied-requirement` it called `sysml_find_elements` with `limit: 200` (the schema maximum is 50). Groq checks tool arguments against the schema itself and rejected the call with `tool_use_failed`, ten times in a row: the loop's feedback said the call "could not be parsed" and showed the raw output, but not Groq's reason. The loop now sends the provider's error message back (option `reportProviderError`, on for new runs; `--legacy-tool-feedback` reproduces the old behaviour so that run still replays). Pass 2 ran with the fix and passed, but it hit no rejected call, so the fix is shown by a test, not yet by a live run. The same event also shows that a provider's own schema check can pre-empt the kernel's structured `INVALID_ARGUMENTS` error.
+- **gpt-oss pass 1 failure, and a harness defect it revealed.** On `large-unsatisfied-requirement` it called `sysml_find_elements` with `limit: 200` (the schema maximum is 50). Groq checks tool arguments against the schema itself and rejected the call with `tool_use_failed`, ten times in a row: the loop's feedback said the call "could not be parsed" and showed the raw output, but not Groq's reason. The loop now sends the provider's error message back (option `reportProviderError`, on for new runs; `--legacy-tool-feedback` reproduces the old behaviour so that run still replays). Pass 2 ran with the fix and passed, but it hit no rejected call, so at that point the fix was shown by a test only; phase 7 below confirms it live. The same event also shows that a provider's own schema check can pre-empt the kernel's structured `INVALID_ARGUMENTS` error.
 - **Real MCP, live.** A third pass of the main suite on Haiku ran through the MCP server end to end: 6/6, 61,726 tokens. Replayed in process, every request hit the cache: the requests over MCP were byte for byte the ones the in-process path sends.
 - **MCP equivalence of every saved run.** All saved main, self-correction and injection runs of both models, replayed over MCP: every LLM call served from the cache (0 misses), and final models, check results, tools and outcomes identical. The one divergence: the MCP SDK fills in schema defaults before the server sees a call, so the audit records `{"root":"","depth":4}` where the in-process audit records `{"depth":4}` (identical once defaults are applied). A second divergence is structural and was not exercised by any saved run: over MCP, an unknown tool or arguments that fail the schema are rejected by the SDK before the kernel, so the kernel's structured error is replaced by a protocol error and the server does not audit the call (the client records it, marked `recordedBy: mcp-client`).
 
 **Phase 6 tokens and cost.** Haiku: 191,760 tokens (186,506 input, 5,254 output), about **$0.021** at $0.10 input and $0.50 output per million tokens for prompts of 100K tokens or fewer. gpt-oss on Groq: 82,419 tokens counted against the run budget, of which 49,667 reported by the API; the other 32,752 are the loop's reservations for the ten rejected calls, for which Groq returned no usage. No price is stated for the quota limited Groq account.
 
 **Limits.** Two passes per model on three large scenarios. The large model is synthetic and regular (generated units with a prev chain), which makes search and validation hints unusually effective; real models are less uniform. The share read counts elements whose qualified path or full source reached the model, which over-counts paths merely listed in an outline. The MCP equivalence covers the default policy only (the server has no policy flags beyond the catalog), and the transport adds process start and stdio overhead not measured here.
+
+### Phase 7: provider error feedback, live
+
+Runs on 2026-10-21 of gpt-oss-120b on Groq, one new suite `feedback` with one scenario, `fb-suffixed-unit`, on the large model: one unit part definition carries a leftover suffix (`Unit_11_67_tmp`), validation reports nothing, so only `sysml_find_elements` can locate it, and the task asks to "list up to 200 matching elements in a single call" while the schema allows 50. Groq checks tool arguments against the schema and rejects such a call itself (`tool_use_failed`, reason `/limit: maximum: got 200, want 50`). One pass with the provider error feedback off (`--legacy-tool-feedback`, the control) and two with it on. Numbers from [`eval/results/SUMMARY.md`](eval/results/SUMMARY.md), section "Provider error feedback"; the order of the turns comes from rebuilding each run from the cache.
+
+| Pass | Feedback | Result | Turns | Calls rejected by Groq | Corrected after feedback | Tokens counted |
+|---:|---|---|---:|---:|---|---:|
+| 1 | off | pass | 12 | 7 | after 6 rejections in a row; then one more call with `limit: 200`, rejected, before it kept to 50 | 34,155 |
+| 2 | on | pass | 5 | 1 | yes, on the next call (`limit: 50`) | 12,370 |
+| 3 | on | pass | 5 | 1 | yes, on the next call (`limit: 50`) | 12,263 |
+
+- **The fix is confirmed live.** With the feedback on, each run made exactly one invalid call and corrected the limit on the very next one (1 rejection per run, 5 turns). With it off, the same model repeated the invalid call 6 times before a valid one and once more after it (7 rejections, 12 turns, which is the turn limit; it finished on its last allowed call). All three runs passed the checks, with the reference footprint (11/11) and one committed rename.
+- **Every run replays offline.** The three runs were replayed with `--replay-only`, an invalid key and the network blocked: every LLM call came from the cache, 0 billed tokens, and the final model, checks and audit are identical to the originals.
+
+**Phase 7 tokens.** 58,788 tokens counted against the run budget for the three runs, of which 34,636 reported by the API (32,626 prompt, 2,010 completion) and 24,152 the loop's reservations for the 9 rejected calls, for which Groq returned no usage: 19,344 for the control and 2,404 for each run with the feedback on. No price is stated for the quota limited Groq account.
+
+**Limits.** One scenario, written to provoke the invalid call; one control pass and two passes with the fix, so the comparison (7 rejections against 1 and 1) is a demonstration on one model, not a measured rate. The control still succeeded, so on this scenario the fix saved turns and tokens rather than turning a failure into a success; the phase 6 failure (ten rejections, turn limit) shows the case where it matters. Temperature 0 does not make the hosted model deterministic. The fix only helps when the provider returns a readable reason; providers that do not check arguments themselves leave the check to the kernel's own `INVALID_ARGUMENTS` error.
 
 ## Benchmarks
 
@@ -254,7 +271,7 @@ The transaction cost is dominated by the full re-validation and the print/repars
 ```
 src/        lexer, parser, printer, semantic validator, workspace (transactions),
             context engine, tool catalog with policy and audit, MCP server
-eval/       scenarios (original six), suites (phase 3 and 5), large (phase 6), harness (checks,
+eval/       scenarios (original six), suites (phase 3, 5 and 7), large (phase 6), harness (checks,
             metrics), footprint, context metrics, MCP client, runner, checkpoint, estimate,
             summary, traces, bench, scripted baseline agent
 eval/llm/   provider interface, Groq and Anthropic adapters, shared HTTP retries, agent loop,

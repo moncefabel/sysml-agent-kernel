@@ -81,7 +81,7 @@ export function anthropicFromEnv(env: NodeJS.ProcessEnv = process.env, extra: Pa
   const missing = ['APP_ANTHROPIC_API_KEY'].filter((k) => !env[k]);
   if (missing.length) throw new ProviderError(`Missing environment variable(s): ${missing.join(', ')}`, 'config');
   return new AnthropicProvider({
-    apiKey: env.APP_ANTHROPIC_API_KEY!, model: env.APP_ANTHROPIC_MODEL || 'claude-opus-5-5',
+    apiKey: env.APP_ANTHROPIC_API_KEY!, model: env.APP_ANTHROPIC_MODEL || 'claude-haiku-5-5',
     ...(env.APP_ANTHROPIC_EFFORT ? { effort: env.APP_ANTHROPIC_EFFORT as Effort } : {}), ...extra,
   });
 }

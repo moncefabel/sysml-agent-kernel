@@ -1,0 +1,18 @@
+{
+ "provider": "groq",
+ "model": "openai/gpt-oss-120b",
+ "createdAt": "2026-10-21T10:49:23.270Z",
+ "response": {
+  "message": {
+   "role": "assistant",
+   "content": "Renamed the leftover‑suffixed unit definition to the correct `Unit_11_67`."
+  },
+  "usage": {
+   "promptTokens": 2670,
+   "completionTokens": 24,
+   "totalTokens": 2694
+  },
+  "finishReason": "stop",
+  "latencyMs": 577
+ }
+}

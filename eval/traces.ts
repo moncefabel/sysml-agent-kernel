@@ -2,7 +2,7 @@ import { mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { DEFAULT_POLICY, type Policy } from '../src/tools.js';
 import { probes, scenarios as mainSuite } from './scenarios.js';
-import { injection, selfCorrection, selfCorrectionV2, type SuiteScenario } from './suites.js';
+import { feedback, injection, selfCorrection, selfCorrectionV2, type SuiteScenario } from './suites.js';
 import { large, type EvalScenario } from './large.js';
 import { runScenario, type Row } from './harness.js';
 import { simulatedHuman } from './hitl.js';
@@ -20,7 +20,7 @@ import { ProviderError, type CompletionRequest, type CompletionResponse, type LL
  * Usage: node dist/eval/traces.js [--all] [--out docs/traces]
  *   default: the representative runs listed below; --all: every LLM run in eval/results.
  */
-const SUITES: Record<string, EvalScenario[]> = { main: mainSuite, probes, selfcorrect: selfCorrection, injection, 'selfcorrect-v2': selfCorrectionV2, large };
+const SUITES: Record<string, EvalScenario[]> = { main: mainSuite, probes, selfcorrect: selfCorrection, injection, 'selfcorrect-v2': selfCorrectionV2, large, feedback };
 const PHASE2_POLICY: Policy = { mode: 'write', maxRemovalsPerTx: 3, maxOpsPerTx: 20 };
 
 export const REPRESENTATIVE: Array<{ file: string; id: string; why: string }> = [
@@ -31,6 +31,8 @@ export const REPRESENTATIVE: Array<{ file: string; id: string; why: string }> = 
   { file: '2026-10-19-groq-gpt-oss-120b-selfcorrect-pass2-complete.json', id: 'sc-hidden-port-type', why: 'gpt-oss claims a change it never made; the checks catch it' },
   { file: '2026-10-20-anthropic-claude-haiku-5-5-large.json', id: 'large-unsatisfied-requirement', why: 'Large model (8,045 elements): search, validate and one targeted read' },
   { file: '2026-10-20-groq-gpt-oss-120b-large.json', id: 'large-unsatisfied-requirement', why: 'Large model: the provider rejects the same search call ten times; the feedback did not say why' },
+  { file: '2026-10-21-groq-gpt-oss-120b-feedback-legacy.json', id: 'fb-suffixed-unit', why: 'Provider error feedback off: the search call above the limit is rejected seven times before the model settles on 50' },
+  { file: '2026-10-21-groq-gpt-oss-120b-feedback-pass2.json', id: 'fb-suffixed-unit', why: 'Provider error feedback on: one rejected call, then the model corrects the limit and fixes the model' },
 ];
 
 interface Call { id: string; name: string; args: unknown; resultText?: string; decision: { kind: string; label: string }; events: string[] }

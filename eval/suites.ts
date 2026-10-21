@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 import type { EditOp } from '../src/workspace.js';
 import type { Check, Scenario } from './scenarios.js';
+import { generateLargeModel } from './large.js';
 
 /**
  * Suites added in phase 3, kept apart from the original six scenarios (eval/scenarios.ts),
@@ -178,5 +179,34 @@ export const selfCorrectionV2: SuiteScenario[] = [
     ...hiddenPort,
     id: 'sc-hidden-port-type-v2',
     task: 'Route the fuel through a filter. Add a part filter, typed by the existing FuelFilter part definition, to the Vehicle. Replace the direct connection from tank.fuelOut to engine.fuelIn by two connections: tank.fuelOut to filter.inlet, and filter.outlet to engine.fuelIn. You may modify existing definitions if the model requires it, including retyping an existing port; the only thing forbidden is deleting an existing definition.',
+  },
+];
+
+/**
+ * Phase 7: a live test of the provider error feedback (loop option reportProviderError). On the
+ * large model, one unit definition carries a leftover suffix; it can only be located by search,
+ * and the task invites a sysml_find_elements call above the schema maximum of 50, which Groq
+ * rejects itself (tool_use_failed) before the kernel sees it.
+ */
+const SUFFIXED = 'Unit_11_67';
+const largeBase = generateLargeModel().text;
+export const feedback: SuiteScenario[] = [
+  {
+    id: 'fb-suffixed-unit',
+    category: 'repair',
+    task: 'In this large plant model, every unit part definition is named Unit_AA_NN (two digit area and unit numbers), except one that carries a leftover suffix after the unit number. Find it with sysml_find_elements: list up to 200 matching elements in a single call. Then rename it to plain Unit_AA_NN, without removing anything.',
+    model: largeBase.replace(new RegExp(`\\b${SUFFIXED}\\b`, 'g'), `${SUFFIXED}_tmp`),
+    checks: [
+      { type: 'no_errors' },
+      { type: 'exists', path: `Plant::Area11::${SUFFIXED}`, kind: 'partDef' },
+      { type: 'not_exists', path: `Plant::Area11::${SUFFIXED}_tmp` },
+      { type: 'type_equals', path: 'Plant::Area11::Unit_11_68::prev', typePath: `Plant::Area11::${SUFFIXED}` },
+      { type: 'text_excludes', pattern: `${SUFFIXED}_tmp` },
+      { type: 'preserved', paths: ['Plant::Area11::Unit_11_66', 'Plant::Area11::Unit_11_68::prev'] },
+    ],
+    scripted: [
+      { tool: 'sysml_find_elements', args: { pattern: 'Unit_*_*_*', kind: 'partDef', limit: 50 } },
+      { tool: 'sysml_apply_edits', args: { ops: [{ op: 'rename', path: `Plant::Area11::${SUFFIXED}_tmp`, newName: SUFFIXED }] } },
+    ],
   },
 ];

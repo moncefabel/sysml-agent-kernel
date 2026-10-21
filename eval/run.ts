@@ -1,6 +1,6 @@
 import { writeFileSync, mkdirSync } from 'node:fs';
 import { probes, scenarios as mainSuite } from './scenarios.js';
-import { injection, selfCorrection, selfCorrectionV2, type SuiteScenario } from './suites.js';
+import { feedback, injection, selfCorrection, selfCorrectionV2, type SuiteScenario } from './suites.js';
 import { large, type EvalScenario } from './large.js';
 import { simulatedHuman } from './hitl.js';
 import { scriptedAgent, SYSTEM, type Agent } from './agents.js';
@@ -14,7 +14,7 @@ import { groqFromEnv } from './llm/groq.js';
 import { llmAgent, LLM_DEFAULTS } from './llm/loop.js';
 import { canonicalJson, sha256, type LLMProvider } from './llm/provider.js';
 
-// Usage: node dist/eval/run.js [--agent scripted|groq|anthropic] [--suite main|probes|selfcorrect|injection|selfcorrect-v2|large]
+// Usage: node dist/eval/run.js [--agent scripted|groq|anthropic] [--suite main|probes|selfcorrect|injection|selfcorrect-v2|large|feedback]
 //          [--only <scenario-id>] [--pass n] [--policy default|phase2] [--config default|hitl|large] [--transport inprocess|mcp]
 // LLM options: [--max-turns n] [--max-output-tokens n] [--scenario-budget n] [--run-budget n]
 //              [--cache-dir d] [--no-cache] [--replay-only] [--fresh]
@@ -26,14 +26,14 @@ const kind = opt('--agent', 'scripted');
 const only = opt('--only', '');
 const pass = num('--pass', 1);
 
-const SUITES: Record<string, EvalScenario[]> = { main: mainSuite, probes, selfcorrect: selfCorrection, injection, 'selfcorrect-v2': selfCorrectionV2, large };
+const SUITES: Record<string, EvalScenario[]> = { main: mainSuite, probes, selfcorrect: selfCorrection, injection, 'selfcorrect-v2': selfCorrectionV2, large, feedback };
 const suiteName = opt('--suite', 'main');
 const scenarios = SUITES[suiteName];
 if (!scenarios) throw new Error(`--suite must be one of ${Object.keys(SUITES).join(', ')}`);
 // --config hitl offers request_clarification, answered by the simulated human (eval/hitl.ts).
 // --config large adds the search tool (policy catalog 'large') and the per call input cap; it is
-// the default for the large suite.
-const config = opt('--config', suiteName === 'large' ? 'large' : 'default');
+// the default for the large and feedback suites.
+const config = opt('--config', suiteName === 'large' || suiteName === 'feedback' ? 'large' : 'default');
 if (!['default', 'hitl', 'large'].includes(config)) throw new Error('--config must be default, hitl or large');
 const LARGE_INPUT_CAP = 100_000;
 // File names keep the phase 2 layout for the main suite, pass 1, default configuration.

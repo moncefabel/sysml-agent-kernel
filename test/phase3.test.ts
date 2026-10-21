@@ -219,7 +219,7 @@ test('anthropic: the key comes from APP_ANTHROPIC_API_KEY only', () => {
   assert.throws(() => anthropicFromEnv({ ANTHROPIC_API_KEY: KEY }), /APP_ANTHROPIC_API_KEY/);
   const p = anthropicFromEnv({ APP_ANTHROPIC_API_KEY: KEY, APP_ANTHROPIC_MODEL: 'some-model' });
   assert.equal(p.model, 'some-model');
-  assert.equal(anthropicFromEnv({ APP_ANTHROPIC_API_KEY: KEY }).model, 'claude-opus-5-5');
+  assert.equal(anthropicFromEnv({ APP_ANTHROPIC_API_KEY: KEY }).model, 'claude-haiku-5-5');
 });
 
 test('anthropic: the existing loop runs a scenario end to end on the mocked API', async () => {
